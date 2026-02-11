@@ -1,19 +1,25 @@
 package tn.esprit.conversation.Entities;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "conversations")
 @Data
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+
 public class Conversation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer conversationId;
+    private Long conversationId;
 
     // Referenced by ID since Patients are likely in a different service
-    private Integer patientId;
+    private Long patientId;
 
     private String titre;
 
