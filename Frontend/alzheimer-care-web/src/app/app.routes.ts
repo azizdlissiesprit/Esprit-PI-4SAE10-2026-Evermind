@@ -19,8 +19,10 @@ export const routes: Routes = [
     children: [
       {
         path: 'dashboard',
-        // Lazy load the Dashboard Module (You need to create this module first if you haven't!)
-        loadChildren: () => import('./features/dashboard/dashboard-module').then(m => m.DashboardModule)
+        // --- UPDATED THIS SECTION ---
+        // Lazy loading the new CaregiverDashboardComponent directly
+        loadComponent: () => import('./features/dashboard/pages/caregiver-dashboard/caregiver-dashboard')
+          .then(m => m.CaregiverDashboardComponent)
       },
       {
         path: 'messages',
