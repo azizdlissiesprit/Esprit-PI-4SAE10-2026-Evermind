@@ -51,9 +51,12 @@ public class User implements UserDetails {
     @Column(name = "last_login")
     private LocalDateTime lastLogin;
 
+    @Column(name = "verification_code", length = 64)
+    private String verificationCode;
+
     @Column(nullable = false)
     @Builder.Default
-    private Boolean active = true;
+    private Boolean active = false;
 
     // --- 2. IMPLEMENT REQUIRED METHODS BELOW ---
 
