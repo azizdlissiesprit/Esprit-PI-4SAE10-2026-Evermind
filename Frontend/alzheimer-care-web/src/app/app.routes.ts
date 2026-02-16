@@ -2,8 +2,14 @@ import { Routes } from '@angular/router';
 // Make sure these paths match your file structure exactly
 import { AuthLayoutComponent } from './core/layouts/auth-layout/auth-layout';
 import { MainLayoutComponent } from './core/layouts/main-layout/main-layout';
+import { VerifyComponent } from './features/auth/pages/verify/verify'; // <--- ADD THIS IMPORT
 
 export const routes: Routes = [
+
+  { 
+    path: 'verify', 
+    component: VerifyComponent 
+  },
   // 1. Route for Auth (Login)
   {
     path: 'auth',
@@ -24,6 +30,18 @@ export const routes: Routes = [
         loadComponent: () => import('./features/dashboard/pages/caregiver-dashboard/caregiver-dashboard')
           .then(m => m.CaregiverDashboardComponent)
       },
+      {
+        path: 'patients',
+        // --- UPDATED THIS SECTION ---
+        // Lazy loading the new CaregiverDashboardComponent directly
+        loadComponent: () => import('./features/patients/patient-list/patient-list')
+          .then(m => m.PatientList)
+      },
+      {
+        path: 'profile',
+        loadComponent: () => import('./features/profile/profile-container/profile-container')
+            .then(m => m.ProfileContainerComponent)
+    },
       {
         path: 'messages',
         loadComponent: () => import('./features/communication/pages/messages/messages').then(m => m.MessagesComponent)

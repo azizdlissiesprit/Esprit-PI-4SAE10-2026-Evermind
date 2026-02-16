@@ -10,4 +10,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     // Optional: Useful for registration to check if email is already taken
     boolean existsByEmail(String email);
+    Optional<User> findByVerificationCode(String verificationCode);
 }
