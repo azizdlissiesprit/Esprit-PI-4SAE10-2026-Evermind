@@ -1,0 +1,120 @@
+:host {
+    --bg-sidebar: #F4F7FC;
+    --primary-blue: #4E80EE;
+    --text-dark: #1E293B;
+    --text-grey: #64748B;
+    --white: #FFFFFF;
+    --radius-lg: 16px;
+    --sidebar-width: 260px;
+    --collapsed-width: 80px; /* New variable */
+    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smoother easing */
+
+    display: block;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+/* Main Container */
+.sidebar {
+    width: var(--sidebar-width);
+    height: 100%;
+    background-color: var(--bg-sidebar);
+    display: flex;
+    flex-direction: column;
+    padding: 30px 24px;
+    border-right: 1px solid rgba(0,0,0,0.05);
+    overflow-x: hidden; /* Hide content while shrinking */
+    overflow-y: auto;
+    transition: width 0.3s ease-in-out; /* Animate the width change */
+
+    /* --- COLLAPSED STATE STYLES --- */
+    &.collapsed {
+        width: var(--collapsed-width);
+        padding: 30px 15px; /* Reduce padding */
+
+        .sidebar-header {
+            justify-content: center; /* Center hamburger */
+        }
+
+        .nav-link {
+            justify-content: center;
+        }
+
+        .icon-box {
+            margin-right: 0; /* Remove gap between icon and hidden text */
+            font-size: 20px; /* Make icon slightly larger */
+        }
+
+        .link-text {
+            display: none; /* Hide text */
+        }
+    }
+    /* ------------------------------ */
+
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+}
+
+/* --- Header --- */
+.sidebar-header {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;
+    min-height: 32px; /* Prevent jump when logo disappears */
+}
+
+.brand-logo {
+    font-size: 22px; font-weight: 800; color: #2e3b4e; letter-spacing: 1px; text-transform: uppercase;
+    white-space: nowrap; /* Prevent text wrapping during animation */
+}
+
+.menu-toggle {
+    width: 32px; height: 32px; background-color: var(--primary-blue); border: none; border-radius: 8px;
+    color: white; display: flex; align-items: center; justify-content: center; cursor: pointer;
+    box-shadow: 0 4px 10px rgba(78, 128, 238, 0.3); transition: var(--transition);
+    &:hover { transform: scale(1.05); }
+}
+
+/* --- Navigation --- */
+.nav-menu {
+    list-style: none; display: flex; flex-direction: column; gap: 8px; flex-grow: 1;
+}
+
+.nav-link {
+    display: flex; align-items: center; text-decoration: none; color: var(--text-grey);
+    padding: 12px 12px; font-size: 15px; font-weight: 500; border-radius: 12px; transition: var(--transition);
+    cursor: pointer;
+    white-space: nowrap; /* Keep text on one line */
+
+    .icon-box {
+        width: 24px; display: flex; justify-content: center; margin-right: 16px; font-size: 18px; transition: var(--transition);
+    }
+
+    &:hover {
+        color: var(--primary-blue); background-color: rgba(78, 128, 238, 0.05);
+        .icon-box { transform: translateX(2px); }
+    }
+
+    &.active {
+        color: var(--primary-blue); font-weight: 600; background-color: rgba(78, 128, 238, 0.1);
+    }
+}
+
+/* --- PRO Card --- */
+.pro-card {
+    background: linear-gradient(135deg, #6696ff 0%, #4E80EE 100%);
+    border-radius: var(--radius-lg); padding: 24px; color: white; margin-top: auto;
+    position: relative; box-shadow: 0 10px 20px rgba(78, 128, 238, 0.2); text-align: left;
+    overflow: hidden;
+
+    h3 { font-size: 14px; font-weight: 700; margin-bottom: 8px; white-space: nowrap; }
+    p { font-size: 12px; line-height: 1.5; opacity: 0.9; margin-bottom: 16px; }
+}
+
+.btn-upgrade {
+    width: 100%; background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.4);
+    color: white; padding: 10px 0; border-radius: 20px; font-size: 12px; font-weight: 600;
+    cursor: pointer; transition: var(--transition); backdrop-filter: blur(4px); white-space: nowrap;
+    &:hover { background: white; color: var(--primary-blue); }
+}

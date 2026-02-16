@@ -170,24 +170,105 @@
   .stat-val { font-size: 18px; font-weight: 700; color: var(--text-dark); }
 }
 
-.checklist { display: flex; flex-direction: column; }
+/* --- UPDATED CHECKLIST STYLING --- */
+.checklist {
+    display: flex;
+    flex-direction: column;
+}
+
 .checklist-item {
-  display: flex; align-items: flex-start; gap: 16px; padding: 16px 0; border-bottom: 1px solid #F1F5F9;
-  &:last-child { border-bottom: none; padding-bottom: 0; }
-  &:first-child { padding-top: 0; }
-  
-  .checkbox { 
-      width: 20px; height: 20px; border: 2px solid #CBD5E1; border-radius: 6px; margin-top: 2px; flex-shrink: 0;
-      &.checked { background: var(--green-bg); border-color: var(--green-bg); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; }
-  }
-  .checklist-content { flex: 1; }
-  .task-time { font-size: 13px; font-weight: 600; color: var(--text-dark); margin-bottom: 2px; }
-  .task-desc { font-size: 12px; color: var(--text-grey); }
-  
-  .badge { padding: 4px 12px; border-radius: var(--radius-pill); font-size: 11px; font-weight: 600; color: white; }
-  .badge-done { background: var(--green-bg); }
-  .badge-pending { background: var(--orange-bg); }
-  .badge-upcoming { background: #F59E0B; opacity: 0.7; }
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px 12px;
+    border-bottom: 1px solid #F1F5F9;
+    cursor: pointer;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
+    border-radius: 8px;
+
+    &:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+    &:first-child {
+        padding-top: 12px;
+    }
+
+    /* Hover effect */
+    &:hover {
+        background-color: #F8FAFC;
+    }
+
+    /* Completed State Visuals */
+    &.is-completed {
+        .checklist-content {
+            opacity: 0.6;
+            text-decoration: line-through;
+        }
+        .task-time {
+             text-decoration: none; /* Keep time readable */
+        }
+    }
+
+    /* Checkbox Styling */
+    .checkbox {
+        width: 22px;
+        height: 22px;
+        border: 2px solid #CBD5E1;
+        border-radius: 6px;
+        margin-top: 2px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        background-color: white;
+
+        &.checked {
+            background: var(--green-bg);
+            border-color: var(--green-bg);
+            color: white;
+            font-size: 12px;
+            transform: scale(1.05);
+        }
+    }
+
+    /* Text Styling */
+    .checklist-content {
+        flex: 1;
+        transition: opacity 0.2s;
+    }
+
+    .task-time {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 4px;
+        .bullet { color: var(--text-light); margin: 0 4px; }
+    }
+
+    .task-desc {
+        font-size: 12px;
+        color: var(--text-grey);
+        .p-name { font-weight: 500; color: var(--text-dark); }
+        .bullet { color: var(--text-light); margin: 0 4px; }
+    }
+
+    /* Badge Styling */
+    .badge {
+        padding: 4px 12px;
+        border-radius: var(--radius-pill);
+        font-size: 11px;
+        font-weight: 600;
+        color: white;
+        transition: background-color 0.3s;
+        min-width: 70px;
+        text-align: center;
+    }
+
+    .badge-done { background: var(--green-bg); }
+    .badge-pending { background: var(--orange-bg); }
+    .badge-upcoming { background: #94A3B8; }
 }
 
 /* Right Column Specifics */
