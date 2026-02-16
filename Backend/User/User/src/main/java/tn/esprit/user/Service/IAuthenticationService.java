@@ -6,5 +6,6 @@ import tn.esprit.user.DTO.RegisterRequest;
 
 public interface IAuthenticationService {
     AuthenticationResponse register(RegisterRequest request);
-    AuthenticationResponse authenticate(LoginRequest request); // <--- Use LoginRequest here
+    AuthenticationResponse authenticate(LoginRequest request);
+    public boolean verifyUser(String verificationCode);// <--- Use LoginRequest here
 }

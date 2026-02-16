@@ -110,33 +110,33 @@
                   <span class="card-meta">Today</span>
               </div>
 
-              <div class="checklist">
-                  <!-- Item 1 -->
-                  <div class="checklist-item">
-                      <div class="checkbox checked"><i class="fa-solid fa-check"></i></div>
-                      <div class="checklist-content">
-                          <div class="task-time">09:00 &bull; Medication</div>
-                          <div class="task-desc">Eleanor Stewart &bull; Morning pills</div>
+                            <div class="checklist">
+                  <!-- Dynamic Loop -->
+                  <div 
+                    class="checklist-item" 
+                    *ngFor="let task of carePlanTasks" 
+                    (click)="toggleTask(task)"
+                    [class.is-completed]="task.status === 'DONE'">
+                      
+                      <!-- Checkbox -->
+                      <div class="checkbox" [class.checked]="task.status === 'DONE'">
+                          <i class="fa-solid fa-check" *ngIf="task.status === 'DONE'"></i>
                       </div>
-                      <div class="badge badge-done">Done</div>
-                  </div>
-                  <!-- Item 2 -->
-                  <div class="checklist-item">
-                      <div class="checkbox"></div>
+
+                      <!-- Content -->
                       <div class="checklist-content">
-                          <div class="task-time">10:00 &bull; Hydration check</div>
-                          <div class="task-desc">John Miller &bull; 1 glass of water</div>
+                          <div class="task-time">
+                              {{ task.time }} <span class="bullet">&bull;</span> {{ task.category }}
+                          </div>
+                          <div class="task-desc">
+                              <span class="p-name">{{ task.patientName }}</span> <span class="bullet">&bull;</span> {{ task.description }}
+                          </div>
                       </div>
-                      <div class="badge badge-pending">Pending</div>
-                  </div>
-                  <!-- Item 3 -->
-                  <div class="checklist-item">
-                      <div class="checkbox"></div>
-                      <div class="checklist-content">
-                          <div class="task-time">11:30 &bull; Mobility exercise</div>
-                          <div class="task-desc">Maria Lopez &bull; Short walk</div>
+
+                      <!-- Badge -->
+                      <div class="badge" [ngClass]="getBadgeClass(task.status)">
+                          {{ task.status | titlecase }}
                       </div>
-                      <div class="badge badge-upcoming">Upcoming</div>
                   </div>
               </div>
           </div>
