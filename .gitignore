@@ -1,0 +1,49 @@
+# ===================== Backend =====================
+
+# Maven
+**/target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# IDE
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/
+*.swp
+*.swo
+.project
+.classpath
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+
+# ===================== Frontend =====================
+
+# Node
+**/node_modules/
+dist/
+tmp/
+out-tsc/
+.angular/
+
+# npm
+npm-debug.log
+package-lock.json
+
+# Environment (ne pas partager si secrets)
+# src/environments/environment.prod.ts
+
+# ===================== Database =====================
+
+# Dump files
+*.sql.bak
+*.dump
