@@ -32,7 +32,7 @@ export class AssessmentListComponent implements OnInit {
   apiError: string | null = null;
 
   // Pagination
-  pageSize = 10;
+  pageSize = 3;
   currentPage = 1;
   get totalPages(): number {
     return Math.max(1, Math.ceil(this.filteredItems.length / this.pageSize));

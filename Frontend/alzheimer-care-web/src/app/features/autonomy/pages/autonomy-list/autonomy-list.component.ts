@@ -30,7 +30,7 @@ export class AutonomyListComponent implements OnInit {
   apiError: string | null = null;
 
   // Pagination
-  pageSize = 10;
+  pageSize = 3;
   currentPage = 1;
   get totalPages(): number {
     return Math.max(1, Math.ceil(this.filteredItems.length / this.pageSize));
@@ -59,7 +59,7 @@ export class AutonomyListComponent implements OnInit {
         this.isLoading = false;
       },
       error: () => {
-        this.apiError = 'Impossible de joindre l\'API Autonomy (backend sur le port 8089 ?).';
+        this.apiError = 'Impossible de joindre l\'API Autonomy (backend sur le port 8097 ?).';
         this.isLoading = false;
       }
     });

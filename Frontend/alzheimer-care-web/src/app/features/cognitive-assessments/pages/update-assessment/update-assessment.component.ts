@@ -246,9 +246,13 @@ export class UpdateAssessmentComponent implements OnInit {
   isFormValid(): boolean {
     if (!this.assessmentForm.date?.trim() || !this.assessmentForm.evaluator?.trim()) return false;
     if (!this.isValidDate(this.assessmentForm.date)) return false;
+    if (this.getDateError() || this.getEvaluatorError()) return false;
+    
     const s = this.assessmentForm.scores;
-    return [s.memory, s.orientation, s.language, s.executiveFunctions]
+    const validScores = [s.memory, s.orientation, s.language, s.executiveFunctions]
       .every(v => Number.isInteger(v) && v >= 0 && v <= 10);
+    
+    return validScores;
   }
 
   getDateError(): string | null {
@@ -260,6 +264,15 @@ export class UpdateAssessmentComponent implements OnInit {
   getEvaluatorError(): string | null {
     if (!this.assessmentForm.evaluator?.trim()) return 'L\'évaluateur est requis.';
     if (this.assessmentForm.evaluator.trim().length < 2) return 'Saisir au moins 2 caractères.';
+    if (this.assessmentForm.evaluator.trim().length > 100) return 'Maximum 100 caractères.';
+    if (!/^[a-zA-Z\s\.\-]+$/.test(this.assessmentForm.evaluator.trim())) return 'Caractères invalides (lettres, espaces, points, tirets uniquement).';
+    return null;
+  }
+
+  getScoreError(domain: string): string | null {
+    const score = this.getDomainScore(domain);
+    if (!Number.isInteger(score)) return 'Score doit être un entier.';
+    if (score < 0 || score > 10) return 'Score doit être entre 0 et 10.';
     return null;
   }
 }

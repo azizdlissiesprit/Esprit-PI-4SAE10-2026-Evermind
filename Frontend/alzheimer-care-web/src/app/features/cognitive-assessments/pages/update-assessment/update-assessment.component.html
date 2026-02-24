@@ -155,9 +155,11 @@
                   max="10"
                   (input)="setDomainScore(domain, $any($event.target).value)"
                   required
+                  [class.input-error]="getScoreError(domain)"
                 />
                 <span class="score-max">/10</span>
               </div>
+              <span class="validation-error" *ngIf="getScoreError(domain)">{{ getScoreError(domain) }}</span>
               <div class="score-bar">
                 <div 
                   class="score-fill" 

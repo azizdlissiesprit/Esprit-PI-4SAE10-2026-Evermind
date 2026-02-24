@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import tn.esprit.autonomy.entity.AutonomyAssessment;
 import tn.esprit.autonomy.entity.AutonomyScoresEmbeddable;
 import tn.esprit.autonomy.service.IAutonomyAssessmentService;
+import tn.esprit.autonomy.service.EmailNotificationService;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ import java.util.List;
 public class AutonomyAssessmentController {
 
     private final IAutonomyAssessmentService service;
+    private final EmailNotificationService emailNotificationService;
 
     @PostMapping
     public ResponseEntity<AutonomyAssessment> create(@RequestBody AutonomyAssessment assessment) {
@@ -36,6 +38,10 @@ public class AutonomyAssessmentController {
         if (assessment.getRecommendedDevicesJson() == null) assessment.setRecommendedDevicesJson("");
         if (assessment.getCaregiverRecommendationsJson() == null) assessment.setCaregiverRecommendationsJson("");
         AutonomyAssessment created = service.add(assessment);
+        
+        // Send email notification for new assessment
+        emailNotificationService.sendNewAutonomyAssessmentNotification(created);
+        
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 

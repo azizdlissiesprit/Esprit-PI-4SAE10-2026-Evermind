@@ -56,9 +56,19 @@
           <div class="score-group" *ngFor="let domain of domainKeys">
             <label>{{ getDomainLabel(domain) }}</label>
             <div class="score-input-wrap">
-              <input type="number" [ngModel]="form.scores[domain]" (ngModelChange)="setScore(domain, $event)" [name]="'s'+domain" min="0" max="5" required />
+              <input 
+                type="number" 
+                [ngModel]="form.scores[domain]" 
+                (ngModelChange)="setScore(domain, $event)" 
+                [name]="'s'+domain" 
+                min="0" 
+                max="5" 
+                required
+                [class.input-error]="getScoreError(domain)"
+              />
               <span class="score-max">/5</span>
             </div>
+            <span class="validation-error" *ngIf="getScoreError(domain)">{{ getScoreError(domain) }}</span>
             <div class="score-bar">
               <div class="score-fill" [style.width.%]="getScorePct(form.scores[domain], 5)" [style.background-color]="getScoreColor(form.scores[domain], 5)"></div>
             </div>

@@ -1,10 +1,10 @@
 tn\esprit\autonomy\entity\TrendType.class
 tn\esprit\autonomy\entity\AutonomyAssessment$AutonomyAssessmentBuilder.class
 tn\esprit\autonomy\controller\GlobalExceptionHandler.class
+tn\esprit\autonomy\service\IAutonomyAssessmentService.class
+tn\esprit\autonomy\repository\AutonomyAssessmentRepository.class
 tn\esprit\autonomy\entity\AutonomyScoresEmbeddable.class
 tn\esprit\autonomy\entity\AutonomyAssessment.class
-tn\esprit\autonomy\service\IAutonomyAssessmentService.class
 tn\esprit\autonomy\controller\AutonomyAssessmentController.class
 tn\esprit\autonomy\AutonomyApplication.class
 tn\esprit\autonomy\service\AutonomyAssessmentServiceImpl.class
-tn\esprit\autonomy\repository\AutonomyAssessmentRepository.class

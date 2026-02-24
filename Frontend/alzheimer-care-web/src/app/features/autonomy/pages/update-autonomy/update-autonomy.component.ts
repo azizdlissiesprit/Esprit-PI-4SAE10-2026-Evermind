@@ -130,12 +130,12 @@ export class UpdateAutonomyComponent implements OnInit {
           if (result) {
             this.router.navigate(['/app/patients', this.patientId, 'autonomy']);
           } else {
-            this.apiError = 'Erreur lors de la mise à jour. Backend démarré sur le port 8089 ?';
+            this.apiError = 'Erreur lors de la mise à jour. Backend démarré sur le port 8097 ?';
           }
         },
         error: () => {
           this.submitting = false;
-          this.apiError = 'Erreur réseau ou backend indisponible (port 8089).';
+          this.apiError = 'Erreur réseau ou backend indisponible (port 8097).';
         }
       });
     } else {
@@ -145,12 +145,12 @@ export class UpdateAutonomyComponent implements OnInit {
           if (result) {
             this.router.navigate(['/app/autonomy-list']);
           } else {
-            this.apiError = 'Erreur lors de la création. Backend démarré sur le port 8089 ?';
+            this.apiError = 'Erreur lors de la création. Backend démarré sur le port 8097 ?';
           }
         },
         error: () => {
           this.submitting = false;
-          this.apiError = 'Erreur réseau ou backend indisponible (port 8089).';
+          this.apiError = 'Erreur réseau ou backend indisponible (port 8097).';
         }
       });
     }
@@ -173,9 +173,12 @@ export class UpdateAutonomyComponent implements OnInit {
   isFormValid(): boolean {
     if (!this.form.date?.trim() || !this.form.evaluator?.trim()) return false;
     if (!this.isValidDate(this.form.date)) return false;
+    if (this.getDateError() || this.getEvaluatorError()) return false;
+    
     const s = this.form.scores;
     const validScores = [s.hygiene, s.feeding, s.dressing, s.mobility, s.communication]
       .every(v => Number.isInteger(v) && v >= 0 && v <= 5);
+    
     return validScores;
   }
 
@@ -188,6 +191,15 @@ export class UpdateAutonomyComponent implements OnInit {
   getEvaluatorError(): string | null {
     if (!this.form.evaluator?.trim()) return 'L\'évaluateur est requis.';
     if (this.form.evaluator.trim().length < 2) return 'Saisir au moins 2 caractères.';
+    if (this.form.evaluator.trim().length > 100) return 'Maximum 100 caractères.';
+    if (!/^[a-zA-Z\s\.\-]+$/.test(this.form.evaluator.trim())) return 'Caractères invalides (lettres, espaces, points, tirets uniquement).';
+    return null;
+  }
+
+  getScoreError(domain: keyof AutonomyScores): string | null {
+    const score = this.form.scores[domain];
+    if (!Number.isInteger(score)) return 'Score doit être un entier.';
+    if (score < 0 || score > 5) return 'Score doit être entre 0 et 5.';
     return null;
   }
 }

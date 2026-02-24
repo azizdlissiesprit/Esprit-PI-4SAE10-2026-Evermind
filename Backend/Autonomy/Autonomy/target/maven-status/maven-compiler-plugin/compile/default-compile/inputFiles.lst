@@ -4,6 +4,7 @@ C:\Users\benkh\hi - Copie\EverMind-main\Backend\Autonomy\Autonomy\src\main\java\
 C:\Users\benkh\hi - Copie\EverMind-main\Backend\Autonomy\Autonomy\src\main\java\tn\esprit\autonomy\AutonomyApplication.java
 C:\Users\benkh\hi - Copie\EverMind-main\Backend\Autonomy\Autonomy\src\main\java\tn\esprit\autonomy\service\IAutonomyAssessmentService.java
 C:\Users\benkh\hi - Copie\EverMind-main\Backend\Autonomy\Autonomy\src\main\java\tn\esprit\autonomy\service\AutonomyAssessmentServiceImpl.java
+C:\Users\benkh\hi - Copie\EverMind-main\Backend\Autonomy\Autonomy\src\main\java\tn\esprit\autonomy\service\EmailNotificationService.java
 C:\Users\benkh\hi - Copie\EverMind-main\Backend\Autonomy\Autonomy\src\main\java\tn\esprit\autonomy\controller\AutonomyAssessmentController.java
 C:\Users\benkh\hi - Copie\EverMind-main\Backend\Autonomy\Autonomy\src\main\java\tn\esprit\autonomy\controller\GlobalExceptionHandler.java
 C:\Users\benkh\hi - Copie\EverMind-main\Backend\Autonomy\Autonomy\src\main\java\tn\esprit\autonomy\entity\TrendType.java

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import tn.esprit.cognitiveassessment.entity.AssessmentScoreEmbeddable;
 import tn.esprit.cognitiveassessment.entity.CognitiveAssessment;
 import tn.esprit.cognitiveassessment.service.ICognitiveAssessmentService;
+import tn.esprit.cognitiveassessment.service.EmailNotificationService;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ import java.util.List;
 public class CognitiveAssessmentController {
 
     private final ICognitiveAssessmentService service;
+    private final EmailNotificationService emailNotificationService;
 
     @PostMapping
     public ResponseEntity<CognitiveAssessment> create(@RequestBody CognitiveAssessment assessment) {
@@ -36,6 +38,10 @@ public class CognitiveAssessmentController {
             assessment.setObservations("");
         }
         CognitiveAssessment created = service.add(assessment);
+        
+        // Send email notification for new assessment
+        emailNotificationService.sendNewCognitiveAssessmentNotification(created);
+        
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
