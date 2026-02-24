@@ -1,0 +1,140 @@
+<div class="autonomy-list-container">
+  <div class="page-header">
+    <div class="header-title">
+      <h1>Autonomy Assessments</h1>
+      <p>Search, filter and open autonomy dashboards. Données depuis l'API (port 8089).</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-sm btn-primary" (click)="goToNewAssessment()">
+        <iconify-icon icon="lucide:plus"></iconify-icon>
+        Nouvelle évaluation
+      </button>
+      <button class="btn-sm" (click)="loadFromApi()" [disabled]="isLoading">
+        <iconify-icon icon="lucide:refresh-cw" [class.spin]="isLoading"></iconify-icon>
+        {{ isLoading ? 'Chargement...' : 'Rafraîchir' }}
+      </button>
+    </div>
+  </div>
+
+  <div class="error-banner" *ngIf="apiError">
+    <iconify-icon icon="lucide:alert-circle"></iconify-icon>
+    {{ apiError }}
+  </div>
+
+  <div class="filters-card">
+    <div class="filters-row">
+      <div class="filter-group">
+        <label>Patient</label>
+        <div class="filter-input">
+          <iconify-icon icon="lucide:search"></iconify-icon>
+          <input type="text" placeholder="Search by patient name or ID..." [(ngModel)]="searchName" (input)="onSearchChange()" />
+        </div>
+      </div>
+      <div class="filter-group">
+        <label>Date</label>
+        <div class="filter-input">
+          <iconify-icon icon="lucide:calendar"></iconify-icon>
+          <input type="text" placeholder="e.g. 07/2024 or 12/07/2024..." [(ngModel)]="searchDate" (input)="onSearchChange()" />
+        </div>
+      </div>
+      <div class="filter-group">
+        <label>Total Score (0–25)</label>
+        <select [(ngModel)]="scoreFilter" (change)="onScoreFilterChange(scoreFilter)">
+          <option value="all">All scores</option>
+          <option value="low">&lt; 15 (low)</option>
+          <option value="medium">15 – 20 (moderate)</option>
+          <option value="high">&gt; 20 (high)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">
+        <iconify-icon icon="lucide:list-checks" style="color: var(--primary)"></iconify-icon>
+        Autonomy Assessment List
+      </div>
+    </div>
+    <div class="card-content-no-pad">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Patient</th>
+            <th>Date</th>
+            <th>Evaluator</th>
+            <th>Total</th>
+            <th>Hygiene</th>
+            <th>Dressing</th>
+            <th>Mobility</th>
+            <th>Trend</th>
+            <th style="text-align: right;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="isLoading">
+            <td colspan="9" class="empty-row">Loading…</td>
+          </tr>
+          <tr *ngIf="!isLoading && filteredItems.length === 0">
+            <td colspan="9" class="empty-row">No assessments match your filters.</td>
+          </tr>
+          <tr *ngFor="let item of paginatedItems">
+            <td>
+              <div class="patient-cell">
+                <div class="avatar-circle">{{ item.patient.name.charAt(0) }}</div>
+                <div>
+                  <div class="patient-name">{{ item.patient.name }}</div>
+                  <div class="patient-id">#{{ item.patient.id }}</div>
+                </div>
+              </div>
+            </td>
+            <td>{{ item.assessment.date }}</td>
+            <td>{{ item.assessment.evaluator }}</td>
+            <td class="td-bold">{{ item.assessment.totalScore }}/25</td>
+            <td>{{ item.assessment.scores.hygiene }}/5</td>
+            <td>{{ item.assessment.scores.dressing }}/5</td>
+            <td>{{ item.assessment.scores.mobility }}/5</td>
+            <td>
+              <span class="trend-badge" [class]="getTrendClass(item.assessment.trend)">
+                <iconify-icon [icon]="getTrendIcon(item.assessment.trend)"></iconify-icon>
+                {{ item.assessment.trendPoints != null ? (item.assessment.trendPoints > 0 ? '+' : '') + item.assessment.trendPoints + ' pts' : 'Ref.' }}
+              </span>
+            </td>
+            <td>
+              <div class="table-actions" style="justify-content: flex-end;">
+                <button class="btn-icon" title="Ouvrir le tableau de bord" (click)="openDashboard(item)">
+                  <iconify-icon icon="lucide:panel-right-open"></iconify-icon>
+                </button>
+                <button class="btn-icon" title="Modifier" (click)="goToEditAssessment(item)">
+                  <iconify-icon icon="lucide:edit"></iconify-icon>
+                </button>
+                <button class="btn-icon" title="Exporter PDF" (click)="exportPDF(item)">
+                  <iconify-icon icon="lucide:file-down"></iconify-icon>
+                </button>
+                <button class="btn-icon btn-icon-danger" title="Supprimer" (click)="deleteAssessment(item)">
+                  <iconify-icon icon="lucide:trash-2"></iconify-icon>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="pagination-bar" *ngIf="!isLoading && filteredItems.length > 0">
+        <span class="pagination-info">
+          {{ (currentPage - 1) * pageSize + 1 }}-{{ Math.min(currentPage * pageSize, filteredItems.length) }} sur {{ filteredItems.length }}
+        </span>
+        <div class="pagination-controls">
+          <button class="btn-icon" [disabled]="currentPage <= 1" (click)="goToPage(currentPage - 1)" title="Page précédente">
+            <iconify-icon icon="lucide:chevron-left"></iconify-icon>
+          </button>
+          <button *ngFor="let p of pageNumbers" class="btn-page" [class.active]="p === currentPage" (click)="goToPage(p)">
+            {{ p }}
+          </button>
+          <button class="btn-icon" [disabled]="currentPage >= totalPages" (click)="goToPage(currentPage + 1)" title="Page suivante">
+            <iconify-icon icon="lucide:chevron-right"></iconify-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

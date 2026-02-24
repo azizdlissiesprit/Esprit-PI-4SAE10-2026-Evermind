@@ -1,0 +1,192 @@
+<div class="dashboard-container">
+  
+  <!-- Header -->
+  <header class="dashboard-header">
+      <div class="header-left">
+          <h2>Good morning, {{ userName }}.</h2>
+          <p>You are monitoring 12 patients today. System status: All systems operational.</p>
+          <div class="role-meta">Role: <span>Primary caregiver</span> <span class="divider">|</span> Shift: <span>08:00 - 16:00</span></div>
+      </div>
+
+      <div class="header-right">
+          <div class="privacy-toggle">
+              <div class="toggle-knob"></div>
+              Privacy mode
+          </div>
+          <div class="status-pill">
+              <div class="dot"></div> Updated: 2m ago
+          </div>
+          <button class="icon-btn">
+              <i class="fa-regular fa-bell"></i>
+          </button>
+          
+          <!-- Profile / Logout -->
+          <div class="profile-section" (click)="logout()" title="Click to Logout">
+            <img src="https://i.pravatar.cc/150?img=5" alt="Profile" class="user-avatar">
+            <span class="logout-text">Logout</span>
+          </div>
+      </div>
+  </header>
+
+  <!-- Grid -->
+  <div class="dashboard-grid">
+      
+      <!-- Column 1: Navigation & Actions -->
+      <div class="left-column">
+          <div class="card nav-card">
+              <div class="card-header">
+                  <h3 class="card-title">Navigation</h3>
+                  <span class="card-meta">Quick access</span>
+              </div>
+              <ul class="nav-list">
+                  <li class="nav-item-card active"><i class="fa-solid fa-house"></i> Home overview</li>
+                  <li class="nav-item-card"><i class="fa-solid fa-users"></i> Patient list</li>
+                  <li class="nav-item-card"><i class="fa-solid fa-heart-pulse"></i> Live monitoring</li>
+                  <li class="nav-item-card"><i class="fa-regular fa-file-lines"></i> Reports</li>
+              </ul>
+          </div>
+
+          <div class="card">
+              <div class="card-header">
+                  <h3 class="card-title">Quick actions</h3>
+              </div>
+              <div class="quick-actions">
+                  <button class="action-btn btn-blue">
+                      <i class="fa-solid fa-plus"></i> Add vitals log
+                  </button>
+                  <button class="action-btn btn-blue-light">
+                      <i class="fa-solid fa-circle-exclamation"></i> Report incident
+                  </button>
+                  <button class="action-btn btn-dark">
+                      <i class="fa-solid fa-expand"></i> Scan medication
+                  </button>
+              </div>
+          </div>
+
+          <div class="card emergency-card">
+              <h4>Emergency override</h4>
+              <p>Global SOS will call emergency services immediately.</p>
+              <button class="sos-btn">Global SOS</button>
+              <div style="clear: both;"></div>
+          </div>
+      </div>
+
+      <!-- Column 2: Daily Briefing (Center) -->
+      <div class="center-column">
+          <div class="card">
+              <div class="card-header">
+                  <h3 class="card-title">Daily briefing</h3>
+                  <span class="card-meta">High priority</span>
+              </div>
+
+              <div class="patient-spotlight">
+                  <img src="https://i.pravatar.cc/150?img=10" alt="Eleanor" class="patient-lg">
+                  <div class="patient-details">
+                      <h3>Eleanor Stewart</h3>
+                      <p>Sleeping &bull; Room 204 &bull; Fall risk: High</p>
+                  </div>
+                  <div class="focus-pill">Focus patient</div>
+              </div>
+
+              <div class="stats-row">
+                  <div class="stat-box">
+                      <div class="stat-label">Heart rate</div>
+                      <div class="stat-val">72 <small>bpm</small></div>
+                  </div>
+                  <div class="stat-box">
+                      <div class="stat-label">Battery</div>
+                      <div class="stat-val">86%</div>
+                  </div>
+                  <div class="stat-box">
+                      <div class="stat-label">Sleep score</div>
+                      <div class="stat-val">82</div>
+                  </div>
+              </div>
+          </div>
+
+          <div class="card">
+              <div class="card-header">
+                  <h3 class="card-title">Care plan timeline</h3>
+                  <span class="card-meta">Today</span>
+              </div>
+
+                            <div class="checklist">
+                  <!-- Dynamic Loop -->
+                  <div 
+                    class="checklist-item" 
+                    *ngFor="let task of carePlanTasks" 
+                    (click)="toggleTask(task)"
+                    [class.is-completed]="task.status === 'DONE'">
+                      
+                      <!-- Checkbox -->
+                      <div class="checkbox" [class.checked]="task.status === 'DONE'">
+                          <i class="fa-solid fa-check" *ngIf="task.status === 'DONE'"></i>
+                      </div>
+
+                      <!-- Content -->
+                      <div class="checklist-content">
+                          <div class="task-time">
+                              {{ task.time }} <span class="bullet">&bull;</span> {{ task.category }}
+                          </div>
+                          <div class="task-desc">
+                              <span class="p-name">{{ task.patientName }}</span> <span class="bullet">&bull;</span> {{ task.description }}
+                          </div>
+                      </div>
+
+                      <!-- Badge -->
+                      <div class="badge" [ngClass]="getBadgeClass(task.status)">
+                          {{ task.status | titlecase }}
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <!-- Column 3: Care Team (Right) -->
+      <div class="right-column">
+          <div class="card">
+              <div class="card-header">
+                  <h3 class="card-title">Updates</h3>
+                  <span class="card-meta">Handover</span>
+              </div>
+              
+              <div class="handover-note">
+                  "John had trouble sleeping at 3 AM. Check mood during rounds."
+                  <div class="note-author">- Night Nurse</div>
+              </div>
+
+              <div class="section-label">Recent activity</div>
+
+              <div class="activity-feed">
+                  <div class="activity-item">
+                      <div class="activity-dot dot-blue"></div>
+                      <div class="activity-text">
+                          08:15 &bull; <span>Door sensor</span> triggered.
+                          <span class="activity-sub">Garden wing.</span>
+                      </div>
+                  </div>
+                  <div class="activity-item">
+                      <div class="activity-dot dot-green"></div>
+                      <div class="activity-text">
+                          07:45 &bull; <span>Vitals sync</span> complete.
+                          <span class="activity-sub">10 patients.</span>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+          <div class="team-online-card">
+              <div class="team-text">
+                  <h4>Team online</h4>
+                  <p>Active now</p>
+              </div>
+              <div class="avatars-group">
+                  <img src="https://i.pravatar.cc/150?img=33" alt="Team 1">
+                  <img src="https://i.pravatar.cc/150?img=47" alt="Team 2">
+                  <img src="https://i.pravatar.cc/150?img=12" alt="Team 3">
+              </div>
+          </div>
+      </div>
+
+  </div>
+</div>

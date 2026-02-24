@@ -1,0 +1,60 @@
+{
+  "info": {
+    "name": "Cognitive Assessment CRUD",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create assessment",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"patientId\": \"P-2024-8921\",\n  \"date\": \"23/02/2025\",\n  \"type\": \"complete\",\n  \"evaluator\": \"Dr. Claire Moreau\",\n  \"mmseScore\": 22,\n  \"moocaScore\": 19,\n  \"trend\": \"stable\",\n  \"trendPoints\": 0,\n  \"scores\": {\n    \"memory\": 5,\n    \"orientation\": 6,\n    \"language\": 7,\n    \"executiveFunctions\": 5\n  },\n  \"observations\": \"Assessment créé via Postman.\"}\n"
+        },
+        "url": "http://localhost:8086/api/cognitive-assessments"
+      }
+    },
+    {
+      "name": "Get all assessments",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:8086/api/cognitive-assessments"
+      }
+    },
+    {
+      "name": "Get by ID",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:8086/api/cognitive-assessments/1"
+      }
+    },
+    {
+      "name": "Get by patient ID",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:8086/api/cognitive-assessments/patient/P-2024-8921"
+      }
+    },
+    {
+      "name": "Update assessment",
+      "request": {
+        "method": "PUT",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": 1,\n  \"patientId\": \"P-2024-8921\",\n  \"date\": \"23/02/2025\",\n  \"type\": \"complete\",\n  \"evaluator\": \"Dr. Claire Moreau\",\n  \"mmseScore\": 24,\n  \"moocaScore\": 21,\n  \"trend\": \"up\",\n  \"trendPoints\": 2,\n  \"scores\": {\n    \"memory\": 6,\n    \"orientation\": 7,\n    \"language\": 8,\n    \"executiveFunctions\": 6\n  },\n  \"observations\": \"Assessment mis à jour.\"}\n"
+        },
+        "url": "http://localhost:8086/api/cognitive-assessments/1"
+      }
+    },
+    {
+      "name": "Delete assessment",
+      "request": {
+        "method": "DELETE",
+        "url": "http://localhost:8086/api/cognitive-assessments/1"
+      }
+    }
+  ]
+}

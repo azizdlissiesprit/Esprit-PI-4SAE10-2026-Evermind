@@ -1,0 +1,208 @@
+<div class="update-assessment-container">
+  <div class="page-header">
+    <div class="header-content">
+      <button class="back-btn" (click)="onCancel()">
+        <iconify-icon icon="lucide:arrow-left"></iconify-icon>
+        Back to Assessments
+      </button>
+      <div class="header-title">
+        <h1>{{ isEditMode ? 'Update Assessment' : 'New Assessment' }}</h1>
+        <p>{{ isEditMode ? 'Modify existing cognitive assessment' : 'Create new cognitive assessment' }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="error-banner" *ngIf="apiError">
+    <iconify-icon icon="lucide:alert-circle"></iconify-icon>
+    {{ apiError }}
+  </div>
+
+  <div class="form-container">
+    <form (ngSubmit)="onSubmit()" class="assessment-form">
+      <!-- Basic Information -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <iconify-icon icon="lucide:file-text" style="color: var(--primary)"></iconify-icon>
+            Basic Information
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="date">Assessment Date <span class="required">*</span></label>
+              <input 
+                type="text" 
+                id="date" 
+                [(ngModel)]="assessmentForm.date" 
+                name="date"
+                placeholder="JJ/MM/AAAA (ex. 24/02/2026)"
+                required
+                [class.input-error]="getDateError()"
+              />
+              <span class="validation-error" *ngIf="getDateError()">{{ getDateError() }}</span>
+            </div>
+            <div class="form-group">
+              <label for="type">Assessment Type</label>
+              <select id="type" [(ngModel)]="assessmentForm.type" name="type" required>
+                <option value="initial">Initial</option>
+                <option value="complete">Complete</option>
+                <option value="follow-up">Follow-up</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="evaluator">Évaluateur <span class="required">*</span></label>
+              <input 
+                type="text" 
+                id="evaluator" 
+                [(ngModel)]="assessmentForm.evaluator" 
+                name="evaluator"
+                required
+                minlength="2"
+                [class.input-error]="getEvaluatorError()"
+              />
+              <span class="validation-error" *ngIf="getEvaluatorError()">{{ getEvaluatorError() }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cognitive Scores -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <iconify-icon icon="lucide:brain" style="color: var(--primary)"></iconify-icon>
+            Cognitive Scores
+          </div>
+        </div>
+        <div class="card-content">
+          <p class="score-auto-note">MMSE and MoCA scores are automatically calculated from the domain scores below.</p>
+          <div class="scores-grid">
+            <div class="score-input-group">
+              <label for="mmseScore">MMSE Score <span class="auto-badge">(auto)</span></label>
+              <div class="score-input-wrapper">
+                <input 
+                  type="number" 
+                  id="mmseScore" 
+                  [(ngModel)]="assessmentForm.mmseScore" 
+                  name="mmseScore"
+                  min="0" 
+                  max="30"
+                  readonly
+                  required
+                />
+                <span class="score-max">/30</span>
+              </div>
+              <div class="score-bar">
+                <div 
+                  class="score-fill" 
+                  [style.width.%]="getScorePercentage(assessmentForm.mmseScore, 30)"
+                  [style.background-color]="getScoreColor(assessmentForm.mmseScore, 30)"
+                ></div>
+              </div>
+            </div>
+
+            <div class="score-input-group">
+              <label for="moocaScore">MoCA Score <span class="auto-badge">(auto)</span></label>
+              <div class="score-input-wrapper">
+                <input 
+                  type="number" 
+                  id="moocaScore" 
+                  [(ngModel)]="assessmentForm.moocaScore" 
+                  name="moocaScore"
+                  min="0" 
+                  max="30"
+                  readonly
+                  required
+                />
+                <span class="score-max">/30</span>
+              </div>
+              <div class="score-bar">
+                <div 
+                  class="score-fill" 
+                  [style.width.%]="getScorePercentage(assessmentForm.moocaScore, 30)"
+                  [style.background-color]="getScoreColor(assessmentForm.moocaScore, 30)"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Domain Scores -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <iconify-icon icon="lucide:bar-chart-2" style="color: var(--primary)"></iconify-icon>
+            Domain Scores
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="domains-grid">
+            <div class="domain-score-group" *ngFor="let domain of ['memory', 'orientation', 'language', 'executiveFunctions']; let i = index">
+              <label [for]="'domain-' + domain">
+                {{ domain === 'memory' ? 'Memory' : 
+                   domain === 'orientation' ? 'Spatial-temporal Orientation' :
+                   domain === 'language' ? 'Language' : 'Executive Functions' }}
+              </label>
+              <div class="score-input-wrapper">
+                <input 
+                  type="number" 
+                  [id]="'domain-' + domain" 
+                  [value]="getDomainScore(domain)"
+                  [name]="'domain-' + domain"
+                  min="0" 
+                  max="10"
+                  (input)="setDomainScore(domain, $any($event.target).value)"
+                  required
+                />
+                <span class="score-max">/10</span>
+              </div>
+              <div class="score-bar">
+                <div 
+                  class="score-fill" 
+                  [style.width.%]="getScorePercentage(getDomainScore(domain), 10)"
+                  [style.background-color]="getScoreColor(getDomainScore(domain), 10)"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clinical Observations -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <iconify-icon icon="lucide:clipboard" style="color: var(--primary)"></iconify-icon>
+            Clinical Observations
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="form-group">
+            <label for="observations">Observations</label>
+            <textarea 
+              id="observations" 
+              [(ngModel)]="assessmentForm.observations" 
+              name="observations"
+              rows="6"
+              placeholder="Enter clinical observations and notes about the assessment..."
+            ></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" (click)="onCancel()">
+          <iconify-icon icon="lucide:x"></iconify-icon>
+          Cancel
+        </button>
+        <button type="submit" class="btn-primary" [disabled]="submitting || !isFormValid()">
+          <iconify-icon icon="lucide:save"></iconify-icon>
+          {{ submitting ? 'Envoi...' : (isEditMode ? 'Mettre à jour' : 'Créer') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
