@@ -1,0 +1,50 @@
+<div class="page-container">
+    <div class="header">
+        <button class="btn-back" routerLink="/admin/alerts">Back</button>
+        <h1>{{ isEditMode ? 'Edit Alert' : 'Create Alert' }}</h1>
+    </div>
+
+    <div class="form-card">
+        <form [formGroup]="alertForm" (ngSubmit)="onSubmit()">
+            <div class="form-grid">
+                
+                <div class="form-group">
+                    <label>Patient ID</label>
+                    <input type="number" formControlName="patientId" placeholder="e.g. 10">
+                </div>
+
+                <div class="form-group">
+                    <label>Type</label>
+                    <select formControlName="typeAlerte">
+                        <option *ngFor="let t of types" [value]="t">{{ t }}</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Severity</label>
+                    <select formControlName="severite">
+                        <option *ngFor="let s of severities" [value]="s">{{ s }}</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Status</label>
+                    <select formControlName="statut">
+                        <option *ngFor="let st of statuses" [value]="st">{{ st }}</option>
+                    </select>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Message</label>
+                    <textarea formControlName="message" rows="3"></textarea>
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn-cancel" routerLink="/admin/alerts">Cancel</button>
+                <button type="submit" class="btn-save" [disabled]="alertForm.invalid">Save</button>
+            </div>
+        </form>
+    </div>
+</div>

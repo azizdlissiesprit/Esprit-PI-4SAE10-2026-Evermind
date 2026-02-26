@@ -1,0 +1,88 @@
+<div class="page-container">
+    <div class="header">
+        <button class="btn-back" routerLink="/admin/cognitive">
+    <i class="fa-solid fa-arrow-left"></i> Back
+</button>
+        <h1>{{ isEditMode ? 'Edit Cognitive Assessment' : 'New Cognitive Assessment' }}</h1>
+    </div>
+
+    <div class="form-card">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            
+            <!-- GENERAL INFO SECTION -->
+            <h3 style="margin-bottom: 16px; font-size: 16px; color: var(--accent-color);">General Information</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Patient ID</label>
+                    <input type="text" formControlName="patientId" placeholder="e.g. P-1024">
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" formControlName="date">
+                </div>
+                <div class="form-group">
+                    <label>Assessment Type</label>
+                    <select formControlName="type">
+                        <option *ngFor="let t of types" [value]="t">{{ t | titlecase }}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Evaluator Name</label>
+                    <input type="text" formControlName="evaluator" placeholder="Dr. Smith">
+                </div>
+            </div>
+
+            <!-- CLINICAL SCORES SECTION -->
+            <h3 style="margin: 24px 0 16px; font-size: 16px; color: var(--accent-color);">Clinical Scores</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>MMSE Score (0-30)</label>
+                    <input type="number" formControlName="mmseScore" min="0" max="30">
+                </div>
+                <div class="form-group">
+                    <label>MoCA Score (0-30)</label>
+                    <input type="number" formControlName="moocaScore" min="0" max="30">
+                </div>
+                <div class="form-group">
+                    <label>Clinical Trend</label>
+                    <select formControlName="trend">
+                        <option *ngFor="let t of trends" [value]="t">{{ t | titlecase }}</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- DETAILED SCORES (NESTED FORM GROUP) -->
+            <h3 style="margin: 24px 0 16px; font-size: 16px; color: var(--accent-color);">Domain Breakdown</h3>
+            <div class="form-grid" formGroupName="scores">
+                <div class="form-group">
+                    <label>Memory</label>
+                    <input type="number" formControlName="memory">
+                </div>
+                <div class="form-group">
+                    <label>Orientation</label>
+                    <input type="number" formControlName="orientation">
+                </div>
+                <div class="form-group">
+                    <label>Language</label>
+                    <input type="number" formControlName="language">
+                </div>
+                <div class="form-group">
+                    <label>Executive Functions</label>
+                    <input type="number" formControlName="executiveFunctions">
+                </div>
+            </div>
+
+            <!-- OBSERVATIONS -->
+            <div class="form-group full-width" style="margin-top: 24px;">
+                <label>Medical Observations</label>
+                <textarea formControlName="observations" rows="4" placeholder="Clinical notes..."></textarea>
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="form-actions">
+                <button type="button" class="btn-cancel" routerLink="/admin/cognitive">Cancel</button>
+                <button type="submit" class="btn-save" [disabled]="form.invalid">Save Assessment</button>
+            </div>
+        </form>
+    </div>
+</div>
