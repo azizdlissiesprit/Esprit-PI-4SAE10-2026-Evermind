@@ -1,0 +1,83 @@
+<div class="page-container">
+    
+    <div class="page-header">
+        <div>
+            <h1>Alert Management</h1>
+            <p>Monitor and manage system alerts.</p>
+        </div>
+        <!-- Add Button -->
+        <button class="btn-primary" routerLink="/admin/alerts/add">
+            <i class="fa-solid fa-plus"></i> New Alert
+        </button>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-bar">
+        <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Search message..." [(ngModel)]="searchTerm" (input)="applyFilters()">
+        </div>
+
+        <select [(ngModel)]="selectedSeverity" (change)="applyFilters()" class="filter-select">
+            <option value="ALL">All Severities</option>
+            <option *ngFor="let s of severities" [value]="s">{{ s }}</option>
+        </select>
+
+        <select [(ngModel)]="selectedStatus" (change)="applyFilters()" class="filter-select">
+            <option value="ALL">All Statuses</option>
+            <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+        </select>
+    </div>
+
+    <!-- Table -->
+    <div class="table-card">
+        <table>
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Patient ID</th>
+                    <th>Message</th>
+                    <th>Severity</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let alert of displayedAlerts">
+                    <td>{{ alert.typeAlerte }}</td>
+                    <td>{{ alert.patientId }}</td>
+                    <td>{{ alert.message }}</td>
+                    <td>
+                        <span class="role-badge" [ngClass]="getSeverityClass(alert.severite)">
+                            {{ alert.severite }}
+                        </span>
+                    </td>
+                    <td>{{ alert.statut }}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-icon" [routerLink]="['/admin/alerts/edit', alert.alertId]">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button class="btn-icon delete" (click)="onDelete(alert.alertId)">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                <tr *ngIf="displayedAlerts.length === 0 && !loading">
+                    <td colspan="6" class="text-center">No alerts found.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <span class="page-info">Total: {{ totalElements }}</span>
+            <div class="page-controls">
+                <button [disabled]="currentPage === 1" (click)="onPageChange(currentPage - 1)">Prev</button>
+                <span>{{ currentPage }} / {{ totalPages }}</span>
+                <button [disabled]="currentPage >= totalPages" (click)="onPageChange(currentPage + 1)">Next</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,66 @@
+<div class="page-container">
+    
+    <!-- Header -->
+    <div class="header">
+        <button class="btn-back" routerLink="/admin/users">
+            <i class="fa-solid fa-arrow-left"></i> Back to list
+        </button>
+        <!-- Dynamic Title -->
+        <h1>{{ isEditMode ? 'Edit User' : 'Create New User' }}</h1>
+    </div>
+
+    <div class="form-card">
+        <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+            
+            <div class="form-grid">
+                <!-- (Inputs remain same: First Name, Last Name, Email, Phone, Role) -->
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" formControlName="firstName">
+                </div>
+                <!-- ... other inputs ... -->
+                
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" formControlName="lastName">
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" formControlName="email">
+                </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="text" formControlName="phoneNumber">
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <div class="select-wrapper">
+                        <select formControlName="userType">
+                            <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Password Input (Dynamic Label) -->
+                <div class="form-group">
+                    <label>{{ isEditMode ? 'New Password (Leave blank to keep current)' : 'Initial Password' }}</label>
+                    <input type="password" formControlName="passwordHash" placeholder="••••••••">
+                </div>
+            </div>
+
+            <!-- Error -->
+            <div *ngIf="errorMessage" class="error-banner">{{ errorMessage }}</div>
+
+            <!-- Actions -->
+            <div class="form-actions">
+                <button type="button" class="btn-cancel" routerLink="/admin/users">Cancel</button>
+                <button type="submit" class="btn-save" [disabled]="userForm.invalid || isLoading">
+                    <span *ngIf="isLoading"><i class="fa-solid fa-spinner fa-spin"></i> Saving...</span>
+                    <!-- Dynamic Button Text -->
+                    <span *ngIf="!isLoading">{{ isEditMode ? 'Update User' : 'Create User' }}</span>
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>

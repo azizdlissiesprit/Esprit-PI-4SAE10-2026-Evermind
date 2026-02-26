@@ -8,23 +8,26 @@ export enum UserType {
 
 // Alert Types
 export enum TypeAlerte {
-  CHUTE = 'CHUTE',
-  ERRANCE = 'ERRANCE', // Wandering
-  SORTIE_ZONE = 'SORTIE_ZONE', // Geofence breach
-  INACTIVITE = 'INACTIVITE',
-  AGITATION = 'AGITATION'
+  FALL_DETECTION = 'FALL_DETECTION',
+  HEART_RATE_ANOMALY = 'HEART_RATE_ANOMALY', // Heart rate anomaly
+  GEOFENCE_EXIT = 'GEOFENCE_EXIT', // Geofence breach
+  MEDICATION_MISSED = 'MEDICATION_MISSED',
+  INACTIVITY = 'INACTIVITY',
+  SOS_BUTTON = 'SOS_BUTTON' // Emergency button pressed
 }
 
 export enum Severite {
-  CRITIQUE = 'CRITIQUE',
-  ELEVEE = 'ELEVEE',
-  MODEREE = 'MODEREE'
+  BASSE = 'BASSE',
+  MOYENNE = 'MOYENNE',
+  HAUTE = 'HAUTE',
+  CRITIQUE = 'CRITIQUE'
 }
 
 export enum StatutAlerte {
   NOUVELLE = 'NOUVELLE',
   EN_COURS = 'EN_COURS',
-  RESOLUE = 'RESOLUE'
+  RESOLUE = 'RESOLUE',
+  IGNOREE = 'IGNOREE'
 }
 
 // Intervention Results

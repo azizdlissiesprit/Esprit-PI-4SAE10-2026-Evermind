@@ -1,0 +1,38 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Alert } from '../models/alert.model';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AlertService {
+
+  // Your Spring Boot Port is 8081
+  private baseUrl = 'http://localhost:8090/alert'; 
+
+  constructor(private http: HttpClient) { }
+
+  // 1. Get All Alerts
+  getAllAlerts(): Observable<Alert[]> {
+    return this.http.get<Alert[]>(`${this.baseUrl}/retrieve-all-alerts`);
+  }
+
+  // 2. Take Charge (Change status to EN_COURS)
+  takeCharge(id: number): Observable<Alert> {
+    return this.http.patch<Alert>(`${this.baseUrl}/take-charge/${id}`, {});
+  }
+
+  // 3. Resolve Alert
+  resolveAlert(id: number): Observable<Alert> {
+    return this.http.patch<Alert>(`${this.baseUrl}/resolve/${id}`, {});
+  }
+
+  // 4. Ignore Alert
+  ignoreAlert(id: number): Observable<Alert> {
+    return this.http.patch<Alert>(`${this.baseUrl}/ignore/${id}`, {});
+  }
+  getAlertById(id: number): Observable<Alert> {
+    return this.http.get<Alert>(`${this.baseUrl}/retrieve-alert/${id}`);
+  }
+}

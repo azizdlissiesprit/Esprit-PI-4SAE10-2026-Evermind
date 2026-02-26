@@ -1,1 +1,51 @@
 /* You can add global styles to this file, and also import other style files */
+/* --- MODERN COLOR SYSTEM --- */
+:root {
+    /* LIGHT MODE (Default) */
+    --bg-main: #F1F5F9;       /* Slate 100 */
+    --bg-card: #FFFFFF;       /* White */
+    --bg-sidebar: #FFFFFF;
+    
+    --text-primary: #0F172A;  /* Slate 900 */
+    --text-secondary: #64748B; /* Slate 500 */
+    
+    --accent-color: #4E80EE;  /* Clinical Blue */
+    --accent-hover: #3b6bcc;
+    --accent-light: #EEF2FF;
+    
+    --border-color: #E2E8F0;
+    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+    
+    --transition-speed: 0.3s;
+}
+
+/* DARK MODE OVERRIDES */
+[data-theme='dark'] {
+    --bg-main: #0F172A;       /* Very Dark Blue */
+    --bg-card: #1E293B;       /* Dark Blue/Grey */
+    --bg-sidebar: #1E293B;
+    
+    --text-primary: #F8FAFC;  /* White/Grey */
+    --text-secondary: #94A3B8;
+    
+    --accent-color: #60A5FA;  /* Lighter Blue for Dark Mode */
+    --accent-hover: #3B82F6;
+    --accent-light: rgba(96, 165, 250, 0.15);
+    
+    --border-color: #334155;
+    --shadow-sm: 0 4px 6px -1px rgb(0 0 0 / 0.5);
+}
+
+/* Global Transition for smooth Theme Switch */
+body, div, nav, header, aside, a, button {
+    transition: background-color var(--transition-speed) ease, 
+                color var(--transition-speed) ease,
+                border-color var(--transition-speed) ease;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+}

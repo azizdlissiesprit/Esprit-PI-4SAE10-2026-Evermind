@@ -1,0 +1,90 @@
+<div class="page-container">
+    <div class="header">
+        <button class="btn-back" routerLink="/admin/autonomy">
+    <i class="fa-solid fa-arrow-left"></i> Back
+</button>
+        <h1>{{ isEditMode ? 'Edit Autonomy Assessment' : 'New Autonomy Assessment' }}</h1>
+    </div>
+
+    <div class="form-card">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            
+            <h3 style="margin-bottom: 16px; font-size: 16px; color: var(--accent-color);">Patient Context</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Patient ID</label>
+                    <input type="text" formControlName="patientId">
+                </div>
+                <div class="form-group">
+                    <label>Evaluator</label>
+                    <input type="text" formControlName="evaluator">
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" formControlName="date">
+                </div>
+                <div class="form-group">
+                    <label>Trend</label>
+                    <select formControlName="trend">
+                        <option *ngFor="let t of trends" [value]="t">{{ t | titlecase }}</option>
+                    </select>
+                </div>
+            </div>
+
+            <h3 style="margin: 24px 0 16px; font-size: 16px; color: var(--accent-color);">ADL Scores (0-10)</h3>
+            <div class="form-grid" formGroupName="scores">
+                <div class="form-group">
+                    <label>Hygiene</label>
+                    <input type="number" formControlName="hygiene" min="0" max="10">
+                </div>
+                <div class="form-group">
+                    <label>Feeding</label>
+                    <input type="number" formControlName="feeding" min="0" max="10">
+                </div>
+                <div class="form-group">
+                    <label>Dressing</label>
+                    <input type="number" formControlName="dressing" min="0" max="10">
+                </div>
+                <div class="form-group">
+                    <label>Mobility</label>
+                    <input type="number" formControlName="mobility" min="0" max="10">
+                </div>
+                <div class="form-group">
+                    <label>Communication</label>
+                    <input type="number" formControlName="communication" min="0" max="10">
+                </div>
+            </div>
+
+            <h3 style="margin: 24px 0 16px; font-size: 16px; color: var(--accent-color);">Conclusions</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Total Score</label>
+                    <input type="number" formControlName="totalScore">
+                </div>
+                <div class="form-group">
+                    <label>Assistance Level</label>
+                    <input type="text" formControlName="assistanceLevel" placeholder="e.g. Needs Supervision">
+                </div>
+                
+                <!-- Special Handling for JSON Array -->
+                <div class="form-group full-width">
+                    <label>Recommended Devices (Comma Separated)</label>
+                    <input type="text" 
+                           [value]="deviceInput" 
+                           (input)="deviceInput = $any($event.target).value" 
+                           placeholder="e.g. GPS Watch, Bed Sensor, Fall Detector">
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Observations</label>
+                    <textarea formControlName="observations" rows="3"></textarea>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn-cancel" routerLink="/admin/autonomy">Cancel</button>
+                <button type="submit" class="btn-save" [disabled]="form.invalid">Save Record</button>
+            </div>
+        </form>
+    </div>
+</div>

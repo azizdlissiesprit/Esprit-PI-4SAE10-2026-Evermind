@@ -1,0 +1,107 @@
+<div class="page-container">
+  <!-- HEADER -->
+  <div class="page-header">
+    <div>
+      <h1>User Management</h1>
+      <p>Manage staff access and patient guardians.</p>
+    </div>
+    <button class="btn-primary" routerLink="/admin/users/add">
+      <i class="fa-solid fa-plus"></i> Add User
+    </button>
+  </div>
+
+  <!-- FILTERS BAR -->
+  <div class="filters-bar">
+    <!-- Search Input -->
+    <div class="search-box">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" placeholder="Search by name or email..." (input)="onSearch($event)" />
+    </div>
+
+    <!-- Role Filter -->
+    <select [(ngModel)]="selectedRole" (change)="onRoleChange()" class="filter-select">
+      <option value="ALL">All Roles</option>
+      <option value="MEDECIN">Doctors</option>
+      <option value="AIDANT">Caregivers</option>
+      <option value="RESPONSABLE">Guardians</option>
+      <option value="ADMIN">Admins</option>
+    </select>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th (click)="onSort('firstName')">User <i class="fa-solid fa-sort"></i></th>
+          <th (click)="onSort('userType')">Role</th>
+          <th (click)="onSort('createdAt')">Joined</th>
+          <th>Status</th>
+          <th class="actions-col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>
+            <div class="user-cell">
+              <div class="avatar-circle">
+                {{ user.firstName.charAt(0) }}{{ user.lastName.charAt(0) }}
+              </div>
+              <div class="user-info">
+                <span class="name">{{ user.firstName }} {{ user.lastName }}</span>
+                <span class="email">{{ user.email }}</span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <span class="role-badge" [ngClass]="getRoleBadgeClass(user.userType)">
+              {{ user.userType }}
+            </span>
+          </td>
+          <td>{{ user.createdAt | date: 'mediumDate' }}</td>
+          <td>
+            <span class="status-dot" [class.active]="user.active"></span>
+            {{ user.active ? 'Active' : 'Inactive' }}
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button class="btn-icon edit" (click)="onEdit(user.userId)" title="Edit">
+                <i class="fa-solid fa-pen"></i>
+              </button>
+              <button class="btn-icon delete" (click)="onDelete(user.userId)" title="Delete">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Loading State -->
+        <tr *ngIf="loading">
+          <td colspan="5" class="text-center py-4">Loading data...</td>
+        </tr>
+
+        <!-- Empty State -->
+        <tr *ngIf="!loading && users.length === 0">
+          <td colspan="5" class="text-center py-4">No users found.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- PAGINATION -->
+    <div class="pagination">
+      <span class="page-info">
+        Showing {{ currentPage * pageSize + 1 }} - {{ (currentPage + 1) * pageSize }} of
+        {{ totalElements }}
+      </span>
+      <div class="page-controls">
+        <button [disabled]="currentPage === 0" (click)="onPageChange(currentPage - 1)">
+          Previous
+        </button>
+        <span class="current-page">{{ currentPage + 1 }}</span>
+        <button [disabled]="currentPage >= totalPages - 1" (click)="onPageChange(currentPage + 1)">
+          Next
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
