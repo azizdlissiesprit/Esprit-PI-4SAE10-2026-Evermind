@@ -21,7 +21,7 @@ export interface Alert {
   abnormalEventId: number; // FK
   typeAlerte: TypeAlerte;
   severite: Severite;
-  dateCreation: Date;
+  dateCreation: string;
   statut: StatutAlerte;
   message: string;
 }

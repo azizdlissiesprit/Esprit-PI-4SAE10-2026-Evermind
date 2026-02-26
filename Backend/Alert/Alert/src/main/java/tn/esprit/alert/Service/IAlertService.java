@@ -13,4 +13,5 @@ public interface IAlertService {
     public Alert updateStatus(Long alertId, StatutAlerte newStatus);
     public Alert ignoreAlert(Long alertId);
     public void removeAlert(Long alertId);
+    Alert updateAlert(Long id, Alert alert);
 }

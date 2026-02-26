@@ -65,6 +65,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             // Spring Security will decide later:
             // - If it's /verify, it will ALLOW it (permitAll).
             // - If it's /dashboard, it will BLOCK it (403).
+            System.out.println("JWT ERROR: " + e.getMessage()); // ADD THIS
             logger.warn("Invalid JWT Token on request: " + e.getMessage());
         }
 

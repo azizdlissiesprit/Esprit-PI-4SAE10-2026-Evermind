@@ -29,6 +29,17 @@ public class AlertServiceImpl implements IAlertService {
         alert.setStatut(newStatus);
         return alertRepository.save(alert);
     }
+    @Override
+    public Alert updateAlert(Long id, Alert updatedAlert) {
+        Alert existing = retrieveAlert(id);
+        // Update editable fields
+        existing.setMessage(updatedAlert.getMessage());
+        existing.setSeverite(updatedAlert.getSeverite());
+        existing.setTypeAlerte(updatedAlert.getTypeAlerte());
+        existing.setStatut(updatedAlert.getStatut());
+        // Don't update PatientID or DateCreation usually
+        return alertRepository.save(existing);
+    }
     public Alert resolveAlert(Long alertId) {
         return updateStatus(alertId, StatutAlerte.RESOLUE);
     }

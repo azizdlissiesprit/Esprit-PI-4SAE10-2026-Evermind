@@ -1,0 +1,87 @@
+<div class="page-container">
+    <div class="page-header">
+        <div>
+            <h1>Cognitive Assessments</h1>
+            <p>Track MMSE/MoCA scores and patient decline.</p>
+        </div>
+        <button class="btn-primary" routerLink="/admin/cognitive/add">
+    <i class="fa-solid fa-plus"></i> New Assessment
+</button>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-bar">
+        <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Search Patient ID..." [(ngModel)]="searchTerm" (input)="applyFilters()">
+        </div>
+
+        <select [(ngModel)]="selectedTrend" (change)="applyFilters()" class="filter-select">
+            <option value="ALL">All Trends</option>
+            <option *ngFor="let t of trends" [value]="t">{{ t }}</option>
+        </select>
+
+        <select [(ngModel)]="selectedType" (change)="applyFilters()" class="filter-select">
+            <option value="ALL">All Types</option>
+            <option *ngFor="let t of types" [value]="t">{{ t }}</option>
+        </select>
+    </div>
+
+    <!-- Table -->
+    <div class="table-card">
+        <table>
+            <thead>
+                <tr>
+                    <th>Patient ID</th>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>MMSE</th>
+                    <th>MoCA</th>
+                    <th>Trend</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of displayedAssessments">
+                    <td><strong>{{ item.patientId }}</strong></td>
+                    <td>{{ item.date }}</td>
+                    <td>{{ item.type }}</td>
+                    <td>{{ item.mmseScore }}/30</td>
+                    <td>{{ item.moocaScore }}/30</td>
+                    <td>
+                        <span class="role-badge" [ngClass]="getTrendClass(item.trend)">
+                            {{ item.trend }}
+                            <i *ngIf="item.trend === 'down'" class="fa-solid fa-arrow-trend-down"></i>
+                            <i *ngIf="item.trend === 'up'" class="fa-solid fa-arrow-trend-up"></i>
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+    <!-- Edit Button -->
+    <button class="btn-icon" [routerLink]="['/admin/cognitive/edit', item.id]">
+        <i class="fa-solid fa-pen"></i>
+    </button>
+    
+    <button class="btn-icon delete" (click)="item.id && onDelete(item.id)">
+        <i class="fa-solid fa-trash"></i>
+    </button>
+</div>
+                    </td>
+                </tr>
+                <tr *ngIf="displayedAssessments.length === 0 && !loading">
+                    <td colspan="7" class="text-center">No assessments found.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Pagination (Same as Alert) -->
+        <div class="pagination">
+            <span class="page-info">Total: {{ totalElements }}</span>
+            <div class="page-controls">
+                <button [disabled]="currentPage === 1" (click)="onPageChange(currentPage - 1)">Prev</button>
+                <span>{{ currentPage }} / {{ totalPages }}</span>
+                <button [disabled]="currentPage >= totalPages" (click)="onPageChange(currentPage + 1)">Next</button>
+            </div>
+        </div>
+    </div>
+</div>
