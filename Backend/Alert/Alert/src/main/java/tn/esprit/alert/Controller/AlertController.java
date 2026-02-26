@@ -31,6 +31,10 @@ public class AlertController {
         Alert alert = alertService.retrieveAlert(alertId);
         return alert;
     }
+    @PutMapping("/update-alert/{id}")
+    public Alert updateAlert(@PathVariable Long id, @RequestBody Alert alert) {
+        return alertService.updateAlert(id, alert);
+    }
     @PatchMapping("/take-charge/{id}")
     public Alert takeCharge(@PathVariable Long id) {
         return alertService.updateStatus(id, StatutAlerte.EN_COURS);

@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, Inject, PLATFORM_ID  } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
 
@@ -59,12 +59,24 @@ export class CaregiverDashboardComponent implements OnInit {
     }
   ];
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService, 
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object // <--- INJECT THIS
+  ) {}
 
-  ngOnInit() {
-    // ... existing login logic
-    const storedName = localStorage.getItem('user_name'); 
-    if (storedName) this.userName = storedName;
+    ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) {
+        // --- FIX: Use 'first_name' instead of 'user_name' ---
+        const firstName = localStorage.getItem('first_name');
+        const lastName = localStorage.getItem('last_name'); // Optional
+
+        if (firstName) {
+            // You can use just the first name, or combine them
+            this.userName = firstName; 
+            // Or: this.userName = `${firstName} ${lastName}`;
+        }
+    }
   }
 
   logout() {

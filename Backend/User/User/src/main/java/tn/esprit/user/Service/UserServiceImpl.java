@@ -30,6 +30,26 @@ public class UserServiceImpl implements IUserService{
         return userRepository.save(user);
     }
 
+    public User updateUser(Long id, User updatedUser) {
+        User existingUser = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+
+        existingUser.setFirstName(updatedUser.getFirstName());
+        existingUser.setLastName(updatedUser.getLastName());
+        existingUser.setEmail(updatedUser.getEmail());
+        existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
+        existingUser.setUserType(updatedUser.getUserType());
+
+        // Only update password if a new one is provided
+        if (updatedUser.getPasswordHash() != null && !updatedUser.getPasswordHash().isEmpty()) {
+            existingUser.setPasswordHash(passwordEncoder.encode(updatedUser.getPasswordHash()));
+        }
+
+        return userRepository.save(existingUser);
+    }
+
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+    }
 
     public void removeUser(Long userId){
         userRepository.deleteById(userId);

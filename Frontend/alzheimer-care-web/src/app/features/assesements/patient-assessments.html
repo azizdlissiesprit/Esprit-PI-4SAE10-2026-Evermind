@@ -1,0 +1,263 @@
+<div class="dashboard-wrapper">
+    
+    <!-- ============================================= -->
+    <!-- HEADER: Patient Context & Tabs                -->
+    <!-- ============================================= -->
+    <header class="module-header">
+        <div class="header-left">
+            <div class="patient-avatar-placeholder">
+                <i class="fa-solid fa-user-check"></i>
+            </div>
+            <div class="header-text">
+                <h1>Wellness Tracker</h1>
+                <p>Clinical Monitoring Dashboard</p>
+            </div>
+        </div>
+
+        <!-- PATIENT SELECTOR -->
+        <div class="patient-selector-wrapper">
+            <label>Viewing Patient ID:</label>
+            <div class="custom-select-container">
+                <i class="fa-solid fa-hospital-user"></i>
+                <select [(ngModel)]="selectedPatientId" (change)="onPatientChange()" [disabled]="isLoading">
+                    <option *ngFor="let p of availablePatients" [value]="p">
+                        {{ p }}
+                    </option>
+                    <option *ngIf="availablePatients.length === 0" disabled>No patients found</option>
+                </select>
+                <i class="fa-solid fa-chevron-down arrow"></i>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="tabs-pill-container">
+            <button class="tab-pill" 
+                    [class.active]="activeTab === 'COGNITIVE'" 
+                    (click)="activeTab = 'COGNITIVE'">
+                <div class="icon-circle"><i class="fa-solid fa-brain"></i></div>
+                <span>Cognitive</span>
+            </button>
+            <button class="tab-pill" 
+                    [class.active]="activeTab === 'AUTONOMY'" 
+                    (click)="activeTab = 'AUTONOMY'">
+                <div class="icon-circle"><i class="fa-solid fa-person-walking-with-cane"></i></div>
+                <span>Autonomy</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ============================================= -->
+    <!-- LOADING OVERLAY                               -->
+    <!-- ============================================= -->
+    <div *ngIf="isLoading" class="loading-overlay">
+        <div class="spinner"></div>
+        <p>Syncing clinical records...</p>
+    </div>
+
+    <!-- ============================================= -->
+    <!-- MAIN CONTENT AREA                             -->
+    <!-- ============================================= -->
+    <div class="content-area" *ngIf="!isLoading && selectedPatientId">
+        
+        <!-- ============================================= -->
+        <!-- TAB 1: COGNITIVE HEALTH                       -->
+        <!-- ============================================= -->
+        <div class="tab-view fade-in" *ngIf="activeTab === 'COGNITIVE'">
+            
+            <!-- EMPTY STATE: No Cognitive Data -->
+            <div class="empty-tab-state" *ngIf="cognitiveHistory.length === 0">
+                <i class="fa-solid fa-clipboard-question"></i>
+                <h3>No Cognitive Records</h3>
+                <p>There are no MMSE or MoCA assessments recorded for Patient #{{ selectedPatientId }}.</p>
+                <button class="btn-sm-outline">Schedule Assessment</button>
+            </div>
+
+            <!-- DATA VIEW -->
+            <div *ngIf="cognitiveHistory.length > 0">
+                <!-- Key Metrics Row -->
+                <div class="metric-cards-row">
+                    
+                    <!-- Card 1: MMSE Score -->
+                    <div class="metric-card primary-card">
+                        <div class="card-header">
+                            <span class="card-label">Latest MMSE Score</span>
+                            <i class="fa-solid fa-file-medical-alt icon-light"></i>
+                        </div>
+                        <div class="card-body">
+                            <div class="value-group">
+                                <span class="big-number">{{ cognitiveHistory[cognitiveHistory.length -1]?.mmseScore || '--' }}</span>
+                                <span class="scale">/ 30</span>
+                            </div>
+                            <div class="status-pill" [ngClass]="getCognitiveStatus(cognitiveHistory[cognitiveHistory.length -1]?.mmseScore || 0).color">
+                                <i class="fa-solid fa-circle"></i>
+                                {{ getCognitiveStatus(cognitiveHistory[cognitiveHistory.length -1]?.mmseScore || 0).label }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Clinical Trend -->
+                    <div class="metric-card">
+                        <div class="card-header">
+                            <span class="card-label">Evolution Trend</span>
+                            <i class="fa-solid fa-chart-line icon-light"></i>
+                        </div>
+                        <div class="card-body centered">
+                            <div class="trend-indicator" 
+                                [class.down]="cognitiveHistory[cognitiveHistory.length -1]?.trend === 'down'"
+                                [class.stable]="cognitiveHistory[cognitiveHistory.length -1]?.trend === 'stable'"
+                                [class.up]="cognitiveHistory[cognitiveHistory.length -1]?.trend === 'up'">
+                                
+                                <i class="fa-solid" 
+                                   [class.fa-arrow-trend-down]="cognitiveHistory[cognitiveHistory.length -1]?.trend === 'down'"
+                                   [class.fa-arrow-trend-up]="cognitiveHistory[cognitiveHistory.length -1]?.trend === 'up'"
+                                   [class.fa-minus]="cognitiveHistory[cognitiveHistory.length -1]?.trend === 'stable'">
+                                </i>
+                                <span>{{ cognitiveHistory[cognitiveHistory.length -1]?.trend || 'N/A' | titlecase }}</span>
+                            </div>
+                            <div class="sub-text">Compared to previous visit</div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: MoCA Score -->
+                    <div class="metric-card">
+                        <div class="card-header">
+                            <span class="card-label">MoCA Assessment</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="value-group">
+                                <span class="medium-number">{{ cognitiveHistory[cognitiveHistory.length -1]?.moocaScore || '--' }}</span>
+                                <span class="scale">/ 30</span>
+                            </div>
+                            <div class="date-badge">
+                                {{ cognitiveHistory[cognitiveHistory.length -1]?.date | date:'mediumDate' }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart & Clinical Notes -->
+                <div class="visual-grid">
+                    <div class="chart-container card-box">
+                        <div class="card-title-row">
+                            <h3>Cognitive Decline History</h3>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas baseChart
+                                [data]="lineChartData"
+                                [options]="lineChartOptions"
+                                [type]="lineChartType">
+                            </canvas>
+                        </div>
+                    </div>
+
+                    <div class="notes-container card-box">
+                        <h3><i class="fa-solid fa-user-doctor"></i> Clinical Observations</h3>
+                        <div class="paper-texture">
+                            <p class="note-text">
+                                "{{ cognitiveHistory[cognitiveHistory.length -1]?.observations || 'No clinical notes recorded.' }}"
+                            </p>
+                        </div>
+                        <div class="evaluator-info">
+                            <div class="doc-meta">
+                                <span class="doc-name">{{ cognitiveHistory[cognitiveHistory.length -1]?.evaluator || 'Unknown Evaluator' }}</span>
+                                <span class="doc-role">Medical Professional</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ============================================= -->
+        <!-- TAB 2: AUTONOMY                               -->
+        <!-- ============================================= -->
+        <div class="tab-view fade-in" *ngIf="activeTab === 'AUTONOMY'">
+            
+            <!-- EMPTY STATE: No Autonomy Data -->
+            <div class="empty-tab-state" *ngIf="!latestAutonomy">
+                <i class="fa-solid fa-person-walking-dashed-line-arrow-right"></i>
+                <h3>No Autonomy Profile</h3>
+                <p>ADL (Activities of Daily Living) have not been assessed for Patient #{{ selectedPatientId }}.</p>
+                <button class="btn-sm-outline">Request Evaluation</button>
+            </div>
+
+            <!-- DATA VIEW -->
+            <div class="autonomy-grid" *ngIf="latestAutonomy">
+                
+                <!-- Left: Radar Chart -->
+                <div class="radar-card card-box">
+                    <div class="card-title-row">
+                        <h3>ADL Profile</h3>
+                        <div class="score-badge">Score: {{ latestAutonomy?.totalScore || 0 }}/50</div>
+                    </div>
+                    
+                    <div class="radar-wrapper">
+                        <canvas baseChart
+                            [data]="radarChartData"
+                            [options]="radarChartOptions"
+                            [type]="radarChartType">
+                        </canvas>
+                    </div>
+
+                    <div class="radar-legend">
+                        <div class="legend-item"><span class="dot green"></span> Independent</div>
+                        <div class="legend-item"><span class="dot yellow"></span> Assisted</div>
+                        <div class="legend-item"><span class="dot red"></span> Dependent</div>
+                    </div>
+                </div>
+
+                <!-- Right: Insights -->
+                <div class="insights-column">
+                    
+                    <div class="insight-card card-box">
+                        <div class="insight-icon bg-blue">
+                            <i class="fa-solid fa-hands-holding-circle"></i>
+                        </div>
+                        <div class="insight-content">
+                            <h4>Assistance Required</h4>
+                            <span class="highlight-text">{{ latestAutonomy?.assistanceLevel || 'Not assessed' }}</span>
+                        </div>
+                    </div>
+
+                    <div class="insight-card card-box warning-bg" *ngIf="latestAutonomy && getAutonomyRisk(latestAutonomy.scores.mobility)">
+                        <div class="insight-icon bg-red">
+                            <i class="fa-solid fa-person-falling"></i>
+                        </div>
+                        <div class="insight-content">
+                            <h4 class="text-red">Fall Risk Detected</h4>
+                            <p>Mobility score is critically low. Enhanced supervision recommended.</p>
+                        </div>
+                    </div>
+
+                    <div class="device-recommendations card-box">
+                        <div class="rec-header">
+                            <h3><i class="fa-solid fa-microchip"></i> Recommended IoT</h3>
+                        </div>
+                        <p class="desc">Suggested configuration based on ADL profile:</p>
+                        
+                        <div class="device-chips">
+                            <div class="chip" *ngFor="let device of recommendedDevices">
+                                <i class="fa-solid fa-wifi"></i> {{ device }}
+                            </div>
+                            <div class="chip empty" *ngIf="recommendedDevices.length === 0">
+                                <i class="fa-regular fa-circle-check"></i> No specific devices required.
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ============================================= -->
+    <!-- GLOBAL EMPTY STATE (No Patients Found)        -->
+    <!-- ============================================= -->
+    <div class="empty-state" *ngIf="!isLoading && availablePatients.length === 0">
+        <i class="fa-solid fa-folder-open"></i>
+        <h3>No Clinical Records Found</h3>
+        <p>There are no assessments recorded in the system yet.</p>
+    </div>
+</div>

@@ -1,0 +1,39 @@
+
+<aside class="sidebar" [class.collapsed]="isCollapsed">
+    
+    <!-- Brand Header -->
+    <div class="brand">
+        <div class="logo-icon">
+            <i class="fa-solid fa-shield-heart"></i>
+        </div>
+        <!-- Hide title when collapsed -->
+        <h2 *ngIf="!isCollapsed" class="brand-text">EVERMIND<span class="dot">.</span></h2>
+        
+        <!-- Collapse Toggle Button -->
+        <button class="toggle-btn" (click)="toggleSidebar()">
+            <i class="fa-solid" [class.fa-chevron-left]="!isCollapsed" [class.fa-chevron-right]="isCollapsed"></i>
+        </button>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav-menu">
+        <ul>
+            <li *ngFor="let item of menuItems">
+                <a [routerLink]="item.route" routerLinkActive="active" class="nav-link" [title]="isCollapsed ? item.label : ''">
+                    <div class="icon-wrapper"><i [class]="item.icon"></i></div>
+                    <span class="link-text">{{ item.label }}</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- User Profile Footer -->
+    <div class="user-profile">
+        <img src="https://i.pravatar.cc/150?img=15" alt="Admin">
+        <div class="user-info">
+            <h4>Administrator</h4>
+            <p>System Admin</p>
+        </div>
+    </div>
+
+</aside>

@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: tn.esprit.cognitiveassessment.controller.CognitiveAssessmentControllerTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.746 s -- in tn.esprit.cognitiveassessment.controller.CognitiveAssessmentControllerTest
