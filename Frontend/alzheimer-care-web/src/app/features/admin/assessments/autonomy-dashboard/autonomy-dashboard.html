@@ -1,0 +1,223 @@
+<div class="autonomy-dashboard" *ngIf="patient$ | async as patient">
+  <!-- Header -->
+  <div class="header-card">
+    <div class="header-left">
+      <div class="avatar" [class.has-img]="patient.avatar">
+        <img *ngIf="patient.avatar" [src]="patient.avatar" [alt]="patient.name" />
+        <span *ngIf="!patient.avatar">{{ patient.name.slice(0, 2).toUpperCase() }}</span>
+      </div>
+      <div>
+        <h1 class="patient-name">{{ patient.name }}</h1>
+        <div class="patient-meta">Born {{ patient.birthDate }} ({{ patient.age }} years) · ID: #{{ patient.id }} · SSN: {{ patient.secuNumber }}</div>
+      </div>
+    </div>
+    <div class="header-badges">
+      <div class="badge-group">
+        <div class="badge-label">Status</div>
+        <span class="badge-pill pill-green">● Active</span>
+      </div>
+      <div class="badge-group">
+        <div class="badge-label">Alzheimer Stage</div>
+        <span class="badge-pill pill-orange">{{ patient.alzheimerStage }}</span>
+      </div>
+      <div class="badge-group">
+        <div class="badge-label">Risk Level</div>
+        <span class="badge-pill pill-red">⚠ {{ patient.riskLevel === 'high' ? 'High' : patient.riskLevel === 'medium' ? 'Medium' : 'Low' }}</span>
+      </div>
+      <div class="badge-group" *ngIf="latestAssessment$ | async as latest">
+        <div class="badge-label">Last Autonomy Assessment</div>
+        <div class="badge-date">{{ latest.date }}</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-ghost" (click)="exportPDF()">
+        <iconify-icon icon="lucide:download"></iconify-icon>
+        Export PDF
+      </button>
+      <button class="btn btn-ghost" (click)="printAssessment()">
+        <iconify-icon icon="lucide:printer"></iconify-icon>
+        Print
+      </button>
+      <button class="btn btn-primary" (click)="onEditRecord()">
+        <iconify-icon icon="lucide:edit-3"></iconify-icon>
+        Edit File
+      </button>
+    </div>
+  </div>
+
+  <!-- Alert -->
+  <div class="alert" *ngIf="showDeclineAlert && (latestAssessment$ | async) as latest">
+    <div class="alert-icon"><iconify-icon icon="lucide:alert-triangle"></iconify-icon></div>
+    <div class="alert-text">
+      <h4>Autonomy Decline Detected</h4>
+      <p>A regression has been recorded. The total score is {{ latest.totalScore }}/25 ({{ latest.trendPoints != null ? latest.trendPoints : 0 }} pts change). It is recommended to adjust home care aids.</p>
+    </div>
+    <button class="btn-review" (click)="onUpdateCarePlan()">Review Plan</button>
+  </div>
+
+  <!-- Metrics -->
+  <div class="metrics-row" *ngIf="latestAssessment$ | async as latest">
+    <div class="metric-card">
+      <div class="metric-icon icon-blue"><iconify-icon icon="lucide:accessibility"></iconify-icon></div>
+      <div>
+        <div class="metric-label">Autonomy Score</div>
+        <div class="metric-value">{{ latest.totalScore }}<span class="metric-max">/25</span></div>
+        <div class="metric-sub" *ngIf="latest.trendPoints != null">
+          <iconify-icon [icon]="getTrendIcon(latest.trend)"></iconify-icon>
+          {{ latest.trendPoints > 0 ? '+' : '' }}{{ latest.trendPoints }} pts
+        </div>
+      </div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon icon-amber"><iconify-icon icon="lucide:shield"></iconify-icon></div>
+      <div>
+        <div class="metric-label">Assistance Level</div>
+        <div class="metric-text">{{ latest.assistanceLevel }}</div>
+      </div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon icon-red"><iconify-icon icon="lucide:trending-down"></iconify-icon></div>
+      <div>
+        <div class="metric-label">Overall Trend</div>
+        <div class="metric-text metric-text-red">{{ latest.trend === 'down' ? 'Deterioration' : latest.trend === 'up' ? 'Improvement' : 'Stable' }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content grid: Profile + Care plan -->
+  <div class="content-grid">
+    <div class="section-card">
+      <div class="section-title"><iconify-icon icon="lucide:radar"></iconify-icon> Current Autonomy Profile</div>
+      <div class="radar-area" *ngIf="latestAssessment$ | async as latest">
+        <svg class="radar-svg" width="160" height="160" viewBox="0 0 160 160">
+          <polygon points="80,20 134,50 134,110 80,140 26,110 26,50" fill="none" stroke="var(--border)" stroke-width="1"/>
+          <polygon points="80,38 120,60 120,100 80,122 40,100 40,60" fill="none" stroke="var(--border)" stroke-width="1"/>
+          <polygon points="80,56 106,70 106,90 80,104 54,90 54,70" fill="none" stroke="var(--border)" stroke-width="1"/>
+          <line x1="80" y1="20" x2="80" y2="140" stroke="var(--border)" stroke-width="1"/>
+          <line x1="26" y1="50" x2="134" y2="110" stroke="var(--border)" stroke-width="1"/>
+          <line x1="134" y1="50" x2="26" y2="110" stroke="var(--border)" stroke-width="1"/>
+          <polygon [attr.points]="getRadarPoints(latest.scores)" fill="rgba(59,110,248,.15)" stroke="var(--primary)" stroke-width="2" stroke-linejoin="round"/>
+          <text x="80" y="13" text-anchor="middle" fill="var(--muted-foreground)" font-size="9">Hygiene ({{ latest.scores.hygiene }}/5)</text>
+          <text x="140" y="52" text-anchor="start" fill="var(--muted-foreground)" font-size="9">Feeding ({{ latest.scores.feeding }}/5)</text>
+          <text x="140" y="115" text-anchor="start" fill="var(--muted-foreground)" font-size="9">Dressing ({{ latest.scores.dressing }}/5)</text>
+          <text x="63" y="152" text-anchor="middle" fill="var(--muted-foreground)" font-size="9">Mobility ({{ latest.scores.mobility }}/5)</text>
+          <text x="22" y="65" text-anchor="end" fill="var(--muted-foreground)" font-size="9">Comm. ({{ latest.scores.communication }}/5)</text>
+        </svg>
+        <div class="skills-list">
+          <div class="skill-row" *ngIf="latestAssessment$ | async as a">
+            <div class="skill-header"><span>Personal Hygiene</span><span class="skill-score">{{ a.scores.hygiene }}/5</span></div>
+            <div class="skill-bar"><div class="skill-fill" [style.width.%]="(a.scores.hygiene/5)*100" [style.background-color]="getScoreColor(a.scores.hygiene,5)"></div></div>
+          </div>
+          <div class="skill-row" *ngIf="latestAssessment$ | async as a">
+            <div class="skill-header"><span>Feeding</span><span class="skill-score">{{ a.scores.feeding }}/5</span></div>
+            <div class="skill-bar"><div class="skill-fill" [style.width.%]="(a.scores.feeding/5)*100" [style.background-color]="getScoreColor(a.scores.feeding,5)"></div></div>
+          </div>
+          <div class="skill-row" *ngIf="latestAssessment$ | async as a">
+            <div class="skill-header"><span>Dressing</span><span class="skill-score">{{ a.scores.dressing }}/5</span></div>
+            <div class="skill-bar"><div class="skill-fill" [style.width.%]="(a.scores.dressing/5)*100" [style.background-color]="getScoreColor(a.scores.dressing,5)"></div></div>
+          </div>
+          <div class="skill-row" *ngIf="latestAssessment$ | async as a">
+            <div class="skill-header"><span>Mobility / Movement</span><span class="skill-score">{{ a.scores.mobility }}/5</span></div>
+            <div class="skill-bar"><div class="skill-fill" [style.width.%]="(a.scores.mobility/5)*100" [style.background-color]="getScoreColor(a.scores.mobility,5)"></div></div>
+          </div>
+          <div class="skill-row" *ngIf="latestAssessment$ | async as a">
+            <div class="skill-header"><span>Communication</span><span class="skill-score">{{ a.scores.communication }}/5</span></div>
+            <div class="skill-bar"><div class="skill-fill" [style.width.%]="(a.scores.communication/5)*100" [style.background-color]="getScoreColor(a.scores.communication,5)"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section-card">
+      <div class="section-title"><iconify-icon icon="lucide:clipboard-list"></iconify-icon> Care Plan</div>
+      <div class="plan-section-title">Evolution by Domain</div>
+      <div class="evol-tags" *ngIf="latestAssessment$ | async as a">
+        <span class="evol-tag" *ngFor="let ev of (a.evolutionByDomain || [])" [class.evol-tag-neutral]="ev.change === 0">
+          <iconify-icon icon="lucide:trending-down" *ngIf="ev.change < 0"></iconify-icon>
+          {{ ev.domain }} ({{ ev.change > 0 ? '+' : '' }}{{ ev.change }})
+        </span>
+        <span class="evol-tag evol-tag-neutral" *ngIf="!a.evolutionByDomain?.length">—</span>
+      </div>
+      <div class="plan-section-title">Recommended Assistive Devices</div>
+      <ul class="plan-list" *ngIf="latestAssessment$ | async as a">
+        <li *ngFor="let d of (a.recommendedDevices || [])">{{ d }}</li>
+        <li *ngIf="!a.recommendedDevices?.length" class="muted">None</li>
+      </ul>
+      <div class="plan-section-title">Caregiver Recommendations</div>
+      <ul class="plan-list" *ngIf="latestAssessment$ | async as a">
+        <li *ngFor="let r of (a.caregiverRecommendations || [])">{{ r }}</li>
+        <li *ngIf="!a.caregiverRecommendations?.length" class="muted">None</li>
+      </ul>
+      <button class="btn-update" (click)="onUpdateCarePlan()">Update Care Plan</button>
+    </div>
+  </div>
+
+  <!-- Evolution chart -->
+  <div class="chart-card" *ngIf="chartData$ | async as chartData">
+    <div class="chart-header">
+      <div class="section-title" style="margin:0"><iconify-icon icon="lucide:line-chart"></iconify-icon> Autonomy Score Evolution (Total / 25)</div>
+      <div class="chart-legend"><span class="legend-dot"></span> Total Score (Max 25)</div>
+    </div>
+    <svg width="100%" height="180" viewBox="0 0 800 180" preserveAspectRatio="xMidYMid meet">
+      <line x1="100" y1="20" x2="780" y2="20" stroke="var(--border)" stroke-width="1"/>
+      <line x1="100" y1="60" x2="780" y2="60" stroke="var(--border)" stroke-width="1"/>
+      <line x1="100" y1="100" x2="780" y2="100" stroke="var(--border)" stroke-width="1"/>
+      <line x1="100" y1="140" x2="780" y2="140" stroke="var(--border)" stroke-width="1"/>
+      <text x="90" y="24" text-anchor="end" fill="var(--muted-foreground)" font-size="11">25</text>
+      <text x="90" y="64" text-anchor="end" fill="var(--muted-foreground)" font-size="11">20</text>
+      <text x="90" y="104" text-anchor="end" fill="var(--muted-foreground)" font-size="11">15</text>
+      <text x="90" y="144" text-anchor="end" fill="var(--muted-foreground)" font-size="11">10</text>
+      <polyline *ngIf="getChartPolyline(chartData)" [attr.points]="getChartPolyline(chartData)" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <ng-container *ngFor="let d of getChartDates(chartData); let i = index">
+        <text [attr.x]="chartData.length > 1 ? 100 + i * (620 / (chartData.length - 1)) : 410" y="168" text-anchor="middle" fill="var(--muted-foreground)" font-size="11">{{ d }}</text>
+      </ng-container>
+    </svg>
+  </div>
+
+  <!-- History table -->
+  <div class="table-card">
+    <div class="table-header">
+      <div class="section-title" style="margin:0"><iconify-icon icon="lucide:history"></iconify-icon> Autonomy Assessment History</div>
+      <button class="btn btn-primary" (click)="onNewAssessment()">
+        <iconify-icon icon="lucide:plus"></iconify-icon>
+        New Assessment
+      </button>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Evaluator</th>
+          <th>Total Score</th>
+          <th>Hygiene</th>
+          <th>Dressing</th>
+          <th>Mobility</th>
+          <th>Trend</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let a of (assessments$ | async)">
+          <td>{{ a.date }}</td>
+          <td>{{ a.evaluator }}</td>
+          <td class="td-bold">{{ a.totalScore }}/25</td>
+          <td [class.td-red]="a.scores.hygiene <= 2">{{ a.scores.hygiene }}/5</td>
+          <td>{{ a.scores.dressing }}/5</td>
+          <td>{{ a.scores.mobility }}/5</td>
+          <td>
+            <span [class]="getTrendClass(a.trend)">
+              <iconify-icon [icon]="getTrendIcon(a.trend)"></iconify-icon>
+              {{ a.trendPoints != null ? (a.trendPoints > 0 ? '+' : '') + a.trendPoints + ' pts' : 'Ref.' }}
+            </span>
+          </td>
+          <td>
+            <div class="td-actions">
+              <button class="icon-btn" title="View" (click)="onViewAssessment(a.id)"><iconify-icon icon="lucide:eye"></iconify-icon></button>
+              <button class="icon-btn" title="Update autonomy" (click)="onEditAssessment(a.id)"><iconify-icon icon="lucide:pen"></iconify-icon></button>
+              <button class="icon-btn" title="Download PDF" (click)="onExportAssessmentPDF(a.id)"><iconify-icon icon="lucide:file-down"></iconify-icon></button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
