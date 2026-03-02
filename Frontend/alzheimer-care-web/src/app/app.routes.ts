@@ -86,6 +86,20 @@ export const routes: Routes = [
           ),
       },
       {
+        // Must include :patientId because your component checks route.snapshot.paramMap.get('patientId')
+        path: 'autonomy/dashboard/:patientId', 
+        loadComponent: () => 
+          // ⚠️ UPDATE THE PATH BELOW to match the actual location of your AutonomyDashboardComponent file
+          import('./features/admin/assessments/autonomy-dashboard/autonomy-dashboard').then((m) => m.AutonomyDashboardComponent),
+      },
+      {
+        // Must include :patientId because your component checks route.snapshot.paramMap.get('patientId')
+        path: 'cognitive/dashboard/:patientId', 
+        loadComponent: () => 
+          // ⚠️ UPDATE THE PATH BELOW to match the actual location of your CognitiveDashboardComponent file
+          import('./features/admin/assessments/cognitive-dashboard/cognitive-dashboard').then((m) => m.CognitiveAssessmentsComponent),
+      },
+      {
         path: 'autonomy',
         loadComponent: () => import('./features/admin/assessments/autonomy-list/autonomy-list').then((m) => m.AutonomyAdminListComponent),
       },
