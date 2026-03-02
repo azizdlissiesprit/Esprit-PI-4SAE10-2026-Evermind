@@ -5,8 +5,8 @@
             <p>Monitor ADL scores and independence levels.</p>
         </div>
         <button class="btn-primary" routerLink="/admin/autonomy/add">
-    <i class="fa-solid fa-plus"></i> New Assessment
-</button>
+            <i class="fa-solid fa-plus"></i> New Assessment
+        </button>
     </div>
 
     <!-- Filters -->
@@ -48,15 +48,21 @@
                     </td>
                     <td>
                         <div class="action-buttons">
-    <!-- Edit Button -->
-    <button class="btn-icon" [routerLink]="['/admin/autonomy/edit', item.id]">
-        <i class="fa-solid fa-pen"></i>
-    </button>
-    
-    <button class="btn-icon delete" (click)="item.id && onDelete(item.id)">
-        <i class="fa-solid fa-trash"></i>
-    </button>
-</div>
+                            <!-- NEW BUTTON: Dashboard -->
+                            <button class="btn-icon" [routerLink]="['/admin/autonomy/dashboard', item.patientId]" title="View Dashboard">
+                                <i class="fa-solid fa-chart-line"></i>
+                            </button>
+
+                            <!-- Edit Button -->
+                            <button class="btn-icon" [routerLink]="['/admin/autonomy/edit', item.id]">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            
+                            <!-- Delete Button -->
+                            <button class="btn-icon delete" (click)="item.id && onDelete(item.id)">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
                     </td>
                 </tr>
                 <tr *ngIf="displayedAssessments.length === 0 && !loading">
@@ -65,7 +71,7 @@
             </tbody>
         </table>
         
-        <!-- Pagination reused -->
+        <!-- Pagination -->
         <div class="pagination">
             <span class="page-info">Total: {{ totalElements }}</span>
             <div class="page-controls">

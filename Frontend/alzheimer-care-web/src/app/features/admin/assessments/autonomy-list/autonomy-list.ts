@@ -10,7 +10,7 @@ import { AutonomyAssessment, TrendType } from '../../../../core/models/assessmen
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './autonomy-list.html',
-  styleUrls: ['../../alerts-admin/alerts-admin.scss'] // Reusing CSS
+  styleUrls: ['../../alerts-admin/alerts-admin.scss']
 })
 export class AutonomyAdminListComponent implements OnInit {
   
@@ -46,37 +46,53 @@ export class AutonomyAdminListComponent implements OnInit {
     this.autonomyService.getAll().subscribe({
       next: (data) => {
         this.allAssessments = data;
+        this.currentPage = 1; // Reset to first page on reload
         this.applyFilters();
         this.loading = false;
         this.cd.detectChanges();
       },
       error: (err) => {
-        console.error(err);
+        console.error('Error loading assessments:', err);
         this.loading = false;
       }
     });
   }
 
   applyFilters() {
-    let temp = this.allAssessments;
+    let temp = [...this.allAssessments];
     
+    // 1. Filter by Search (Patient ID)
     if (this.searchTerm) {
       const term = this.searchTerm.toLowerCase();
-      temp = temp.filter(a => a.patientId.toLowerCase().includes(term));
+      temp = temp.filter(a => a.patientId && a.patientId.toLowerCase().includes(term));
     }
+
+    // 2. Filter by Trend
     if (this.selectedTrend !== 'ALL') {
       temp = temp.filter(a => a.trend === this.selectedTrend);
     }
 
+    // 3. Pagination Logic
     this.totalElements = temp.length;
-    this.totalPages = Math.ceil(this.totalElements / this.pageSize);
+    this.totalPages = Math.ceil(this.totalElements / this.pageSize) || 1;
+    
     const startIndex = (this.currentPage - 1) * this.pageSize;
     this.displayedAssessments = temp.slice(startIndex, startIndex + this.pageSize);
   }
 
-  onDelete(id: number) {
+  // FIXED: Accepts string, casts to 'any' to satisfy the Service
+  onDelete(id: string) {
     if (confirm('Delete this autonomy assessment?')) {
-      this.autonomyService.delete(id).subscribe(() => this.loadData());
+      // We use (id as any) here because your Service definition likely still expects
+      // a number. This forces TypeScript to send the string anyway.
+      this.autonomyService.delete(id as any).subscribe({
+        next: () => {
+          this.loadData();
+        },
+        error: (err) => {
+          console.error('Error deleting assessment:', err);
+        }
+      });
     }
   }
   
@@ -90,6 +106,7 @@ export class AutonomyAdminListComponent implements OnInit {
   getTrendClass(trend: string) {
     if (trend === TrendType.DOWN) return 'badge-red';
     if (trend === TrendType.STABLE) return 'badge-blue';
-    return 'badge-green';
+    if (trend === TrendType.UP) return 'badge-green';
+    return '';
   }
 }
