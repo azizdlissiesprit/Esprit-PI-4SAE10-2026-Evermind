@@ -1,0 +1,10 @@
+{
+  "name": "evermind",
+  "private": true,
+  "scripts": {
+    "start": "npm start --prefix Frontend/alzheimer-care-web",
+    "start:frontend": "npm start --prefix Frontend/alzheimer-care-web",
+    "build": "npm run build --prefix Frontend/alzheimer-care-web",
+    "install:frontend": "npm install --prefix Frontend/alzheimer-care-web"
+  }
+}

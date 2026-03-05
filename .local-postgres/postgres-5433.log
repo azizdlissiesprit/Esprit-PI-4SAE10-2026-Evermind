@@ -1,0 +1,403 @@
+2026-02-23 01:18:33.204 WAT [32424] LOG:  démarrage de PostgreSQL 17.8 on x86_64-windows, compiled by msvc-19.44.35222, 64-bit
+2026-02-23 01:18:33.210 WAT [32424] LOG:  en écoute sur IPv6, adresse « ::1 », port 5433
+2026-02-23 01:18:33.210 WAT [32424] LOG:  en écoute sur IPv4, adresse « 127.0.0.1 », port 5433
+2026-02-23 01:18:33.291 WAT [27576] LOG:  le système de bases de données a été arrêté à 2026-02-23 01:18:25 WAT
+2026-02-23 01:18:33.366 WAT [32424] LOG:  le système de bases de données est prêt pour accepter les connexions
+2026-02-23 01:18:49.888 WAT [29188] FATAL:  authentification par mot de passe échouée pour l'utilisateur  « postgres »
+2026-02-23 01:18:49.888 WAT [29188] DÉTAIL:  Connection matched file "c:/Users/MESSOUDI/Desktop/EverMind-main/.local-postgres/data/pg_hba.conf" line 117: "host    all             all             ::1/128                 scram-sha-256"
+2026-02-23 01:19:40.281 WAT [32424] LOG:  a reçu SIGHUP, rechargement des fichiers de configuration
+2026-02-23 01:19:55.944 WAT [15524] ERREUR:  identifiant entre guillemets non terminé sur ou près de « " User\; » au caractère 17
+2026-02-23 01:19:55.944 WAT [15524] INSTRUCTION :  CREATE DATABASE " User\;
+2026-02-23 01:20:34.627 WAT [32424] LOG:  a reçu SIGHUP, rechargement des fichiers de configuration
+2026-02-23 01:20:50.715 WAT [12132] FATAL:  authentification par mot de passe échouée pour l'utilisateur  « postgres »
+2026-02-23 01:20:50.715 WAT [12132] DÉTAIL:  Connection matched file "c:/Users/MESSOUDI/Desktop/EverMind-main/.local-postgres/data/pg_hba.conf" line 117: "host    all             all             ::1/128                 scram-sha-256"
+2026-02-23 01:21:08.410 WAT [17740] FATAL:  authentification par mot de passe échouée pour l'utilisateur  « postgres »
+2026-02-23 01:21:08.410 WAT [17740] DÉTAIL:  Connection matched file "c:/Users/MESSOUDI/Desktop/EverMind-main/.local-postgres/data/pg_hba.conf" line 115: "host    all             all             127.0.0.1/32            scram-sha-256"
+2026-02-23 01:22:20.682 WAT [32424] LOG:  a reçu SIGHUP, rechargement des fichiers de configuration
+2026-02-23 01:23:23.791 WAT [32424] LOG:  a reçu SIGHUP, rechargement des fichiers de configuration
+2026-02-23 01:23:28.989 WAT [11788] FATAL:  authentification par mot de passe échouée pour l'utilisateur  « postgres »
+2026-02-23 01:23:28.989 WAT [11788] DÉTAIL:  Connection matched file "c:/Users/MESSOUDI/Desktop/EverMind-main/.local-postgres/data/pg_hba.conf" line 115: "host    all             all             127.0.0.1/32            scram-sha-256"
+2026-02-23 01:23:33.801 WAT [13032] LOG:  début du checkpoint : time
+2026-02-23 01:23:38.038 WAT [856] FATAL:  authentification par mot de passe échouée pour l'utilisateur  « postgres »
+2026-02-23 01:23:38.038 WAT [856] DÉTAIL:  Connection matched file "c:/Users/MESSOUDI/Desktop/EverMind-main/.local-postgres/data/pg_hba.conf" line 115: "host    all             all             127.0.0.1/32            scram-sha-256"
+2026-02-23 01:28:05.019 WAT [13032] LOG:  checkpoint complete: wrote 4893 buffers (29.9%); 0 WAL file(s) added, 0 removed, 1 recycled; write=269.267 s, sync=1.927 s, total=271.220 s; sync files=1520, longest=0.009 s, average=0.002 s; distance=23276 kB, estimate=23276 kB; lsn=0/2D1B9E0, redo lsn=0/2C28D48
+2026-02-23 02:28:33.195 WAT [13032] LOG:  début du checkpoint : time
+2026-02-23 02:30:48.152 WAT [13032] LOG:  checkpoint complete: wrote 1238 buffers (7.6%); 0 WAL file(s) added, 0 removed, 1 recycled; write=134.378 s, sync=0.560 s, total=134.960 s; sync files=466, longest=0.011 s, average=0.002 s; distance=5514 kB, estimate=21499 kB; lsn=0/318B988, redo lsn=0/318B8F8
+2026-02-23 02:33:33.210 WAT [13032] LOG:  début du checkpoint : time
+2026-02-23 02:33:40.488 WAT [13032] LOG:  checkpoint complete: wrote 67 buffers (0.4%); 0 WAL file(s) added, 0 removed, 0 recycled; write=7.178 s, sync=0.087 s, total=7.279 s; sync files=56, longest=0.010 s, average=0.002 s; distance=262 kB, estimate=19376 kB; lsn=0/31CD4C8, redo lsn=0/31CD470
+2026-02-23 02:38:16.260 WAT [16320] ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « ukdwt7mqcvaqam3nb991q281wkt »
+2026-02-23 02:38:16.260 WAT [16320] DÉTAIL:  La clé « (module_id)=(1) » existe déjà.
+2026-02-23 02:38:16.260 WAT [16320] INSTRUCTION :  insert into quiz (module_id,seuil_reussite,titre) values ($1,$2,$3)
+	RETURNING *
+2026-02-23 02:38:33.507 WAT [13032] LOG:  début du checkpoint : time
+2026-02-23 02:38:36.478 WAT [13032] LOG:  checkpoint complete: wrote 27 buffers (0.2%); 0 WAL file(s) added, 0 removed, 0 recycled; write=2.804 s, sync=0.082 s, total=2.972 s; sync files=19, longest=0.014 s, average=0.005 s; distance=3 kB, estimate=17438 kB; lsn=0/31CE208, redo lsn=0/31CE178
+2026-02-23 21:00:33.197 WAT [13032] LOG:  début du checkpoint : time
+2026-02-23 21:00:33.730 WAT [13032] LOG:  checkpoint complete: wrote 5 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.484 s, sync=0.016 s, total=0.544 s; sync files=5, longest=0.007 s, average=0.003 s; distance=1 kB, estimate=15695 kB; lsn=0/31CE638, redo lsn=0/31CE5E0
+2026-02-23 21:01:31.065 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xcd 0xa1 dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:01:31.065 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:01:31.065 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:01:34.515 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xcd 0xa1 dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:01:34.515 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:01:34.515 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:01:35.094 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xcd 0xa1 dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:01:35.094 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:01:35.094 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:01:35.325 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xcd 0xa1 dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:01:35.325 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:01:35.325 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:01:35.776 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xcd 0xa1 dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:01:35.776 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:01:35.776 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:01:35.965 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xcd 0xa1 dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:01:35.965 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:01:35.965 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:01:36.358 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xcd 0xa1 dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:01:36.358 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:01:36.358 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:01:36.575 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xcd 0xa1 dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:01:36.575 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:01:36.575 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:01:36.947 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xcd 0xa1 dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:01:36.947 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:01:36.947 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:01:37.293 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xcd 0xa1 dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:01:37.293 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:01:37.293 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:01:37.619 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xcd 0xa1 dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:01:37.619 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:01:37.619 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:01:44.405 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xcd 0xa1 dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:01:44.405 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:01:44.405 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:01:44.843 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xcd 0xa1 dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:01:44.843 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:01:44.843 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:01:45.065 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xcd 0xa1 dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:01:45.065 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:01:45.065 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:02:43.651 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:02:43.651 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:02:43.651 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:02:44.612 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:02:44.612 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:02:44.612 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:02:45.105 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:02:45.105 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:02:45.105 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:02:45.290 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:02:45.290 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:02:45.290 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:02:45.486 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:02:45.486 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:02:45.486 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:02:45.713 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:02:45.713 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:02:45.713 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:02:45.945 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:02:45.945 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:02:45.945 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:02:46.132 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:02:46.132 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:02:46.132 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:02:46.363 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:02:46.363 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:02:46.363 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:02:46.591 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:02:46.591 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:02:46.591 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:04:07.121 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:04:07.121 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:04:07.121 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:04:07.970 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:04:07.970 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:04:07.970 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:04:08.134 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:04:08.134 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:04:08.134 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:04:08.359 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:04:08.359 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:04:08.359 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:04:08.610 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:04:08.610 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:04:08.610 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:04:08.935 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:04:08.935 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:04:08.935 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:04:09.238 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:04:09.238 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:04:09.238 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:04:09.533 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:04:09.533 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:04:09.533 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:04:09.773 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:04:09.773 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:04:09.773 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:05:33.199 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:05:33.199 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:05:33.199 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:05:33.730 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:05:33.730 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:05:33.730 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:05:33.743 WAT [13032] LOG:  début du checkpoint : time
+2026-02-23 21:05:33.948 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:05:33.948 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:05:33.948 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:05:34.112 WAT [13032] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.322 s, sync=0.013 s, total=0.370 s; sync files=4, longest=0.007 s, average=0.004 s; distance=1 kB, estimate=14125 kB; lsn=0/31CEB78, redo lsn=0/31CEB20
+2026-02-23 21:05:34.186 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:05:34.186 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:05:34.186 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:05:34.356 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:05:34.356 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:05:34.356 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:05:34.546 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:05:34.546 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:05:34.546 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:05:55.292 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:05:55.292 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:05:55.292 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:05:56.068 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:05:56.068 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:05:56.068 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:05:56.302 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:05:56.302 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:05:56.302 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:05:56.536 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:05:56.536 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:05:56.536 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:05:56.716 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:05:56.716 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:05:56.716 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:05:56.973 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:05:56.973 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:05:56.973 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:05:57.189 WAT [30808] ERREUR:  le caractère dont la séquence d'octets est 0xe2 0x80 0xaf dans l'encodage « UTF8 » n'a pas
+	d'équivalent dans l'encodage « WIN1252 »
+2026-02-23 21:05:57.189 WAT [30808] CONTEXTE :  paramètre de portail non nommé $2
+2026-02-23 21:05:57.189 WAT [30808] INSTRUCTION :  insert into programmes_formation (date_creation,description,theme,titre) values ($1,$2,$3,$4)
+	RETURNING *
+2026-02-23 21:10:33.119 WAT [13032] LOG:  début du checkpoint : time
+2026-02-23 21:10:33.567 WAT [13032] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.316 s, sync=0.106 s, total=0.448 s; sync files=4, longest=0.082 s, average=0.027 s; distance=2 kB, estimate=12713 kB; lsn=0/31CF6D0, redo lsn=0/31CF678
+2026-02-23 21:15:33.578 WAT [13032] LOG:  début du checkpoint : time
+2026-02-23 21:15:33.934 WAT [13032] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.319 s, sync=0.007 s, total=0.357 s; sync files=4, longest=0.002 s, average=0.002 s; distance=4 kB, estimate=11442 kB; lsn=0/31D07F8, redo lsn=0/31D07A0
+2026-02-23 21:17:30.579 WAT [30808] ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « ukdwt7mqcvaqam3nb991q281wkt »
+2026-02-23 21:17:30.579 WAT [30808] DÉTAIL:  La clé « (module_id)=(3) » existe déjà.
+2026-02-23 21:17:30.579 WAT [30808] INSTRUCTION :  insert into quiz (module_id,seuil_reussite,titre) values ($1,$2,$3)
+	RETURNING *
+2026-02-23 21:20:33.970 WAT [13032] LOG:  début du checkpoint : time
+2026-02-23 21:20:35.412 WAT [13032] LOG:  checkpoint complete: wrote 13 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.316 s, sync=0.025 s, total=1.443 s; sync files=13, longest=0.006 s, average=0.002 s; distance=6 kB, estimate=10298 kB; lsn=0/31D2390, redo lsn=0/31D2338
+2026-02-23 21:25:33.473 WAT [13032] LOG:  début du checkpoint : time
+2026-02-23 21:25:34.074 WAT [13032] LOG:  checkpoint complete: wrote 6 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.551 s, sync=0.021 s, total=0.601 s; sync files=6, longest=0.008 s, average=0.004 s; distance=2 kB, estimate=9269 kB; lsn=0/31D2BF8, redo lsn=0/31D2BA0
+2026-02-23 21:45:33.104 WAT [13032] LOG:  début du checkpoint : time
+2026-02-23 21:45:33.563 WAT [13032] LOG:  checkpoint complete: wrote 5 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.426 s, sync=0.022 s, total=0.460 s; sync files=5, longest=0.008 s, average=0.005 s; distance=1 kB, estimate=8342 kB; lsn=0/31D33F8, redo lsn=0/31D3368
+2026-02-23 22:07:26.874 WAT [23836] ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « ukdwt7mqcvaqam3nb991q281wkt »
+2026-02-23 22:07:26.874 WAT [23836] DÉTAIL:  La clé « (module_id)=(3) » existe déjà.
+2026-02-23 22:07:26.874 WAT [23836] INSTRUCTION :  insert into quiz (module_id,seuil_reussite,titre) values ($1,$2,$3)
+	RETURNING *
+2026-02-23 22:07:27.825 WAT [11540] ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « ukdwt7mqcvaqam3nb991q281wkt »
+2026-02-23 22:07:27.825 WAT [11540] DÉTAIL:  La clé « (module_id)=(3) » existe déjà.
+2026-02-23 22:07:27.825 WAT [11540] INSTRUCTION :  insert into quiz (module_id,seuil_reussite,titre) values ($1,$2,$3)
+	RETURNING *
+2026-02-23 22:07:28.654 WAT [33948] ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « ukdwt7mqcvaqam3nb991q281wkt »
+2026-02-23 22:07:28.654 WAT [33948] DÉTAIL:  La clé « (module_id)=(3) » existe déjà.
+2026-02-23 22:07:28.654 WAT [33948] INSTRUCTION :  insert into quiz (module_id,seuil_reussite,titre) values ($1,$2,$3)
+	RETURNING *
+2026-02-23 22:07:29.195 WAT [23836] ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « ukdwt7mqcvaqam3nb991q281wkt »
+2026-02-23 22:07:29.195 WAT [23836] DÉTAIL:  La clé « (module_id)=(3) » existe déjà.
+2026-02-23 22:07:29.195 WAT [23836] INSTRUCTION :  insert into quiz (module_id,seuil_reussite,titre) values ($1,$2,$3)
+	RETURNING *
+2026-02-23 22:07:29.593 WAT [11540] ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « ukdwt7mqcvaqam3nb991q281wkt »
+2026-02-23 22:07:29.593 WAT [11540] DÉTAIL:  La clé « (module_id)=(3) » existe déjà.
+2026-02-23 22:07:29.593 WAT [11540] INSTRUCTION :  insert into quiz (module_id,seuil_reussite,titre) values ($1,$2,$3)
+	RETURNING *
+2026-02-23 22:07:29.910 WAT [23836] ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « ukdwt7mqcvaqam3nb991q281wkt »
+2026-02-23 22:07:29.910 WAT [23836] DÉTAIL:  La clé « (module_id)=(3) » existe déjà.
+2026-02-23 22:07:29.910 WAT [23836] INSTRUCTION :  insert into quiz (module_id,seuil_reussite,titre) values ($1,$2,$3)
+	RETURNING *
+2026-02-23 22:07:32.892 WAT [11540] ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « ukdwt7mqcvaqam3nb991q281wkt »
+2026-02-23 22:07:32.892 WAT [11540] DÉTAIL:  La clé « (module_id)=(3) » existe déjà.
+2026-02-23 22:07:32.892 WAT [11540] INSTRUCTION :  insert into quiz (module_id,seuil_reussite,titre) values ($1,$2,$3)
+	RETURNING *
+2026-02-23 22:07:33.104 WAT [23836] ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « ukdwt7mqcvaqam3nb991q281wkt »
+2026-02-23 22:07:33.104 WAT [23836] DÉTAIL:  La clé « (module_id)=(3) » existe déjà.
+2026-02-23 22:07:33.104 WAT [23836] INSTRUCTION :  insert into quiz (module_id,seuil_reussite,titre) values ($1,$2,$3)
+	RETURNING *
+2026-02-23 22:07:33.269 WAT [33948] ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « ukdwt7mqcvaqam3nb991q281wkt »
+2026-02-23 22:07:33.269 WAT [33948] DÉTAIL:  La clé « (module_id)=(3) » existe déjà.
+2026-02-23 22:07:33.269 WAT [33948] INSTRUCTION :  insert into quiz (module_id,seuil_reussite,titre) values ($1,$2,$3)
+	RETURNING *
+2026-02-23 22:07:33.505 WAT [23836] ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « ukdwt7mqcvaqam3nb991q281wkt »
+2026-02-23 22:07:33.505 WAT [23836] DÉTAIL:  La clé « (module_id)=(3) » existe déjà.
+2026-02-23 22:07:33.505 WAT [23836] INSTRUCTION :  insert into quiz (module_id,seuil_reussite,titre) values ($1,$2,$3)
+	RETURNING *
+2026-02-23 22:07:33.759 WAT [11540] ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « ukdwt7mqcvaqam3nb991q281wkt »
+2026-02-23 22:07:33.759 WAT [11540] DÉTAIL:  La clé « (module_id)=(3) » existe déjà.
+2026-02-23 22:07:33.759 WAT [11540] INSTRUCTION :  insert into quiz (module_id,seuil_reussite,titre) values ($1,$2,$3)
+	RETURNING *
+2026-02-23 22:07:34.002 WAT [33948] ERREUR:  la valeur d'une clé dupliquée rompt la contrainte unique « ukdwt7mqcvaqam3nb991q281wkt »
+2026-02-23 22:07:34.002 WAT [33948] DÉTAIL:  La clé « (module_id)=(3) » existe déjà.
+2026-02-23 22:07:34.002 WAT [33948] INSTRUCTION :  insert into quiz (module_id,seuil_reussite,titre) values ($1,$2,$3)
+	RETURNING *
+2026-02-23 22:10:33.604 WAT [13032] LOG:  début du checkpoint : time
+2026-02-23 22:10:35.582 WAT [13032] LOG:  checkpoint complete: wrote 19 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.937 s, sync=0.027 s, total=1.979 s; sync files=15, longest=0.006 s, average=0.002 s; distance=10 kB, estimate=7509 kB; lsn=0/31D5F20, redo lsn=0/31D5E90
+2026-02-23 22:38:01.546 WAT [22320] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:38:01.553 WAT [28356] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:38:01.560 WAT [28900] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:38:01.560 WAT [31004] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:38:01.560 WAT [15668] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:38:01.561 WAT [19708] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:38:01.565 WAT [33584] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:38:01.566 WAT [22944] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:38:01.566 WAT [30612] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:38:01.574 WAT [22260] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:38:50.573 WAT [2508] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:38:50.578 WAT [26756] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:38:50.583 WAT [16348] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:38:50.583 WAT [22340] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:38:50.585 WAT [3804] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:38:50.588 WAT [12104] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:38:50.588 WAT [21856] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:38:50.592 WAT [10612] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:38:50.594 WAT [33400] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:38:50.597 WAT [24548] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:38:53.597 WAT [6608] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:38:53.597 WAT [5004] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:38:53.601 WAT [17484] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:38:53.602 WAT [21816] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:38:53.602 WAT [16340] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:38:53.602 WAT [15444] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:38:53.603 WAT [34708] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:38:53.604 WAT [26820] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:38:53.605 WAT [21136] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:38:53.605 WAT [28812] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:06.705 WAT [11316] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:06.712 WAT [28560] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:06.714 WAT [6092] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:06.721 WAT [16520] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:06.726 WAT [15636] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:06.726 WAT [34752] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:06.730 WAT [6332] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:06.734 WAT [17600] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:06.736 WAT [27752] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:06.736 WAT [28528] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:09.971 WAT [4704] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:09.973 WAT [8384] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:09.974 WAT [12580] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:09.975 WAT [33116] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:09.978 WAT [35064] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:09.979 WAT [6052] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:09.979 WAT [12940] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:09.980 WAT [26888] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:09.982 WAT [908] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:09.982 WAT [13224] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:13.348 WAT [35132] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:13.349 WAT [33560] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:13.352 WAT [4768] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:13.352 WAT [12840] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:13.353 WAT [34224] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:13.355 WAT [16004] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:13.357 WAT [29796] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:13.358 WAT [17840] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:13.358 WAT [35752] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:13.358 WAT [21284] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:35.842 WAT [20404] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:35.845 WAT [17816] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:35.848 WAT [21488] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:35.850 WAT [17732] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:35.858 WAT [33696] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:35.866 WAT [23992] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:35.870 WAT [24796] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:35.870 WAT [32224] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:35.871 WAT [32660] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-23 22:39:35.872 WAT [24160] LOG:  n'a pas pu recevoir les données du client : unrecognized winsock error 10054
+2026-02-24 02:35:21.267 WAT [13032] LOG:  début du checkpoint : time
+2026-02-24 02:35:21.648 WAT [13032] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.335 s, sync=0.014 s, total=0.393 s; sync files=4, longest=0.007 s, average=0.004 s; distance=1 kB, estimate=6758 kB; lsn=0/31D64E8, redo lsn=0/31D6490
