@@ -19,4 +19,8 @@ public class TableauDeBordDTO {
     private BigDecimal valeurTotaleStock;
     private List<CategorieDTO> dernieresCategories;
     private List<ProduitDTO> derniersProduits;
+    private long totalCommandes;
+    private long commandesEnAttente;
+    private BigDecimal chiffreAffaires;
+    private List<CommandeDTO> dernieresCommandes;
 }

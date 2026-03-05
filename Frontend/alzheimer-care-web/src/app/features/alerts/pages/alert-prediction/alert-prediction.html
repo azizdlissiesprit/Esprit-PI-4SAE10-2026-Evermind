@@ -1,0 +1,42 @@
+<div class="page-container">
+    <header class="header">
+        <h1><i class="fa-solid fa-brain"></i> AI Predictive Analytics</h1>
+        <p>Forecasting future incident probability based on historical alert frequency.</p>
+    </header>
+
+    <div class="dashboard-grid">
+        
+        <!-- LIST OF AT-RISK PATIENTS -->
+        <div class="risk-list-card">
+            <h3>At-Risk Patients (Real-time)</h3>
+            
+            <div *ngIf="isLoading" class="loading"><i class="fa-solid fa-spinner fa-spin"></i> Analyzing trends...</div>
+
+            <div class="risk-item" *ngFor="let p of atRiskPatients" [ngClass]="p.statusColor">
+                <div class="risk-info">
+                    <h4>Patient #{{ p.patientId }}</h4>
+                    <span class="badge" [class]="p.statusColor">{{ p.stabilitySlope | number:'1.1-2' }} Trend</span>
+                </div>
+                <p class="analysis-text">{{ p.analysis }}</p>
+                <div class="progress-bar">
+                    <!-- Visual representation of risk -->
+                    <div class="fill" [style.width.%]="p.stabilitySlope < 0 ? 90 : 20"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHART -->
+        <div class="chart-card">
+            <h3>Stability Trend Visualization</h3>
+            <p class="chart-desc">Negative slope (Red line) indicates shrinking gaps between incidents = <strong>Imminent Risk</strong>.</p>
+            <div class="chart-wrapper">
+                <canvas baseChart
+                    [data]="scatterChartData"
+                    [options]="scatterChartOptions"
+                    [type]="'scatter'">
+                </canvas>
+            </div>
+        </div>
+
+    </div>
+</div>

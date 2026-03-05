@@ -5,10 +5,14 @@ import com.alzheimer.stock.entite.Categorie;
 import com.alzheimer.stock.entite.Produit;
 import com.alzheimer.stock.exception.ResourceIntrouvableException;
 import com.alzheimer.stock.repository.CategorieRepository;
+import com.alzheimer.stock.repository.LigneCommandeRepository;
+import com.alzheimer.stock.repository.LignePanierRepository;
 import com.alzheimer.stock.repository.ProduitRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,6 +24,9 @@ public class ProduitServiceImpl implements ProduitService {
 
     private final ProduitRepository produitRepository;
     private final CategorieRepository categorieRepository;
+    private final LignePanierRepository lignePanierRepository;
+    private final LigneCommandeRepository ligneCommandeRepository;
+    private final FichierStorageService fichierStorageService;
 
     @Override
     @Transactional(readOnly = true)
@@ -57,6 +64,7 @@ public class ProduitServiceImpl implements ProduitService {
                 .description(produitDTO.getDescription())
                 .prix(produitDTO.getPrix())
                 .quantite(produitDTO.getQuantite())
+                .imageUrl(produitDTO.getImageUrl())
                 .categorie(categorie)
                 .build();
 
@@ -76,6 +84,7 @@ public class ProduitServiceImpl implements ProduitService {
         produit.setDescription(produitDTO.getDescription());
         produit.setPrix(produitDTO.getPrix());
         produit.setQuantite(produitDTO.getQuantite());
+        produit.setImageUrl(produitDTO.getImageUrl());
         produit.setCategorie(categorie);
 
         Produit modifie = produitRepository.save(produit);
@@ -86,7 +95,53 @@ public class ProduitServiceImpl implements ProduitService {
     public void supprimerProduit(Long id) {
         Produit produit = produitRepository.findById(id)
                 .orElseThrow(() -> new ResourceIntrouvableException("Produit", "id", id));
+        // Delete image file from disk
+        supprimerFichierImage(produit.getImageUrl());
+        // Nullify order line references (preserve order history, just unlink product)
+        ligneCommandeRepository.nullifyProduitReference(id);
+        // Remove from all carts before deleting
+        lignePanierRepository.deleteByProduitId(id);
         produitRepository.delete(produit);
+    }
+
+    @Override
+    public ProduitDTO uploaderImage(Long id, MultipartFile fichier) {
+        Produit produit = produitRepository.findById(id)
+                .orElseThrow(() -> new ResourceIntrouvableException("Produit", "id", id));
+
+        // Delete old file if exists
+        supprimerFichierImage(produit.getImageUrl());
+
+        // Save new file
+        String nomFichier = fichierStorageService.sauvegarder(fichier);
+
+        // Build full URL
+        String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/uploads/")
+                .path(nomFichier)
+                .toUriString();
+
+        produit.setImageUrl(imageUrl);
+        Produit sauvegarde = produitRepository.save(produit);
+        return convertirEnDTO(sauvegarde);
+    }
+
+    @Override
+    public ProduitDTO supprimerImage(Long id) {
+        Produit produit = produitRepository.findById(id)
+                .orElseThrow(() -> new ResourceIntrouvableException("Produit", "id", id));
+
+        supprimerFichierImage(produit.getImageUrl());
+        produit.setImageUrl(null);
+        Produit sauvegarde = produitRepository.save(produit);
+        return convertirEnDTO(sauvegarde);
+    }
+
+    private void supprimerFichierImage(String imageUrl) {
+        if (imageUrl != null && imageUrl.contains("/uploads/")) {
+            String nomFichier = imageUrl.substring(imageUrl.lastIndexOf("/uploads/") + "/uploads/".length());
+            fichierStorageService.supprimer(nomFichier);
+        }
     }
 
     private ProduitDTO convertirEnDTO(Produit produit) {
@@ -96,6 +151,7 @@ public class ProduitServiceImpl implements ProduitService {
                 .description(produit.getDescription())
                 .prix(produit.getPrix())
                 .quantite(produit.getQuantite())
+                .imageUrl(produit.getImageUrl())
                 .categorieId(produit.getCategorie().getId())
                 .categorieNom(produit.getCategorie().getNom())
                 .dateCreation(produit.getDateCreation())

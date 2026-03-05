@@ -6,9 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.alert.Entity.Alert;
 import tn.esprit.alert.Entity.StatutAlerte;
+import tn.esprit.alert.Repository.AlertRepository;
 import tn.esprit.alert.Service.IAlertService;
+import tn.esprit.alert.Service.PredictiveAnalysisService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -16,6 +20,10 @@ import java.util.List;
 public class AlertController {
     @Autowired
     IAlertService alertService;
+    @Autowired
+    PredictiveAnalysisService predictiveService;
+    @Autowired
+    AlertRepository alertRepository; // Or Service
     @GetMapping("/retrieve-all-alerts")
     List<Alert> getAlerts() {
         List<Alert> alert = alertService.retrieveAllAlerts();
@@ -50,5 +58,20 @@ public class AlertController {
     @DeleteMapping("/remove-alert/{alert-id}")
     public void removeAlert(@PathVariable("alert-id") Long alertId) {
         alertService.removeAlert(alertId);
+    }
+    @GetMapping("/predict/patient/{id}")
+    public Map<String, Object> predictStability(@PathVariable Long id) {
+        List<Alert> history = alertRepository.findTop10ByPatientIdOrderByDateCreationDesc(id);
+
+        double slope = predictiveService.calculateStabilitySlope(history);
+        String interpretation = predictiveService.interpretTrend(slope);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("patientId", id);
+        result.put("stabilitySlope", slope);
+        result.put("analysis", interpretation);
+        result.put("sampleSize", history.size());
+
+        return result;
     }
 }

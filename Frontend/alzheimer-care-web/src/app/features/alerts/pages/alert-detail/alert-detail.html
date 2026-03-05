@@ -1,235 +1,145 @@
-<p>alert-detail works!</p>
-<div class="page-container">
+<div class="page-container" *ngIf="!isLoading && alert; else loadingState">
     
     <!-- HEADER -->
     <header class="top-header">
         <div class="breadcrumbs">
-            Dashboard &gt; <a routerLink="/app/alerts">Alerts</a> &gt; <span>Alert ID #{{ alertId || '9204' }}</span>
+            <button class="back-btn" (click)="goBack()">
+                <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+            </button>
+            <span class="divider">/</span>
+            <span>Alert ID #{{ alert.alertId }}</span>
         </div>
         
         <div class="header-actions">
-            <div class="monitoring-pill">
-                Monitoring: Eleanor Stewart <i class="fa-solid fa-chevron-down"></i>
+            <!-- Dynamic Status Badge at Header -->
+            <div class="status-indicator" [ngClass]="alert.statut.toLowerCase()">
+                Status: {{ alert.statut }}
             </div>
-            <div class="icon-btn">
-                <i class="fa-regular fa-bell"></i>
-            </div>
+            
             <div class="care-team-avatars">
-                <img src="https://i.pravatar.cc/150?img=5" alt="Doc">
-                <img src="https://i.pravatar.cc/150?img=11" alt="Nurse">
-                <span class="care-team-label">Care team online</span>
+                <img src="https://i.pravatar.cc/150?img=5" alt="Doc" title="Dr. Sarah Smith">
+                <img src="https://i.pravatar.cc/150?img=11" alt="Nurse" title="Nurse Joy">
+                <span class="care-team-label">2 online</span>
             </div>
-            <img src="https://i.pravatar.cc/150?img=68" class="user-profile" alt="User">
         </div>
     </header>
 
     <!-- ALERT BANNER -->
-    <div class="alert-banner">
+    <div class="alert-banner" [ngClass]="getSeverityBadgeClass(alert.severite)">
         <div class="banner-left">
-            <span class="alert-badge">Active Alert</span>
-            <span class="banner-text">Type: Fall detected in living room &bull; Duration: 00:04:12</span>
+            <span class="alert-badge">{{ alert.severite }} SEVERITY</span>
+            <span class="banner-text">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                Type: <strong>{{ alert.typeAlerte }}</strong> &bull; {{ alert.message }}
+            </span>
         </div>
         <div class="banner-right">
-            Auto-escalating to Emergency Services in <span class="countdown">01:48</span> if not acknowledged.
+            Generated: <span>{{ alert.dateCreation | date:'medium' }}</span>
         </div>
     </div>
 
-    <!-- MAIN GRID -->
+    <!-- MAIN DASHBOARD -->
     <div class="dashboard-grid">
 
-        <!-- LEFT PANEL: PATIENT CONTEXT -->
+        <!-- LEFT PANEL: CONTEXT -->
         <div class="panel panel-left">
             <div class="panel-header">
-                <h2 class="panel-title">Patient context</h2>
-                <span class="panel-meta">ID #{{ alertId || '9204' }}</span>
+                <h2 class="panel-title">Context & Patient</h2>
             </div>
 
             <div class="patient-profile">
-                <img src="https://i.pravatar.cc/150?img=10" class="patient-avatar-lg" alt="Eleanor">
+                <!-- Using patient ID for consistent avatar -->
+                <img [src]="'https://i.pravatar.cc/150?u=' + alert.patientId" class="patient-avatar-lg" alt="Patient">
                 <div class="patient-info">
-                    <h3>Eleanor Stewart</h3>
-                    <p>Age 78 &bull; Blood type O+ &bull; Room 204</p>
+                    <h3>Patient #{{ alert.patientId }}</h3>
+                    <p>Monitored Profile</p>
                 </div>
             </div>
 
             <div class="location-card">
                 <div class="loc-text">
-                    <h4>Current location</h4>
-                    <p>Living room &bull; Home sensor network</p>
+                    <h4>Source Event ID</h4>
+                    <p>#{{ alert.abnormalEventId || 'N/A' }}</p>
                 </div>
-                <div class="loc-map-placeholder"></div>
-            </div>
-
-            <h4 class="vitals-title">Live vitals</h4>
-            <div class="vitals-grid">
-                <div class="vital-item">
-                    <span class="vital-label">Heart rate</span>
-                    <div class="vital-value">110 <span class="trend-badge">Rising</span></div>
-                    <span class="vital-unit">bpm</span>
-                </div>
-                <div class="vital-item">
-                    <span class="vital-label">O₂ saturation</span>
-                    <div class="vital-value">96% <span class="trend-badge">Stable</span></div>
-                    <span class="vital-unit"></span>
-                </div>
-                <div class="vital-item">
-                    <span class="vital-label">Device battery</span>
-                    <div class="vital-value">Watch <span class="trend-badge">Low</span></div>
-                    <span class="vital-unit">12%</span>
-                </div>
-                <div class="vital-item">
-                    <span class="vital-label">Fall severity index</span>
-                    <div class="vital-value">0.82 <span class="trend-badge">High impact</span></div>
+                <div class="loc-icon">
+                    <i class="fa-solid fa-satellite-dish"></i>
                 </div>
             </div>
 
-            <h4 class="vitals-title">Care team</h4>
-            <div class="care-team-list">
-                <div class="care-member">
-                    <img src="https://i.pravatar.cc/150?img=5" class="care-avatar" alt="Dr">
-                    <div class="care-details">
-                        <h5>Dr. Sarah Smith</h5>
-                        <p>Neurologist</p>
-                    </div>
-                    <div class="status-dot dot-green"></div>
+            <div class="quick-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Alert Sent</span>
+                    <span class="stat-val">{{ alert.dateCreation | date:'shortTime' }}</span>
                 </div>
-                <div class="care-member">
-                    <img src="https://i.pravatar.cc/150?img=12" class="care-avatar" alt="Nurse">
-                    <div class="care-details">
-                        <h5>Nurse Joy Carter</h5>
-                        <p>Primary caregiver</p>
-                    </div>
-                    <div class="status-dot dot-green"></div>
-                </div>
-                <div class="care-member">
-                    <img src="https://i.pravatar.cc/150?img=24" class="care-avatar" alt="Daughter">
-                    <div class="care-details">
-                        <h5>Daughter Alice</h5>
-                        <p>Family contact</p>
-                    </div>
-                    <div class="status-dot dot-grey"></div>
+                <div class="stat-item">
+                    <span class="stat-label">Facility</span>
+                    <span class="stat-val">Primary Ward</span>
                 </div>
             </div>
         </div>
 
-        <!-- CENTER PANEL: EVENT EVIDENCE -->
+        <!-- CENTER PANEL: ACTIONS & RESOLUTION -->
         <div class="panel panel-center">
             <div class="panel-header">
-                <h2 class="panel-title">Event evidence</h2>
-                <span class="panel-meta">Camera 2 &bull; Wearable band</span>
+                <h2 class="panel-title">Action Center</h2>
+                <span class="panel-meta">Follow protocol</span>
             </div>
 
-            <div class="evidence-tabs-row">
-                <div class="evidence-tabs">
-                    <div class="tab active">Replay event</div>
-                    <div class="tab">Live feed</div>
-                </div>
-                <span class="evidence-meta">Fall detected at 08:42:03 &bull; HR spike at 08:42:10</span>
-            </div>
-
-            <div class="video-container">
-                <!-- Placeholder for video content -->
-                <div class="timeline-wrapper">
-                    <div class="timeline-labels">
-                        <span>00:00</span>
-                        <span>00:20</span>
-                    </div>
-                    <div class="timeline-track">
-                        <div class="timeline-marker marker-red"></div>
-                        <div class="timeline-marker marker-blue"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="timeline-legend">
-                <div class="legend-item"><span style="color: #EF4444;">Red marker:</span> fall impact</div>
-                <div class="legend-item"><span style="color: #4E80EE;">Blue marker:</span> accelerometer + HR spike</div>
-            </div>
-
-            <div class="action-buttons-grid">
-                <button class="btn-emergency">Call 911 / Emergency services</button>
-                <div class="action-note">Long-press or confirm to avoid accidental emergency calls.</div>
-                <button class="btn-primary-contact">Call primary contact (Alice)</button>
-                <button class="btn-outline">Broadcast voice message</button>
-            </div>
-
-            <div class="sync-box">
-                <div class="sync-label">Sensor synchronization</div>
-                <div class="sync-bar-bg">
-                    <div class="sync-fill"></div>
-                </div>
-                <div class="sync-desc">Video timestamp aligned with accelerometer spike and heart rate increase.</div>
-            </div>
-        </div>
-
-        <!-- RIGHT PANEL: HISTORY & RESOLUTION -->
-        <div class="panel panel-right">
-            <div class="panel-header">
-                <h2 class="panel-title">Incident history & resolution</h2>
-            </div>
-
-            <div class="history-list">
-                <div class="history-item active">
-                    <div class="hist-time">08:00 &bull; Wandering - Garden exit</div>
-                    <div class="hist-desc">Resolved by Nurse Joy &bull; Active for 13 min</div>
-                </div>
-                <div class="history-item">
-                    <div class="hist-time">Yesterday &bull; Missed medication reminder</div>
-                    <div class="hist-desc">Marked as mild &bull; Resolved in 08 min</div>
-                </div>
-                <div class="history-item">
-                    <div class="hist-time">Last week &bull; Night-time bed exit</div>
-                    <div class="hist-desc">Reviewed and logged as false alarm</div>
+            <div class="action-status-box">
+                <div class="alert-current-state">
+                    <h4>Current Status: <span [ngClass]="alert.statut.toLowerCase()">{{ alert.statut }}</span></h4>
+                    <p *ngIf="alert.statut === 'NOUVELLE'">This alert requires immediate acknowledgement.</p>
+                    <p *ngIf="alert.statut === 'EN_COURS'">An intervention is currently in progress.</p>
+                    <p *ngIf="alert.statut === 'RESOLUE'">This incident has been resolved and archived.</p>
+                    <p *ngIf="alert.statut === 'IGNOREE'">This incident was marked as ignored/false alarm.</p>
                 </div>
             </div>
 
-            <div class="take-charge-box">
-                <p class="tc-text">Resolution is locked until a clinician takes charge of this alert.</p>
-                <button class="btn-take-charge">Take charge</button>
+            <!-- Contextual Action Buttons -->
+            <div class="primary-actions-grid">
+                
+                <button class="btn btn-primary" 
+                    (click)="takeCharge()" 
+                    *ngIf="alert.statut === 'NOUVELLE'"
+                >
+                    <i class="fa-solid fa-hand-holding-medical"></i>
+                    Acknowledge & Take Charge
+                </button>
+
+                <button class="btn btn-success" 
+                    (click)="resolveAlert()" 
+                    *ngIf="alert.statut === 'EN_COURS'"
+                >
+                    <i class="fa-solid fa-check-circle"></i>
+                    Mark as Resolved
+                </button>
+
+                <button class="btn btn-outline-danger" 
+                    (click)="ignoreAlert()" 
+                    *ngIf="alert.statut === 'NOUVELLE' || alert.statut === 'EN_COURS'"
+                >
+                    <i class="fa-solid fa-ban"></i>
+                    Ignore (False Alarm)
+                </button>
+
             </div>
 
-            <div class="form-group">
-                <label class="form-label">Classification</label>
-                <select class="custom-select">
-                    <option>Real emergency</option>
-                    <option>False Alarm</option>
-                    <option>Test</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Observation</label>
-                <div class="chips-container">
-                    <div class="chip">Patient conscious</div>
-                    <div class="chip">Bleeding observed</div>
-                    <div class="chip">Confused / disoriented</div>
-                    <div class="chip">Complains of pain</div>
+            <!-- Event Details Text -->
+            <div class="event-details-section">
+                <h4 class="section-subtitle">System Message</h4>
+                <div class="message-box">
+                    {{ alert.message || 'No additional system message provided by the trigger.' }}
                 </div>
             </div>
 
-            <div class="form-group">
-                <label class="form-label">Action taken</label>
-                <div class="chips-container">
-                    <div class="chip">Called family</div>
-                    <div class="chip">Assisted to chair</div>
-                    <div class="chip">Called ambulance</div>
-                    <div class="chip">Updated care plan</div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Conclusion / notes</label>
-                <textarea class="notes-area" rows="3" placeholder="Add clinical notes and handover instructions..."></textarea>
-            </div>
-
-            <div class="ml-toggle-row">
-                <div class="toggle-switch"></div>
-                <span class="toggle-label">Flag as false positive for system improvement</span>
-            </div>
-
-            <button class="btn-resolve">Mark as resolved & archive</button>
-            <div class="resolve-hint">Button becomes active once mandatory fields are completed.</div>
         </div>
 
     </div>
 </div>
+
+<ng-template #loadingState>
+    <div class="loading-container">
+        <div class="spinner"></div>
+        <p>Loading alert details...</p>
+    </div>
+</ng-template>

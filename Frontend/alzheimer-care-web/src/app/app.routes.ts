@@ -103,6 +103,47 @@ export const routes: Routes = [
         path: 'autonomy',
         loadComponent: () => import('./features/admin/assessments/autonomy-list/autonomy-list').then((m) => m.AutonomyAdminListComponent),
       },
+      // --- STOCK MANAGEMENT BACK OFFICE ---
+      {
+        path: 'stock/dashboard',
+        loadComponent: () => import('./features/admin/stock-admin/tableau-de-bord/tableau-de-bord.component').then(m => m.TableauDeBordComponent)
+      },
+      {
+        path: 'stock/categories',
+        loadComponent: () => import('./features/admin/stock-admin/categorie/liste-categories/liste-categories.component').then(m => m.ListeCategoriesComponent)
+      },
+      {
+        path: 'stock/categories/ajouter',
+        loadComponent: () => import('./features/admin/stock-admin/categorie/formulaire-categorie/formulaire-categorie.component').then(m => m.FormulaireCategorieComponent)
+      },
+      {
+        path: 'stock/categories/modifier/:id',
+        loadComponent: () => import('./features/admin/stock-admin/categorie/formulaire-categorie/formulaire-categorie.component').then(m => m.FormulaireCategorieComponent)
+      },
+      {
+        path: 'stock/produits',
+        loadComponent: () => import('./features/admin/stock-admin/produit/liste-produits/liste-produits.component').then(m => m.ListeProduitsComponent)
+      },
+      {
+        path: 'stock/produits/ajouter',
+        loadComponent: () => import('./features/admin/stock-admin/produit/formulaire-produit/formulaire-produit.component').then(m => m.FormulaireProduitComponent)
+      },
+      {
+        path: 'stock/produits/modifier/:id',
+        loadComponent: () => import('./features/admin/stock-admin/produit/formulaire-produit/formulaire-produit.component').then(m => m.FormulaireProduitComponent)
+      },
+      {
+        path: 'stock/commandes',
+        loadComponent: () => import('./features/admin/stock-admin/commande/liste-commandes/liste-commandes.component').then(m => m.ListeCommandesComponent)
+      },
+      {
+        path: 'stock/commandes/:id',
+        loadComponent: () => import('./features/admin/stock-admin/commande/detail-commande/detail-commande.component').then(m => m.DetailCommandeComponent)
+      },
+      {
+        path: 'stock/analyse',
+        loadComponent: () => import('./features/admin/stock-admin/analyse-stock/analyse-stock.component').then(m => m.AnalyseStockComponent)
+      },
 
       // --- ADD THIS REDIRECT ---
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -151,6 +192,10 @@ export const routes: Routes = [
           ),
       },
       {
+    path: 'alerts/predictions',
+    loadComponent: () => import('./features/alerts/pages/alert-prediction/alert-prediction').then(m => m.AlertPredictionComponent)
+},
+      {
         path: 'alerts/:id',
         loadComponent: () =>
           import('./features/alerts/pages/alert-detail/alert-detail').then(
@@ -161,6 +206,35 @@ export const routes: Routes = [
         path: 'alerts',
         loadComponent: () =>
           import('./features/alerts/pages/alert-list/alert-list').then((m) => m.AlertListComponent),
+      },
+      // --- STOCK MANAGEMENT FRONT OFFICE ---
+      {
+        path: 'store',
+        loadComponent: () => import('./features/stock-front/accueil/accueil.component').then(m => m.AccueilComponent)
+      },
+      {
+        path: 'store/catalogue',
+        loadComponent: () => import('./features/stock-front/catalogue/catalogue.component').then(m => m.CatalogueComponent)
+      },
+      {
+        path: 'store/catalogue/:id',
+        loadComponent: () => import('./features/stock-front/detail-produit/detail-produit.component').then(m => m.DetailProduitComponent)
+      },
+      {
+        path: 'store/categories/:id',
+        loadComponent: () => import('./features/stock-front/categorie-produits/categorie-produits.component').then(m => m.CategorieProduitsComponent)
+      },
+      {
+        path: 'store/panier',
+        loadComponent: () => import('./features/stock-front/panier/panier.component').then(m => m.PanierComponent)
+      },
+      {
+        path: 'store/commander',
+        loadComponent: () => import('./features/stock-front/commander/commander.component').then(m => m.CommanderComponent)
+      },
+      {
+        path: 'store/commande/:ref',
+        loadComponent: () => import('./features/stock-front/confirmation-commande/confirmation-commande.component').then(m => m.ConfirmationCommandeComponent)
       },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],

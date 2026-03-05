@@ -8,22 +8,7 @@ spring:
     gateway:
       server:
         webflux:
-          routes:
-            - id: alert-service
-              uri: lb://Alert
-              predicates:
-                - Path=/alert/**
-
-            - id: autonomy-service
-              uri: lb://AUTONOMY
-              predicates:
-                - Path=/api/autonomy-assessments/**
-
-            - id: cognitive-service
-              uri: lb://COGNITIVE-ASSESSMENT
-              predicates:
-                - Path=/api/cognitive-assessments/**
-
+          # ✅ CORS under correct prefix
           globalcors:
             cors-configurations:
               '[/**]':

@@ -7,15 +7,16 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/produits")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:4200")
 @Tag(name = "Produits", description = "CRUD des produits de stock")
 public class ProduitControleur {
 
@@ -58,5 +59,18 @@ public class ProduitControleur {
     public ResponseEntity<Void> supprimerProduit(@PathVariable Long id) {
         produitService.supprimerProduit(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Uploader une image pour un produit")
+    public ResponseEntity<ProduitDTO> uploaderImage(@PathVariable Long id,
+                                                     @RequestParam("fichier") MultipartFile fichier) {
+        return ResponseEntity.ok(produitService.uploaderImage(id, fichier));
+    }
+
+    @DeleteMapping("/{id}/image")
+    @Operation(summary = "Supprimer l'image d'un produit")
+    public ResponseEntity<ProduitDTO> supprimerImage(@PathVariable Long id) {
+        return ResponseEntity.ok(produitService.supprimerImage(id));
     }
 }

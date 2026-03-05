@@ -7,6 +7,9 @@
         </div>
         
         <div class="header-controls">
+            <button class="btn-predictive" routerLink="/app/alerts/predictions">
+            <i class="fa-solid fa-chart-line"></i> AI Risk Prediction
+        </button>
             <button class="facility-dropdown">
                 Facility: Neurology Ward <i class="fa-solid fa-chevron-down"></i>
             </button>
@@ -86,13 +89,23 @@
                         <div class="alert-icon-box">
                             <i [class]="getIcon(alert.typeAlerte)"></i>
                         </div>
-                        <div class="alert-title-block">
-                            <h3>
-                                {{ alert.typeAlerte | titlecase }} 
-                                <span class="badge" [ngClass]="getBadgeClass(alert.severite)">{{ alert.severite }}</span>
-                            </h3>
-                            <p class="alert-desc">{{ alert.message }}</p>
-                        </div>
+                        <!-- Inside <div class="alert-info"> -->
+
+<div class="alert-title-block">
+    <h3>
+        {{ alert.typeAlerte | titlecase }} 
+        <span class="badge" [ngClass]="getBadgeClass(alert.severite)">{{ alert.severite }}</span>
+    </h3>
+    <p class="alert-desc">{{ alert.message }}</p>
+
+    <!-- 👇 NEW: AI Analysis Box -->
+    <div class="ai-insight-box" *ngIf="alert.aiAnalysis">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        <span class="ai-text">
+            <strong>AI Assessment:</strong> {{ alert.aiAnalysis | slice:0:120 }}<span *ngIf="alert.aiAnalysis.length > 120">...</span>
+        </span>
+    </div>
+</div>
                     </div>
                     <div class="time-stamp">{{ getTimeAgo(alert.dateCreation) }}</div>
                 </div>
