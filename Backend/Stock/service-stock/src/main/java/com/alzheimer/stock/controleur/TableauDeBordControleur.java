@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/tableau-de-bord")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:4200")
 @Tag(name = "Tableau de Bord", description = "Statistiques agrégées du stock")
 public class TableauDeBordControleur {
 

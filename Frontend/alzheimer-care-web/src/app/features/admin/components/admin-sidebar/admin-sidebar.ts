@@ -21,6 +21,12 @@ export class AdminSidebarComponent {
     { label: 'Cognitive', icon: 'fa-solid fa-brain', route: '/admin/cognitive' },
     { label: 'Autonomy', icon: 'fa-solid fa-person-walking-with-cane', route: '/admin/autonomy' },
     
+    // 👇 NEW STOCK ITEMS
+    { label: 'Stock Dashboard', icon: 'fa-solid fa-boxes-stacked', route: '/admin/stock/dashboard' },
+    { label: 'Categories', icon: 'fa-solid fa-tags', route: '/admin/stock/categories' },
+    { label: 'Products', icon: 'fa-solid fa-box', route: '/admin/stock/produits' },
+    { label: 'Orders', icon: 'fa-solid fa-cart-flatbed', route: '/admin/stock/commandes' },
+
     { label: 'Alerts', icon: 'fa-solid fa-triangle-exclamation', route: '/admin/alerts' },
     // { label: 'Interventions', icon: 'fa-solid fa-hand-holding-medical', route: '/admin/interventions' }, // Optional
     { label: 'Conversations', icon: 'fa-regular fa-comments', route: '/admin/conversations' },

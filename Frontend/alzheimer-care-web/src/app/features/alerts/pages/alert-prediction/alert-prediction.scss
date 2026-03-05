@@ -1,0 +1,161 @@
+// Reuse Global Variables if available, or define locally
+:host {
+    --bg-page: #f3f4f6;
+    --bg-card: #ffffff;
+    --border-color: #e5e7eb;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    
+    --critical-color: #ef4444; // Red
+    --critical-bg: #fef2f2;
+    --warning-color: #f59e0b;  // Amber
+    --warning-bg: #fffbeb;
+    --stable-color: #10b981;   // Green
+    --stable-bg: #ecfdf5;
+}
+
+.page-container {
+    padding: 24px;
+    background-color: var(--bg-page);
+    min-height: 100vh;
+}
+
+/* HEADER */
+.header {
+    margin-bottom: 32px;
+    h1 {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        
+        i { color: #8b5cf6; } // AI Purple icon
+    }
+    p { color: var(--text-secondary); margin-top: 4px; }
+}
+
+/* GRID LAYOUT */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 350px 1fr; // Left List, Right Chart
+    gap: 24px;
+    
+    @media (max-width: 1000px) {
+        grid-template-columns: 1fr; // Stack on small screens
+    }
+}
+
+/* CARD COMMON STYLES */
+.risk-list-card, .chart-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    height: 100%;
+    
+    h3 {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 16px;
+        color: var(--text-primary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+}
+
+/* LEFT LIST: RISK ITEMS */
+.risk-list-card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.risk-item {
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+    cursor: pointer;
+
+    &:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+
+    /* Dynamic States */
+    &.critical { background: var(--critical-bg); border-color: #fecaca; }
+    &.warning  { background: var(--warning-bg); border-color: #fde68a; }
+    &.stable   { background: var(--stable-bg); border-color: #bbf7d0; }
+
+    .risk-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+
+        h4 { margin: 0; font-size: 14px; font-weight: 700; }
+        
+        .badge {
+            font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px;
+            &.critical { color: var(--critical-color); background: white; border: 1px solid var(--critical-color); }
+            &.warning  { color: var(--warning-color); background: white; border: 1px solid var(--warning-color); }
+            &.stable   { color: var(--stable-color); background: white; border: 1px solid var(--stable-color); }
+        }
+    }
+
+    .analysis-text {
+        font-size: 12px;
+        color: var(--text-secondary);
+        margin-bottom: 12px;
+        line-height: 1.4;
+    }
+
+    .progress-bar {
+        height: 6px;
+        background: rgba(255,255,255,0.6);
+        border-radius: 3px;
+        overflow: hidden;
+        
+        .fill {
+            height: 100%;
+            border-radius: 3px;
+            background: currentColor; // Inherits from parent color context
+            /* Explicit Colors for Fill */
+        }
+    }
+    
+    /* Specific Fill Colors */
+    &.critical .fill { background: var(--critical-color); }
+    &.warning .fill  { background: var(--warning-color); }
+    &.stable .fill   { background: var(--stable-color); }
+}
+
+/* RIGHT CHART */
+.chart-card {
+    display: flex;
+    flex-direction: column;
+    
+    .chart-desc {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin-bottom: 24px;
+        background: #eff6ff;
+        padding: 12px;
+        border-radius: 8px;
+        border-left: 4px solid #4f46e5;
+    }
+
+    .chart-wrapper {
+        flex: 1;
+        min-height: 400px;
+        width: 100%;
+    }
+}
+
+.loading {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 40px;
+    font-size: 14px;
+    i { margin-right: 8px; }
+}

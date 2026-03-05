@@ -30,6 +30,9 @@ public class ProduitDTO {
     @Min(value = 0, message = "La quantité ne peut pas être négative")
     private Integer quantite;
 
+    @Size(max = 500, message = "L'URL de l'image ne peut pas dépasser 500 caractères")
+    private String imageUrl;
+
     @NotNull(message = "La catégorie est obligatoire")
     private Long categorieId;
 

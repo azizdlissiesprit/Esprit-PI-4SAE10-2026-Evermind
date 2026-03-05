@@ -24,6 +24,8 @@ export interface Alert {
   dateCreation: string;
   statut: StatutAlerte;
   message: string;
+    aiAnalysis?: string;   // Optional because old alerts might not have it
+  aiRiskScore?: number; 
 }
 
 export interface Intervention {

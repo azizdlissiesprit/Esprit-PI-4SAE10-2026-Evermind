@@ -36,6 +36,11 @@ public class Alert {
     @Column(columnDefinition = "TEXT")
     private String message;
 
+    @Column(columnDefinition = "TEXT")
+    private String aiAnalysis;
+
+    private Integer aiRiskScore;
+
     // Automatically set the creation date when the alert is first created
     @PrePersist
     protected void onCreate() {

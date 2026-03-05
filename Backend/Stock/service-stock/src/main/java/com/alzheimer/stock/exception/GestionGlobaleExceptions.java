@@ -1,11 +1,13 @@
 package com.alzheimer.stock.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -13,6 +15,15 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GestionGlobaleExceptions {
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<Map<String, Object>> gererTailleFichierDepassee(MaxUploadSizeExceededException ex) {
+        Map<String, Object> erreur = new HashMap<>();
+        erreur.put("timestamp", LocalDateTime.now());
+        erreur.put("message", "Le fichier dépasse la taille maximale autorisée (5 Mo).");
+        erreur.put("statut", HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(erreur, HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(ResourceIntrouvableException.class)
     public ResponseEntity<Map<String, Object>> gererResourceIntrouvable(ResourceIntrouvableException ex) {
@@ -41,8 +52,32 @@ public class GestionGlobaleExceptions {
         return new ResponseEntity<>(erreur, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, Object>> gererContrainteIntegrite(DataIntegrityViolationException ex) {
+        Map<String, Object> erreur = new HashMap<>();
+        erreur.put("timestamp", LocalDateTime.now());
+        String message = "Erreur d'intégrité des données.";
+        if (ex.getMessage() != null && ex.getMessage().contains("unique")) {
+            message = "Une entrée avec ce nom existe déjà.";
+        }
+        erreur.put("message", message);
+        erreur.put("statut", HttpStatus.CONFLICT.value());
+        return new ResponseEntity<>(erreur, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, Object>> gererArgumentIllegal(IllegalArgumentException ex) {
+        Map<String, Object> erreur = new HashMap<>();
+        erreur.put("timestamp", LocalDateTime.now());
+        erreur.put("message", ex.getMessage());
+        erreur.put("statut", HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(erreur, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> gererExceptionGenerale(Exception ex) {
+        // Log the full stack trace to the console for debugging
+        ex.printStackTrace();
         Map<String, Object> erreur = new HashMap<>();
         erreur.put("timestamp", LocalDateTime.now());
         erreur.put("message", "Une erreur interne est survenue");

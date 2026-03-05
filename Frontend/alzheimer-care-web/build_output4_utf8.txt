@@ -1,0 +1,434 @@
+﻿
+> alzheimer-care-web@0.0.0 build
+> ng build
+
+[33mÔØ»[39m Building...
+[32mÔ£ö[39m Building...
+[35mPrerendered 0 static routes.[39m
+Application bundle generation failed. [7.777 seconds] - 2026-03-05T03:07:16.322Z
+
+node.exe : 
+[1m[33m[33mÔû▓ [43;
+33m[[43;30mWARNING[43
+;33m][0m [1mNG8113: 
+RouterLink is not used 
+within the template of 
+AnalyseStockComponent[
+0m [1m[35m[plugin 
+angular-compiler][0m
+At line:1 char:1
++ & "D:\Downloads\nodej
+s/node.exe" "D:\Downloa
+ds\nodejs/node_modules/
+np ...
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: ([1m[33m[33   
+ mÔ...r-compiler][    
+0m:String) [], Rem    
+oteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+
+    src/app/features/ad
+min/stock-admin/analyse
+-stock/analyse-stock.co
+mponent.ts:12:26:
+[37m      12 Ôöé   
+imports: 
+[CommonModule, 
+[32mRouterLink[37m, 
+FormsModule],
+         ÔòÁ           
+                
+[32m~~~~~~~~~~[0m
+
+
+[33mÔû▓ [43;33m[[43;
+30mWARNING[43;33m][0m
+ [1mNG8107: The left 
+side of this optional 
+chain operation does 
+not include 'null' or 
+'undefined' in its 
+type, therefore the 
+'?.' operator can be 
+replaced with the '.' 
+operator.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/as
+sesements/patient-asses
+sments.html:192:75:
+[37m      192 Ôöé 
+...core-badge">Score: 
+{{ latestAutonomy?.[32
+mtotalScore[37m || 0 
+}}/50</div>
+          ÔòÁ          
+                       
+         
+[32m~~~~~~~~~~[0m
+
+  Warning occurs in 
+the template of 
+component PatientAssess
+mentsComponent.
+
+    src/app/features/as
+sesements/patient-asses
+sments.ts:18:15:
+[37m      18 Ôöé   
+templateUrl: [32m'./pa
+tient-assessments.html'
+[37m,
+         ÔòÁ           
+     [32m~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~[0m
+
+
+[33mÔû▓ [43;33m[[43;
+30mWARNING[43;33m][0m
+ [1mNG8107: The left 
+side of this optional 
+chain operation does 
+not include 'null' or 
+'undefined' in its 
+type, therefore the 
+'?.' operator can be 
+replaced with the '.' 
+operator.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/as
+sesements/patient-asses
+sments.html:219:76:
+[37m      219 Ôöé 
+...ext">{{ latestAutono
+my?.[32massistanceLeve
+l[37m || 'Not 
+assessed' }}</...
+          ÔòÁ          
+                  [32m
+~~~~~~~~~~~~~~~[0m
+
+  Warning occurs in 
+the template of 
+component PatientAssess
+mentsComponent.
+
+    src/app/features/as
+sesements/patient-asses
+sments.ts:18:15:
+[37m      18 Ôöé   
+templateUrl: [32m'./pa
+tient-assessments.html'
+[37m,
+         ÔòÁ           
+     [32m~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~[0m
+
+
+[33mÔû▓ [43;33m[[43;
+30mWARNING[43;33m][0m
+ [1mDeprecation[0m 
+[1m[35m[plugin 
+angular-sass][0m
+
+    src/app/features/al
+erts/pages/alert-detail
+/alert-detail.scss:210:
+26:
+[37m      210 Ôöé     
+&:hover { background: 
+[32m[37mdarken($succes
+s-green, 5%); }
+          ÔòÁ          
+                 
+[32m^[0m
+
+
+  Global built-in 
+functions are 
+deprecated and will be 
+removed in Dart Sass 
+3.0.0.
+  Use color.adjust 
+instead.
+  
+  More info and 
+automated migrator: [4
+mhttps://sass-lang.com/
+d/import[0m
+
+
+[33mÔû▓ [43;33m[[43;
+30mWARNING[43;33m][0m
+ [1mDeprecation[0m 
+[1m[35m[plugin 
+angular-sass][0m
+
+    src/app/features/al
+erts/pages/alert-detail
+/alert-detail.scss:210:
+26:
+[37m      210 Ôöé     
+&:hover { background: 
+[32m[37mdarken($succes
+s-green, 5%); }
+          ÔòÁ          
+                 
+[32m^[0m
+
+
+  darken() is 
+deprecated. 
+Suggestions:
+  
+  color.scale($color, 
+$lightness: 
+-12.6865671642%)
+  color.adjust($color, 
+$lightness: -5%)
+  
+  More info: [4mhttps:
+//sass-lang.com/d/color
+-functions[0m
+
+[39m[22m
+[1m[31m[31mX [41;31
+m[[41;97mERROR[41;31m
+][0m [1mTS2339: 
+Property 't' does not 
+exist on type 'DetailCo
+mmandeComponent'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/ad
+min/stock-admin/command
+e/detail-commande/detai
+l-commande.component.ts
+:46:21:
+[37m      46 Ôöé      
+             {{ 
+[32mt[37m.tr('lcmd.' 
++ getStatutKey(commande
+.statut)) }}
+         ÔòÁ           
+           [32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS2339: Property 
+'t' does not exist on 
+type 'ListeCommandesCom
+ponent'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/ad
+min/stock-admin/command
+e/liste-commandes/liste
+-commandes.component.ts
+:105:27:
+[37m      105 Ôöé     
+                    {{ 
+[32mt[37m.tr('lcmd.' 
++ getStatutKey(cmd.stat
+ut...
+          ÔòÁ          
+                  
+[32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS2339: Property 
+'t' does not exist on 
+type 'SidebarComponent'
+.[0m [1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/partage/sideb
+ar/sidebar.component.ts
+:108:34:
+[37m      108 Ôöé     
+      <button [class.ac
+tive]="[32mt[37m.isFr
+" (click)="t.setLang('f
+r'...
+          ÔòÁ          
+                       
+  [32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS2339: Property 
+'t' does not exist on 
+type 'SidebarComponent'
+.[0m [1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/partage/sideb
+ar/sidebar.component.ts
+:108:51:
+[37m      108 Ôöé 
+...ton [class.active]="
+t.isFr" (click)="[32mt
+[37m.setLang('fr')">FR
+</button>
+          ÔòÁ          
+                       
+        [32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS2339: Property 
+'t' does not exist on 
+type 'SidebarComponent'
+.[0m [1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/partage/sideb
+ar/sidebar.component.ts
+:109:34:
+[37m      109 Ôöé     
+      <button [class.ac
+tive]="[32mt[37m.isEn
+" (click)="t.setLang('e
+n'...
+          ÔòÁ          
+                       
+  [32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS2339: Property 
+'t' does not exist on 
+type 'SidebarComponent'
+.[0m [1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/partage/sideb
+ar/sidebar.component.ts
+:109:51:
+[37m      109 Ôöé 
+...ton [class.active]="
+t.isEn" (click)="[32mt
+[37m.setLang('en')">EN
+</button>
+          ÔòÁ          
+                       
+        [32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS2339: Property 
+'toggle' does not 
+exist on type 
+'ThemeService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/partage/sideb
+ar/sidebar.component.ts
+:112:49:
+[37m      112 Ôöé 
+...="theme-toggle" (cli
+ck)="th.[32mtoggle[37
+m()" [attr.title]="th.i
+sDark ...
+          ÔòÁ          
+                      
+[32m~~~~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS2339: Property 
+'isDark' does not 
+exist on type 
+'ThemeService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/partage/sideb
+ar/sidebar.component.ts
+:112:76:
+[37m      112 Ôöé 
+....toggle()" [attr.tit
+le]="th.[32misDark[37
+m ? 'theme.light' : 
+'theme.da...
+          ÔòÁ          
+                      
+[32m~~~~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS2339: Property 
+'isLight' does not 
+exist on type 
+'ThemeService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/partage/sideb
+ar/sidebar.component.ts
+:113:49:
+[37m      113 Ôöé 
+...i" [class.bi-moon-fi
+ll]="th.[32misLight[3
+7m" [class.bi-sun-fill]
+="th.i...
+          ÔòÁ          
+                      
+[32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS2339: Property 
+'isDark' does not 
+exist on type 
+'ThemeService'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/partage/sideb
+ar/sidebar.component.ts
+:113:82:
+[37m      113 Ôöé ...s
+.bi-moon-fill]="th.isLi
+ght" [class.bi-sun-fill
+]="th.[32misDark[37m"
+></i>
+          ÔòÁ          
+                       
+                       
+ [32m~~~~~~[0m
+
+[39m[22m

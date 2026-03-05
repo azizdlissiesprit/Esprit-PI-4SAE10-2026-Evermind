@@ -1,0 +1,1885 @@
+﻿
+> alzheimer-care-web@0.0.0 build
+> ng build
+
+[33mÔØ»[39m Building...
+[32mÔ£ö[39m Building...
+[35mPrerendered 0 static routes.[39m
+Application bundle generation failed. [7.558 seconds] - 2026-03-05T03:04:17.111Z
+
+node.exe : 
+[1m[33m[33mÔû▓ [43;
+33m[[43;30mWARNING[43
+;33m][0m [1mNG8113: 
+RouterLink is not used 
+within the template of 
+AnalyseStockComponent[
+0m [1m[35m[plugin 
+angular-compiler][0m
+At line:1 char:1
++ & "D:\Downloads\nodej
+s/node.exe" "D:\Downloa
+ds\nodejs/node_modules/
+np ...
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: ([1m[33m[33   
+ mÔ...r-compiler][    
+0m:String) [], Rem    
+oteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+
+    src/app/features/ad
+min/stock-admin/analyse
+-stock/analyse-stock.co
+mponent.ts:12:26:
+[37m      12 Ôöé   
+imports: 
+[CommonModule, 
+[32mRouterLink[37m, 
+FormsModule],
+         ÔòÁ           
+                
+[32m~~~~~~~~~~[0m
+
+
+[33mÔû▓ [43;33m[[43;
+30mWARNING[43;33m][0m
+ [1mNG8107: The left 
+side of this optional 
+chain operation does 
+not include 'null' or 
+'undefined' in its 
+type, therefore the 
+'?.' operator can be 
+replaced with the '.' 
+operator.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/as
+sesements/patient-asses
+sments.html:192:75:
+[37m      192 Ôöé 
+...core-badge">Score: 
+{{ latestAutonomy?.[32
+mtotalScore[37m || 0 
+}}/50</div>
+          ÔòÁ          
+                       
+         
+[32m~~~~~~~~~~[0m
+
+  Warning occurs in 
+the template of 
+component PatientAssess
+mentsComponent.
+
+    src/app/features/as
+sesements/patient-asses
+sments.ts:18:15:
+[37m      18 Ôöé   
+templateUrl: [32m'./pa
+tient-assessments.html'
+[37m,
+         ÔòÁ           
+     [32m~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~[0m
+
+
+[33mÔû▓ [43;33m[[43;
+30mWARNING[43;33m][0m
+ [1mNG8107: The left 
+side of this optional 
+chain operation does 
+not include 'null' or 
+'undefined' in its 
+type, therefore the 
+'?.' operator can be 
+replaced with the '.' 
+operator.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/as
+sesements/patient-asses
+sments.html:219:76:
+[37m      219 Ôöé 
+...ext">{{ latestAutono
+my?.[32massistanceLeve
+l[37m || 'Not 
+assessed' }}</...
+          ÔòÁ          
+                  [32m
+~~~~~~~~~~~~~~~[0m
+
+  Warning occurs in 
+the template of 
+component PatientAssess
+mentsComponent.
+
+    src/app/features/as
+sesements/patient-asses
+sments.ts:18:15:
+[37m      18 Ôöé   
+templateUrl: [32m'./pa
+tient-assessments.html'
+[37m,
+         ÔòÁ           
+     [32m~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~[0m
+
+
+[33mÔû▓ [43;33m[[43;
+30mWARNING[43;33m][0m
+ [1mDeprecation[0m 
+[1m[35m[plugin 
+angular-sass][0m
+
+    src/app/features/al
+erts/pages/alert-detail
+/alert-detail.scss:210:
+26:
+[37m      210 Ôöé     
+&:hover { background: 
+[32m[37mdarken($succes
+s-green, 5%); }
+          ÔòÁ          
+                 
+[32m^[0m
+
+
+  Global built-in 
+functions are 
+deprecated and will be 
+removed in Dart Sass 
+3.0.0.
+  Use color.adjust 
+instead.
+  
+  More info and 
+automated migrator: [4
+mhttps://sass-lang.com/
+d/import[0m
+
+
+[33mÔû▓ [43;33m[[43;
+30mWARNING[43;33m][0m
+ [1mDeprecation[0m 
+[1m[35m[plugin 
+angular-sass][0m
+
+    src/app/features/al
+erts/pages/alert-detail
+/alert-detail.scss:210:
+26:
+[37m      210 Ôöé     
+&:hover { background: 
+[32m[37mdarken($succes
+s-green, 5%); }
+          ÔòÁ          
+                 
+[32m^[0m
+
+
+  darken() is 
+deprecated. 
+Suggestions:
+  
+  color.scale($color, 
+$lightness: 
+-12.6865671642%)
+  color.adjust($color, 
+$lightness: -5%)
+  
+  More info: [4mhttps:
+//sass-lang.com/d/color
+-functions[0m
+
+[39m[22m
+[1m[31m[31mX [41;31
+m[[41;97mERROR[41;31m
+][0m [1mTS1003: 
+Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/ad
+min/stock-admin/categor
+ie/formulaire-categorie
+/formulaire-categorie.c
+omponent.ts:117:29:
+[37m      117 Ôöé     
+      this.erreur = thi
+s.[32m'fc.erreurCharge
+ment'[37m;
+          ÔòÁ          
+                    [3
+2m~~~~~~~~~~~~~~~~~~~~~
+[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/ad
+min/stock-admin/categor
+ie/formulaire-categorie
+/formulaire-categorie.c
+omponent.ts:133:51:
+[37m      133 Ôöé 
+...this.erreur = 
+err.error?.message || t
+his.[32m'fc.erreurModi
+fication'[37m;
+          ÔòÁ          
+                       
+            [32m~~~~~~
+~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/ad
+min/stock-admin/categor
+ie/formulaire-categorie
+/formulaire-categorie.c
+omponent.ts:141:51:
+[37m      141 Ôöé ... 
+   this.erreur = 
+err.error?.message || t
+his.[32m'fc.erreurCrea
+tion'[37m;
+          ÔòÁ          
+                       
+                [32m~~
+~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/ad
+min/stock-admin/categor
+ie/liste-categories/lis
+te-categories.component
+.ts:198:28:
+[37m      198 Ôöé     
+    this.message = this
+.[32m'lc.erreurChargem
+ent'[37m;
+          ÔòÁ          
+                   [32
+m~~~~~~~~~~~~~~~~~~~~~
+[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS2339: Property 
+'t' does not exist on 
+type 'ListeCategoriesCo
+mponent'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/ad
+min/stock-admin/categor
+ie/liste-categories/lis
+te-categories.component
+.ts:232:30:
+[37m      232 Ôöé     
+      this.message = th
+is.[32mt[37m.tr('lc.s
+uccessSupp', { nom: 
+this....
+          ÔòÁ          
+                     
+[32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/ad
+min/stock-admin/categor
+ie/liste-categories/lis
+te-categories.component
+.ts:238:30:
+[37m      238 Ôöé     
+      this.message = th
+is.[32m'lc.erreurSuppr
+ession'[37m;
+          ÔòÁ          
+                     [
+32m~~~~~~~~~~~~~~~~~~~~
+~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS2339: Property 
+'t' does not exist on 
+type 'DetailCommandeCom
+ponent'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/ad
+min/stock-admin/command
+e/detail-commande/detai
+l-commande.component.ts
+:46:21:
+[37m      46 Ôöé      
+             {{ 
+[32mt[37m.tr('lcmd.' 
++ getStatutKey(commande
+.statut)) }}
+         ÔòÁ           
+           [32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/ad
+min/stock-admin/command
+e/detail-commande/detai
+l-commande.component.ts
+:171:30:
+[37m      171 Ôöé     
+      this.message = th
+is.[32m'dcmd.erreurCha
+rgement'[37m;
+          ÔòÁ          
+                     [
+32m~~~~~~~~~~~~~~~~~~~~
+~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/ad
+min/stock-admin/command
+e/detail-commande/detai
+l-commande.component.ts
+:187:28:
+[37m      187 Ôöé     
+    this.message = this
+.[32m'dcmd.statutModif
+ie'[37m;
+          ÔòÁ          
+                   [32
+m~~~~~~~~~~~~~~~~~~~~[
+0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/ad
+min/stock-admin/command
+e/detail-commande/detai
+l-commande.component.ts
+:192:50:
+[37m      192 Ôöé ... 
+  this.message = 
+err.error?.message || t
+his.[32m'dcmd.erreurSt
+atut'[37m;
+          ÔòÁ          
+                       
+                [32m~~
+~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS2339: Property 
+'t' does not exist on 
+type 'ListeCommandesCom
+ponent'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/ad
+min/stock-admin/command
+e/liste-commandes/liste
+-commandes.component.ts
+:105:27:
+[37m      105 Ôöé     
+                    {{ 
+[32mt[37m.tr('lcmd.' 
++ getStatutKey(cmd.stat
+ut...
+          ÔòÁ          
+                  
+[32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/ad
+min/stock-admin/command
+e/liste-commandes/liste
+-commandes.component.ts
+:176:28:
+[37m      176 Ôöé     
+    this.message = this
+.[32m'lcmd.erreurCharg
+ement'[37m;
+          ÔòÁ          
+                   [32
+m~~~~~~~~~~~~~~~~~~~~~~
+~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/ad
+min/stock-admin/produit
+/formulaire-produit/for
+mulaire-produit.compone
+nt.ts:242:29:
+[37m      242 Ôöé     
+      this.erreur = thi
+s.[32m'fp.erreurCharge
+ment'[37m;
+          ÔòÁ          
+                    [3
+2m~~~~~~~~~~~~~~~~~~~~~
+[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS2769: No 
+overload matches this 
+call.
+  Overload 1 of 2, 
+'(observerOrNext?: Part
+ial<Observer<Categorie[
+]>> | ((value: 
+Categorie[]) => void) 
+| undefined): 
+Subscription', gave 
+the following error.
+    Object literal may 
+only specify known 
+properties, and ''fp.er
+reurCategories'' does 
+not exist in type 'Part
+ial<Observer<Categorie[
+]>> | ((value: 
+Categorie[]) => void)'.
+  Overload 2 of 2, 
+'(next?: ((value: 
+Categorie[]) => void) 
+| null | undefined, 
+error?: ((error: any) 
+=> void) | null | 
+undefined, complete?: 
+(() => void) | null | 
+undefined): 
+Subscription', gave 
+the following error.
+    Object literal may 
+only specify known 
+properties, and 'next' 
+does not exist in type 
+'(value: Categorie[]) 
+=> void'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/ad
+min/stock-admin/produit
+/formulaire-produit/for
+mulaire-produit.compone
+nt.ts:250:39:
+[37m      250 Ôöé     
+this.categorieService.l
+isterTout().[32msubscr
+ibe[37m({
+          ÔòÁ          
+                       
+       
+[32m~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/ad
+min/stock-admin/produit
+/formulaire-produit/for
+mulaire-produit.compone
+nt.ts:252:38:
+[37m      252 Ôöé     
+  error: () => 
+this.erreur = this.[32
+m'fp.erreurCategories'
+[37m
+          ÔòÁ          
+                       
+      [32m~~~~~~~~~~~~
+~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1005: ':' 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/ad
+min/stock-admin/produit
+/formulaire-produit/for
+mulaire-produit.compone
+nt.ts:253:4:
+[37m      253 Ôöé     
+[32m}[37m);
+          ÔòÁ     
+[32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/ad
+min/stock-admin/produit
+/formulaire-produit/for
+mulaire-produit.compone
+nt.ts:292:30:
+[37m      292 Ôöé     
+  this.erreurImage = th
+is.[32m'fp.erreurForma
+t'[37m;
+          ÔòÁ          
+                     [
+32m~~~~~~~~~~~~~~~~~[0
+m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/ad
+min/stock-admin/produit
+/formulaire-produit/for
+mulaire-produit.compone
+nt.ts:296:30:
+[37m      296 Ôöé     
+  this.erreurImage = th
+is.[32m'fp.erreurTaill
+e'[37m;
+          ÔòÁ          
+                     [
+32m~~~~~~~~~~~~~~~~~[0
+m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/ad
+min/stock-admin/produit
+/formulaire-produit/for
+mulaire-produit.compone
+nt.ts:330:51:
+[37m      330 Ôöé 
+...this.erreur = 
+err.error?.message || t
+his.[32m'fp.erreurModi
+fication'[37m;
+          ÔòÁ          
+                       
+            [32m~~~~~~
+~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/ad
+min/stock-admin/produit
+/formulaire-produit/for
+mulaire-produit.compone
+nt.ts:338:51:
+[37m      338 Ôöé ... 
+   this.erreur = 
+err.error?.message || t
+his.[32m'fp.erreurCrea
+tion'[37m;
+          ÔòÁ          
+                       
+                [32m~~
+~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/ad
+min/stock-admin/produit
+/formulaire-produit/for
+mulaire-produit.compone
+nt.ts:349:29:
+[37m      349 Ôöé     
+      this.erreur = thi
+s.[32m'fp.erreurUpload
+'[37m;
+          ÔòÁ          
+                    [3
+2m~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/ad
+min/stock-admin/produit
+/formulaire-produit/for
+mulaire-produit.compone
+nt.ts:357:29:
+[37m      357 Ôöé     
+      this.erreur = thi
+s.[32m'fp.erreurUpload
+'[37m;
+          ÔòÁ          
+                    [3
+2m~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/ad
+min/stock-admin/produit
+/liste-produits/liste-p
+roduits.component.ts:23
+9:28:
+[37m      239 Ôöé     
+    this.message = this
+.[32m'lp.erreurChargem
+ent'[37m;
+          ÔòÁ          
+                   [32
+m~~~~~~~~~~~~~~~~~~~~~
+[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS2339: Property 
+'t' does not exist on 
+type 'ListeProduitsComp
+onent'.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/ad
+min/stock-admin/produit
+/liste-produits/liste-p
+roduits.component.ts:28
+8:30:
+[37m      288 Ôöé     
+      this.message = th
+is.[32mt[37m.tr('lp.s
+uccessSupp', { nom: 
+this....
+          ÔòÁ          
+                     
+[32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/ad
+min/stock-admin/produit
+/liste-produits/liste-p
+roduits.component.ts:29
+4:30:
+[37m      294 Ôöé     
+      this.message = th
+is.[32m'lp.erreurSuppr
+ession'[37m;
+          ÔòÁ          
+                     [
+32m~~~~~~~~~~~~~~~~~~~~
+~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/catalogue/cat
+alogue.component.ts:311
+:23:
+[37m      311 Ôöé     
+  'en-stock': this.[32
+m'catalogue.disponible'
+[37m
+          ÔòÁ          
+              [32m~~~~
+~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1005: ':' 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/catalogue/cat
+alogue.component.ts:312
+:4:
+[37m      312 Ôöé     
+[32m}[37m;
+          ÔòÁ     
+[32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/catalogue/cat
+alogue.component.ts:331
+:54:
+[37m      331 Ôöé 
+....ajoutErreur = 
+err.error?.message || t
+his.[32m'panier.ajoute
+rErreur'[37m;
+          ÔòÁ          
+                       
+             [32m~~~~~
+~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/categorie-pro
+duits/categorie-produit
+s.component.ts:320:23:
+[37m      320 Ôöé     
+  'en-stock': this.[32
+m'catalogue.disponible'
+[37m
+          ÔòÁ          
+              [32m~~~~
+~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1005: ':' 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/categorie-pro
+duits/categorie-produit
+s.component.ts:321:4:
+[37m      321 Ôöé     
+[32m}[37m;
+          ÔòÁ     
+[32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/categorie-pro
+duits/categorie-produit
+s.component.ts:340:54:
+[37m      340 Ôöé 
+....ajoutErreur = 
+err.error?.message || t
+his.[32m'panier.ajoute
+rErreur'[37m;
+          ÔòÁ          
+                       
+             [32m~~~~~
+~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/commander/com
+mander.component.ts:200
+:49:
+[37m      200 Ôöé     
+    this.erreur = 
+err.error?.message || t
+his.[32m'checkout.erre
+ur'[37m;
+          ÔòÁ          
+                       
+                 [32m~
+~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/detail-produi
+t/detail-produit.compon
+ent.ts:177:54:
+[37m      177 Ôöé 
+....ajoutErreur = 
+err.error?.message || t
+his.[32m'panier.ajoute
+rErreur'[37m;
+          ÔòÁ          
+                       
+             [32m~~~~~
+~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/panier/panier
+.component.ts:188:27:
+[37m      188 Ôöé     
+    this.erreur = this.
+[32m'panier.erreurChar
+gement'[37m;
+          ÔòÁ          
+                  [32m
+~~~~~~~~~~~~~~~~~~~~~~~
+~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/panier/panier
+.component.ts:203:49:
+[37m      203 Ôöé ... 
+  this.erreur = 
+err.error?.message || t
+his.[32m'panier.erreur
+Modif'[37m;
+          ÔòÁ          
+                       
+               [32m~~~
+~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/panier/panier
+.component.ts:218:27:
+[37m      218 Ôöé     
+    this.erreur = this.
+[32m'panier.erreurSupp
+'[37m;
+          ÔòÁ          
+                  [32m
+~~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/panier/panier
+.component.ts:233:27:
+[37m      233 Ôöé     
+    this.erreur = this.
+[32m'panier.erreurVide
+r'[37m;
+          ÔòÁ          
+                  [32m
+~~~~~~~~~~~~~~~~~~~~[0
+m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS2307: Cannot 
+find module '../../../.
+./core/services/theme.s
+ervice' or its 
+corresponding type 
+declarations.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/partage/sideb
+ar/sidebar.component.ts
+:6:29:
+[37m      6 Ôöé ...rt 
+{ ThemeService } from 
+[32m'../../../../core/s
+ervices/theme.service'
+[37m;
+        ÔòÁ            
+                 [32m~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mNG2003: No 
+suitable injection 
+token for parameter 
+'th' of class 
+'SidebarComponent'.
+  Consider using the 
+@Inject decorator to 
+specify an injection 
+token.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/partage/sideb
+ar/sidebar.component.ts
+:129:45:
+[37m      129 Ôöé   
+constructor(private 
+router: Router, public 
+[32mth[37m: 
+ThemeService) {}
+          ÔòÁ          
+                       
+             
+[32m~~[0m
+
+  This type does not 
+have a value, so it 
+cannot be used as 
+injection token.
+
+    src/app/features/st
+ock-front/partage/sideb
+ar/sidebar.component.ts
+:129:49:
+[37m      129 Ôöé   
+constructor(private 
+router: Router, public 
+th: [32mThemeService[
+37m) {}
+          ÔòÁ          
+                       
+                 
+[32m~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/partage/sideb
+ar/sidebar.component.ts
+:149:32:
+[37m      149 Ôöé     
+  '/admin/categories': 
+this.[32m'breadcrumb.c
+ategories'[37m,
+          ÔòÁ          
+                       
+[32m~~~~~~~~~~~~~~~~~~
+~~~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1005: ':' 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/partage/sideb
+ar/sidebar.component.ts
+:149:55:
+[37m      149 Ôöé     
+  '/admin/categories': 
+this.'breadcrumb.catego
+ries'[32m,[37m
+          ÔòÁ          
+                       
+                       
+[32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/partage/sideb
+ar/sidebar.component.ts
+:150:40:
+[37m      150 Ôöé     
+  '/admin/categories/aj
+outer': this.[32m'brea
+dcrumb.nouvelleCat'[37
+m,
+          ÔòÁ          
+                       
+        [32m~~~~~~~~~~
+~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1005: ':' 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/partage/sideb
+ar/sidebar.component.ts
+:150:64:
+[37m      150 Ôöé     
+  '/admin/categories/aj
+outer': this.'breadcrum
+b.nouvelleCat'[32m,[3
+7m
+          ÔòÁ          
+                       
+                       
+         [32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/partage/sideb
+ar/sidebar.component.ts
+:151:30:
+[37m      151 Ôöé     
+  '/admin/produits': th
+is.[32m'breadcrumb.pro
+duits'[37m,
+          ÔòÁ          
+                     [
+32m~~~~~~~~~~~~~~~~~~~~
+~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1005: ':' 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/partage/sideb
+ar/sidebar.component.ts
+:151:51:
+[37m      151 Ôöé     
+  '/admin/produits': th
+is.'breadcrumb.produits
+'[32m,[37m
+          ÔòÁ          
+                       
+                   
+[32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/partage/sideb
+ar/sidebar.component.ts
+:152:38:
+[37m      152 Ôöé     
+  '/admin/produits/ajou
+ter': this.[32m'breadc
+rumb.nouveauProd'[37m,
+          ÔòÁ          
+                       
+      [32m~~~~~~~~~~~~
+~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1005: ':' 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/partage/sideb
+ar/sidebar.component.ts
+:152:62:
+[37m      152 Ôöé     
+  '/admin/produits/ajou
+ter': this.'breadcrumb.
+nouveauProd'[32m,[37m
+          ÔòÁ          
+                       
+                       
+       [32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/partage/sideb
+ar/sidebar.component.ts
+:153:31:
+[37m      153 Ôöé     
+  '/admin/commandes': t
+his.[32m'breadcrumb.co
+mmandes'[37m,
+          ÔòÁ          
+                      
+[32m~~~~~~~~~~~~~~~~~~~
+~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1005: ':' 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/partage/sideb
+ar/sidebar.component.ts
+:153:53:
+[37m      153 Ôöé     
+  '/admin/commandes': t
+his.'breadcrumb.command
+es'[32m,[37m
+          ÔòÁ          
+                       
+                     
+[32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/partage/sideb
+ar/sidebar.component.ts
+:154:35:
+[37m      154 Ôöé     
+  '/admin/analyse-stock
+': this.[32m'breadcrum
+b.analyseStock'[37m
+          ÔòÁ          
+                       
+   [32m~~~~~~~~~~~~~~~
+~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1005: ':' 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/partage/sideb
+ar/sidebar.component.ts
+:155:4:
+[37m      155 Ôöé     
+[32m}[37m;
+          ÔòÁ     
+[32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/partage/sideb
+ar/sidebar.component.ts
+:159:30:
+[37m      159 Ôöé     
+  this.currentPage = th
+is.[32m'breadcrumb.mod
+ifierCat'[37m;
+          ÔòÁ          
+                     [
+32m~~~~~~~~~~~~~~~~~~~~
+~~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/partage/sideb
+ar/sidebar.component.ts
+:161:30:
+[37m      161 Ôöé     
+  this.currentPage = th
+is.[32m'breadcrumb.mod
+ifierProd'[37m;
+          ÔòÁ          
+                     [
+32m~~~~~~~~~~~~~~~~~~~~
+~~~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS1003: Identifier 
+expected.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/partage/sideb
+ar/sidebar.component.ts
+:163:30:
+[37m      163 Ôöé     
+  this.currentPage = th
+is.[32m'breadcrumb.det
+ailCommande'[37m;
+          ÔòÁ          
+                     [
+32m~~~~~~~~~~~~~~~~~~~~
+~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mTS2339: Property 
+'t' does not exist on 
+type 'SidebarComponent'
+.[0m [1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/st
+ock-front/partage/sideb
+ar/sidebar.component.ts
+:171:51:
+[37m      171 Ôöé     
+this.currentTime = now.
+toLocaleDateString(this
+.[32mt[37m.locale, {
+          ÔòÁ          
+                       
+                   
+[32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mExpected 
+identifier but found 
+";"[0m
+
+    src/app/features/ad
+min/stock-admin/categor
+ie/formulaire-categorie
+/formulaire-categorie.c
+omponent.ts:126:39:
+[37m      126 Ôöé     
+                
+this.erreur = 
+this.[32m;[37m
+          ÔòÁ          
+                       
+       [32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mExpected 
+identifier but found 
+";"[0m
+
+    src/app/features/ad
+min/stock-admin/categor
+ie/liste-categories/lis
+te-categories.component
+.ts:258:36:
+[37m      258 Ôöé     
+            
+this.message = 
+this.[32m;[37m
+          ÔòÁ          
+                       
+    [32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mExpected 
+identifier but found 
+";"[0m
+
+    src/app/features/ad
+min/stock-admin/command
+e/detail-commande/detai
+l-commande.component.ts
+:243:40:
+[37m      243 Ôöé     
+                
+this.message = 
+this.[32m;[37m
+          ÔòÁ          
+                       
+        [32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mExpected 
+identifier but found 
+";"[0m
+
+    src/app/features/ad
+min/stock-admin/command
+e/liste-commandes/liste
+-commandes.component.ts
+:240:36:
+[37m      240 Ôöé     
+            
+this.message = 
+this.[32m;[37m
+          ÔòÁ          
+                       
+    [32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mExpected 
+identifier but found 
+";"[0m
+
+    src/app/features/ad
+min/stock-admin/produit
+/formulaire-produit/for
+mulaire-produit.compone
+nt.ts:296:39:
+[37m      296 Ôöé     
+                
+this.erreur = 
+this.[32m;[37m
+          ÔòÁ          
+                       
+       [32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mExpected 
+identifier but found 
+";"[0m
+
+    src/app/features/ad
+min/stock-admin/produit
+/liste-produits/liste-p
+roduits.component.ts:35
+2:36:
+[37m      352 Ôöé     
+            
+this.message = 
+this.[32m;[37m
+          ÔòÁ          
+                       
+    [32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mExpected 
+identifier but found 
+","[0m
+
+    src/app/features/st
+ock-front/catalogue/cat
+alogue.component.ts:466
+:29:
+[37m      466 Ôöé     
+        'en-stock': 
+this.[32m,[37m 'catal
+ogue.disponible': 
+          ÔòÁ          
+                    
+[32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mExpected 
+identifier but found 
+","[0m
+
+    src/app/features/st
+ock-front/categorie-pro
+duits/categorie-produit
+s.component.ts:531:29:
+[37m      531 Ôöé     
+        'en-stock': 
+this.[32m,[37m 'catal
+ogue.disponible': 
+          ÔòÁ          
+                    
+[32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mExpected 
+identifier but found 
+";"[0m
+
+    src/app/features/st
+ock-front/commander/com
+mander.component.ts:227
+:57:
+[37m      227 Ôöé     
+            
+this.erreur = 
+err.error?.message || 
+this.[32m;[37m
+          ÔòÁ          
+                       
+                       
+  [32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mExpected 
+identifier but found 
+";"[0m
+
+    src/app/features/st
+ock-front/detail-produi
+t/detail-produit.compon
+ent.ts:272:62:
+[37m      272 Ôöé     
+            
+this.ajoutErreur = 
+err.error?.message || 
+this.[32m;[37m
+          ÔòÁ          
+                       
+                       
+       [32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mExpected 
+identifier but found 
+";"[0m
+
+    src/app/features/st
+ock-front/panier/panier
+.component.ts:193:35:
+[37m      193 Ôöé     
+            
+this.erreur = 
+this.[32m;[37m
+          ÔòÁ          
+                       
+   [32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mExpected 
+identifier but found 
+";"[0m
+
+    src/app/features/ad
+min/stock-admin/categor
+ie/formulaire-categorie
+/formulaire-categorie.c
+omponent.ts:126:39:
+[37m      126 Ôöé     
+                
+this.erreur = 
+this.[32m;[37m
+          ÔòÁ          
+                       
+       [32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mExpected 
+identifier but found 
+";"[0m
+
+    src/app/features/ad
+min/stock-admin/categor
+ie/liste-categories/lis
+te-categories.component
+.ts:258:36:
+[37m      258 Ôöé     
+            
+this.message = 
+this.[32m;[37m
+          ÔòÁ          
+                       
+    [32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mExpected 
+identifier but found 
+";"[0m
+
+    src/app/features/ad
+min/stock-admin/command
+e/detail-commande/detai
+l-commande.component.ts
+:243:40:
+[37m      243 Ôöé     
+                
+this.message = 
+this.[32m;[37m
+          ÔòÁ          
+                       
+        [32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mExpected 
+identifier but found 
+";"[0m
+
+    src/app/features/ad
+min/stock-admin/command
+e/liste-commandes/liste
+-commandes.component.ts
+:240:36:
+[37m      240 Ôöé     
+            
+this.message = 
+this.[32m;[37m
+          ÔòÁ          
+                       
+    [32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mExpected 
+identifier but found 
+";"[0m
+
+    src/app/features/ad
+min/stock-admin/produit
+/formulaire-produit/for
+mulaire-produit.compone
+nt.ts:296:39:
+[37m      296 Ôöé     
+                
+this.erreur = 
+this.[32m;[37m
+          ÔòÁ          
+                       
+       [32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mExpected 
+identifier but found 
+";"[0m
+
+    src/app/features/ad
+min/stock-admin/produit
+/liste-produits/liste-p
+roduits.component.ts:35
+2:36:
+[37m      352 Ôöé     
+            
+this.message = 
+this.[32m;[37m
+          ÔòÁ          
+                       
+    [32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mExpected 
+identifier but found 
+","[0m
+
+    src/app/features/st
+ock-front/catalogue/cat
+alogue.component.ts:466
+:29:
+[37m      466 Ôöé     
+        'en-stock': 
+this.[32m,[37m 'catal
+ogue.disponible': 
+          ÔòÁ          
+                    
+[32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mExpected 
+identifier but found 
+","[0m
+
+    src/app/features/st
+ock-front/categorie-pro
+duits/categorie-produit
+s.component.ts:531:29:
+[37m      531 Ôöé     
+        'en-stock': 
+this.[32m,[37m 'catal
+ogue.disponible': 
+          ÔòÁ          
+                    
+[32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mExpected 
+identifier but found 
+";"[0m
+
+    src/app/features/st
+ock-front/commander/com
+mander.component.ts:227
+:57:
+[37m      227 Ôöé     
+            
+this.erreur = 
+err.error?.message || 
+this.[32m;[37m
+          ÔòÁ          
+                       
+                       
+  [32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mExpected 
+identifier but found 
+";"[0m
+
+    src/app/features/st
+ock-front/detail-produi
+t/detail-produit.compon
+ent.ts:272:62:
+[37m      272 Ôöé     
+            
+this.ajoutErreur = 
+err.error?.message || 
+this.[32m;[37m
+          ÔòÁ          
+                       
+                       
+       [32m^[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mExpected 
+identifier but found 
+";"[0m
+
+    src/app/features/st
+ock-front/panier/panier
+.component.ts:193:35:
+[37m      193 Ôöé     
+            
+this.erreur = 
+this.[32m;[37m
+          ÔòÁ          
+                       
+   [32m^[0m
+
+[39m[22m

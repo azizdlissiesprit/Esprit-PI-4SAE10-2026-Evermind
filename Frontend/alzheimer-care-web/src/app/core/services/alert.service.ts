@@ -17,6 +17,10 @@ export class AlertService {
   getAllAlerts(): Observable<Alert[]> {
     return this.http.get<Alert[]>(`${this.baseUrl}/retrieve-all-alerts`);
   }
+  // Add this method
+predictStability(patientId: number): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/predict/patient/${patientId}`);
+}
 
   // 2. Take Charge (Change status to EN_COURS)
   takeCharge(id: number): Observable<Alert> {

@@ -34,6 +34,13 @@ public class GatewayApplication {
 				.route("autonomy-service", r -> r
 						.path("/autonomy/**")
 						.uri("lb://AUTONOMY"))
+				.route("patient-service", r -> r
+						.path("/patient/**")
+						.uri("lb://Patient"))
+				.route("stock-service", r -> r
+						.path("/stock/**")
+						.filters(f -> f.stripPrefix(1))  // strips /stock → forwards /api/categories
+						.uri("lb://SERVICE-STOCK"))
 				.build();
 	}
 }

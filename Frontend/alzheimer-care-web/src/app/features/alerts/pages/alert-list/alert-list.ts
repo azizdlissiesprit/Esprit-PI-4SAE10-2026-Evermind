@@ -40,17 +40,37 @@ export class AlertListComponent implements OnInit {
     }
   }
 
+  // ... imports
+
   loadAlerts() {
-    // ... (Keep existing load logic)
     this.isLoading = true;
     this.alertService.getAllAlerts().subscribe({
         next: (data) => {
+            console.log("✅ ALERTS RECEIVED:", data); // Log full array
+
+            // 👇 Log AI specific check
+            const aiCount = data.filter(a => a.aiAnalysis).length;
+            console.log(`🤖 AI Analysis Stats: ${aiCount} out of ${data.length} alerts have AI data.`);
+            
+            // Check the first alert specifically for debugging
+            if (data.length > 0) {
+                console.log("🔍 First Alert Data:", {
+                    id: data[0].alertId,
+                    message: data[0].message,
+                    aiAnalysis: data[0].aiAnalysis,
+                    aiRiskScore: data[0].aiRiskScore
+                });
+            }
+
             this.allAlerts = data;
             this.applyFilters();
             this.isLoading = false;
             this.cd.detectChanges();
         },
-        error: () => { this.isLoading = false; }
+        error: (err) => { 
+            console.error("❌ Failed to load alerts", err);
+            this.isLoading = false; 
+        }
     });
   }
 

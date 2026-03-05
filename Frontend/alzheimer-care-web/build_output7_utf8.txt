@@ -1,0 +1,631 @@
+﻿
+> alzheimer-care-web@0.0.0 build
+> ng build
+
+node.exe : 
+[1m[33mThe 
+"prerender" option is 
+not considered when 
+"outputMode" is 
+specified.[39m[22m
+At line:1 char:1
++ & "D:\Downloads\nodej
+s/node.exe" "D:\Downloa
+ds\nodejs/node_modules/
+np ...
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: ([1m[33mThe    
+ "p...fied.[39m[2    
+2m:String) [], Rem    
+oteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+[33mÔØ»[39m Building...
+[32mÔ£ö[39m Building...
+[35mBrowser bundles[39m     
+[1mInitial chunk files[22m [2m | [22m[1mNames[22m                       [2m | [22m [1mRaw size[22m[2m | [22m[1mEstimated transfer size[22m
+[32mchunk-WWLJSOHT.js[39m   [2m | [22m[2m-[22m                           [2m | [22m[36m219.69 kB[39m[2m | [22m               [36m66.05 kB[39m
+[32mchunk-Z4CDB6JU.js[39m   [2m | [22m[2m-[22m                           [2m | [22m[36m172.84 kB[39m[2m | [22m               [36m51.13 kB[39m
+[32mchunk-RRIQRURX.js[39m   [2m | [22m[2m-[22m                           [2m | [22m [36m93.49 kB[39m[2m | [22m               [36m23.54 kB[39m
+[32mchunk-HCG5MLNM.js[39m   [2m | [22m[2m-[22m                           [2m | [22m [36m35.33 kB[39m[2m | [22m               [36m10.13 kB[39m
+[32mchunk-N6ZDNZFP.js[39m   [2m | [22m[2m-[22m                           [2m | [22m [36m23.18 kB[39m[2m | [22m                [36m6.79 kB[39m
+[32mmain-3FWS2Y6A.js[39m    [2m | [22m[2mmain[22m                        [2m | [22m [36m21.64 kB[39m[2m | [22m                [36m4.83 kB[39m
+[32mchunk-5K6UNUGI.js[39m   [2m | [22m[2m-[22m                           [2m | [22m  [36m1.02 kB[39m[2m | [22m                [36m1.02 kB[39m
+[32mstyles-JODFCXWS.css[39m [2m | [22m[2mstyles[22m                      [2m | [22m[36m832 bytes[39m[2m | [22m              [36m832 bytes[39m
+
+[1m [22m                   [2m | [22m[1mInitial total[22m               [2m | [22m[1m[93m568.01 kB[39m[22m[2m | [22m              [1m164.33 kB[22m
+
+[1mLazy chunk files[22m    [2m | [22m[1mNames[22m                       [2m | [22m [1mRaw size[22m[2m | [22m[1mEstimated transfer size[22m
+[32mchunk-RBH2PBJS.js[39m   [2m | [22m[2m-[22m                           [2m | [22m [36m50.92 kB[39m[2m | [22m                [36m9.81 kB[39m
+[32mchunk-UPYHIXQL.js[39m   [2m | [22m[2mprofile-container[22m           [2m | [22m [36m49.85 kB[39m[2m | [22m                [36m7.72 kB[39m
+[32mchunk-BQV24RGB.js[39m   [2m | [22m[2mcognitive-dashboard[22m         [2m | [22m [36m36.04 kB[39m[2m | [22m                [36m7.86 kB[39m
+[32mchunk-N7GBCCFF.js[39m   [2m | [22m[2mautonomy-dashboard[22m          [2m | [22m [36m34.52 kB[39m[2m | [22m                [36m8.03 kB[39m
+[32mchunk-V7UZCX7U.js[39m   [2m | [22m[2mpatient-assessments[22m         [2m | [22m [36m23.04 kB[39m[2m | [22m                [36m5.39 kB[39m
+[32mchunk-H5FWMZYE.js[39m   [2m | [22m[2malert-list[22m                  [2m | [22m [36m22.57 kB[39m[2m | [22m                [36m5.76 kB[39m
+[32mchunk-VSLKVMDZ.js[39m   [2m | [22m[2mcaregiver-dashboard[22m         [2m | [22m [36m19.52 kB[39m[2m | [22m                [36m4.58 kB[39m
+[32mchunk-UZE5GRSU.js[39m   [2m | [22m[2malert-detail[22m                [2m | [22m [36m16.95 kB[39m[2m | [22m                [36m4.18 kB[39m
+[32mchunk-67XHJW7Q.js[39m   [2m | [22m[2mauth-module[22m                 [2m | [22m [36m16.86 kB[39m[2m | [22m                [36m3.50 kB[39m
+[32mchunk-D3WSSUJZ.js[39m   [2m | [22m[2manalyse-stock-component[22m     [2m | [22m [36m16.30 kB[39m[2m | [22m                [36m4.29 kB[39m
+[32mchunk-ZU3UGKJL.js[39m   [2m | [22m[2mcategorie-produits-component[22m[2m | [22m [36m14.59 kB[39m[2m | [22m                [36m4.06 kB[39m
+[32mchunk-VOAHTGFR.js[39m   [2m | [22m[2mcatalogue-component[22m         [2m | [22m [36m14.36 kB[39m[2m | [22m                [36m3.94 kB[39m
+[32mchunk-FFDJH4HF.js[39m   [2m | [22m[2mmessages[22m                    [2m | [22m [36m13.42 kB[39m[2m | [22m                [36m3.11 kB[39m
+[32mchunk-NQIOHK72.js[39m   [2m | [22m[2mformulaire-produit-component[22m[2m | [22m [36m12.94 kB[39m[2m | [22m                [36m3.83 kB[39m
+[32mchunk-CMOB6DJK.js[39m   [2m | [22m[2mliste-produits-component[22m    [2m | [22m [36m12.25 kB[39m[2m | [22m                [36m3.67 kB[39m
+[2m...and 32 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+
+[35mServer bundles[39m      
+[1mInitial chunk files[22m [2m | [22m[1mNames[22m                       [2m | [22m [1mRaw size[22m
+[32mserver.mjs[39m          [2m | [22m[2mserver[22m                      [2m | [22m[36m806.34 kB[39m[2m | [22m                       
+[32mmain.server.mjs[39m     [2m | [22m[2mmain.server[22m                 [2m | [22m[36m460.24 kB[39m[2m | [22m                       
+[32mpolyfills.server.mjs[39m[2m | [22m[2mpolyfills.server[22m            [2m | [22m[36m233.25 kB[39m[2m | [22m                       
+[32mchunk-MFMVTDVZ.mjs[39m  [2m | [22m[2m-[22m                           [2m | [22m[36m219.75 kB[39m[2m | [22m                       
+[32mchunk-52TFY2RJ.mjs[39m  [2m | [22m[2m-[22m                           [2m | [22m[36m171.37 kB[39m[2m | [22m                       
+[32mchunk-UZAKXXU7.mjs[39m  [2m | [22m[2m-[22m                           [2m | [22m [36m93.78 kB[39m[2m | [22m                       
+[32mchunk-TKCAB4KM.mjs[39m  [2m | [22m[2m-[22m                           [2m | [22m [36m34.41 kB[39m[2m | [22m                       
+[32mchunk-GHKNI4GA.mjs[39m  [2m | [22m[2m-[22m                           [2m | [22m [36m23.49 kB[39m[2m | [22m                       
+[32mchunk-L2MVFUKD.mjs[39m  [2m | [22m[2m-[22m                           [2m | [22m  [36m1.32 kB[39m[2m | [22m                       
+[32mchunk-UECI4YVD.mjs[39m  [2m | [22m[2m-[22m                           [2m | [22m  [36m1.06 kB[39m[2m | [22m                       
+[32mchunk-T55IDOPT.mjs[39m  [2m | [22m[2m-[22m                           [2m | [22m[36m976 bytes[39m[2m | [22m                       
+
+[1mLazy chunk files[22m    [2m | [22m[1mNames[22m                       [2m | [22m [1mRaw size[22m
+[32mchunk-5LSY4WS7.mjs[39m  [2m | [22m[2m-[22m                           [2m | [22m [36m50.99 kB[39m[2m | [22m                       
+[32mchunk-WAU2I5AE.mjs[39m  [2m | [22m[2mprofile-container[22m           [2m | [22m [36m49.92 kB[39m[2m | [22m                       
+[32mchunk-3F3HZ2PB.mjs[39m  [2m | [22m[2mcognitive-dashboard[22m         [2m | [22m [36m36.11 kB[39m[2m | [22m                       
+[32mchunk-GPZ2PKUD.mjs[39m  [2m | [22m[2mautonomy-dashboard[22m          [2m | [22m [36m34.59 kB[39m[2m | [22m                       
+[32mchunk-MHZHRDI2.mjs[39m  [2m | [22m[2mpatient-assessments[22m         [2m | [22m [36m23.12 kB[39m[2m | [22m                       
+[32mchunk-TVJM67ZE.mjs[39m  [2m | [22m[2malert-list[22m                  [2m | [22m [36m22.64 kB[39m[2m | [22m                       
+[32mchunk-RYZSFTAS.mjs[39m  [2m | [22m[2mcaregiver-dashboard[22m         [2m | [22m [36m19.58 kB[39m[2m | [22m                       
+[32mchunk-AXTJ2D2N.mjs[39m  [2m | [22m[2malert-detail[22m                [2m | [22m [36m17.02 kB[39m[2m | [22m                       
+[32mchunk-GEREDEQ2.mjs[39m  [2m | [22m[2mauth-module[22m                 [2m | [22m [36m16.93 kB[39m[2m | [22m                       
+[32mchunk-C7JRF6H3.mjs[39m  [2m | [22m[2manalyse-stock-component[22m     [2m | [22m [36m16.36 kB[39m[2m | [22m                       
+[32mchunk-IDULA4AQ.mjs[39m  [2m | [22m[2mcategorie-produits-component[22m[2m | [22m [36m14.66 kB[39m[2m | [22m                       
+[32mchunk-DTKPSUNJ.mjs[39m  [2m | [22m[2mcatalogue-component[22m         [2m | [22m [36m14.43 kB[39m[2m | [22m                       
+[32mchunk-ZEPYYDGC.mjs[39m  [2m | [22m[2mmessages[22m                    [2m | [22m [36m13.48 kB[39m[2m | [22m                       
+[32mchunk-OP2BQPII.mjs[39m  [2m | [22m[2mformulaire-produit-component[22m[2m | [22m [36m13.02 kB[39m[2m | [22m                       
+[32mchunk-EK6L5IPJ.mjs[39m  [2m | [22m[2mliste-produits-component[22m    [2m | [22m [36m12.31 kB[39m[2m | [22m                       
+[2m...and 34 more lazy chunks files. Use "--verbose" to show all the files.[22m
+
+[35mPrerendered 33 static routes.[39m
+Application bundle generation failed. [10.873 seconds] - 2026-03-05T03:10:07.792Z
+
+[1m[33m[33mÔû▓ [43;
+33m[[43;30mWARNING[43
+;33m][0m [1mNG8113: 
+RouterLink is not used 
+within the template of 
+AnalyseStockComponent[
+0m [1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/ad
+min/stock-admin/analyse
+-stock/analyse-stock.co
+mponent.ts:12:26:
+[37m      12 Ôöé   
+imports: 
+[CommonModule, 
+[32mRouterLink[37m, 
+FormsModule],
+         ÔòÁ           
+                
+[32m~~~~~~~~~~[0m
+
+
+[33mÔû▓ [43;33m[[43;
+30mWARNING[43;33m][0m
+ [1mNG8107: The left 
+side of this optional 
+chain operation does 
+not include 'null' or 
+'undefined' in its 
+type, therefore the 
+'?.' operator can be 
+replaced with the '.' 
+operator.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/as
+sesements/patient-asses
+sments.html:192:75:
+[37m      192 Ôöé 
+...core-badge">Score: 
+{{ latestAutonomy?.[32
+mtotalScore[37m || 0 
+}}/50</div>
+          ÔòÁ          
+                       
+         
+[32m~~~~~~~~~~[0m
+
+  Warning occurs in 
+the template of 
+component PatientAssess
+mentsComponent.
+
+    src/app/features/as
+sesements/patient-asses
+sments.ts:18:15:
+[37m      18 Ôöé   
+templateUrl: [32m'./pa
+tient-assessments.html'
+[37m,
+         ÔòÁ           
+     [32m~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~[0m
+
+
+[33mÔû▓ [43;33m[[43;
+30mWARNING[43;33m][0m
+ [1mNG8107: The left 
+side of this optional 
+chain operation does 
+not include 'null' or 
+'undefined' in its 
+type, therefore the 
+'?.' operator can be 
+replaced with the '.' 
+operator.[0m 
+[1m[35m[plugin 
+angular-compiler][0m
+
+    src/app/features/as
+sesements/patient-asses
+sments.html:219:76:
+[37m      219 Ôöé 
+...ext">{{ latestAutono
+my?.[32massistanceLeve
+l[37m || 'Not 
+assessed' }}</...
+          ÔòÁ          
+                  [32m
+~~~~~~~~~~~~~~~[0m
+
+  Warning occurs in 
+the template of 
+component PatientAssess
+mentsComponent.
+
+    src/app/features/as
+sesements/patient-asses
+sments.ts:18:15:
+[37m      18 Ôöé   
+templateUrl: [32m'./pa
+tient-assessments.html'
+[37m,
+         ÔòÁ           
+     [32m~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~[0m
+
+
+[33mÔû▓ [43;33m[[43;
+30mWARNING[43;33m][0m
+ [1mDeprecation[0m 
+[1m[35m[plugin 
+angular-sass][0m
+
+    src/app/features/al
+erts/pages/alert-detail
+/alert-detail.scss:210:
+26:
+[37m      210 Ôöé     
+&:hover { background: 
+[32m[37mdarken($succes
+s-green, 5%); }
+          ÔòÁ          
+                 
+[32m^[0m
+
+
+  Global built-in 
+functions are 
+deprecated and will be 
+removed in Dart Sass 
+3.0.0.
+  Use color.adjust 
+instead.
+  
+  More info and 
+automated migrator: [4
+mhttps://sass-lang.com/
+d/import[0m
+
+
+[33mÔû▓ [43;33m[[43;
+30mWARNING[43;33m][0m
+ [1mDeprecation[0m 
+[1m[35m[plugin 
+angular-sass][0m
+
+    src/app/features/al
+erts/pages/alert-detail
+/alert-detail.scss:210:
+26:
+[37m      210 Ôöé     
+&:hover { background: 
+[32m[37mdarken($succes
+s-green, 5%); }
+          ÔòÁ          
+                 
+[32m^[0m
+
+
+  darken() is 
+deprecated. 
+Suggestions:
+  
+  color.scale($color, 
+$lightness: 
+-12.6865671642%)
+  color.adjust($color, 
+$lightness: -5%)
+  
+  More info: [4mhttps:
+//sass-lang.com/d/color
+-functions[0m
+
+
+[33mÔû▓ [43;33m[[43;
+30mWARNING[43;33m][0m
+ [1mbundle initial 
+exceeded maximum 
+budget. Budget 500.00 
+kB was not met by 
+68.01 kB with a total 
+of 568.01 kB.[0m
+
+
+[33mÔû▓ [43;33m[[43;
+30mWARNING[43;33m][0m
+ [1msrc/app/features/a
+dmin/assessments/autono
+my-dashboard/autonomy-d
+ashboard.scss exceeded 
+maximum budget. Budget 
+4.00 kB was not met by 
+3.08 kB with a total 
+of 7.08 kB.[0m
+
+
+[33mÔû▓ [43;33m[[43;
+30mWARNING[43;33m][0m
+ [1msrc/app/features/c
+ommunication/pages/mess
+ages/messages.scss 
+exceeded maximum 
+budget. Budget 4.00 kB 
+was not met by 3.26 kB 
+with a total of 7.26 
+kB.[0m
+
+
+[33mÔû▓ [43;33m[[43;
+30mWARNING[43;33m][0m
+ [1msrc/app/features/p
+rofile/components/relat
+ive-profile/relative-pr
+ofile.scss exceeded 
+maximum budget. Budget 
+4.00 kB was not met by 
+3.75 kB with a total 
+of 7.75 kB.[0m
+
+
+[33mÔû▓ [43;33m[[43;
+30mWARNING[43;33m][0m
+ [1msrc/app/features/a
+ssesements/patient-asse
+ssments.scss exceeded 
+maximum budget. Budget 
+4.00 kB was not met by 
+1.89 kB with a total 
+of 5.89 kB.[0m
+
+
+[33mÔû▓ [43;33m[[43;
+30mWARNING[43;33m][0m
+ [1msrc/app/features/p
+rofile/components/careg
+iver-profile/caregiver-
+profile.scss exceeded 
+maximum budget. Budget 
+4.00 kB was not met by 
+3.35 kB with a total 
+of 7.35 kB.[0m
+
+
+[33mÔû▓ [43;33m[[43;
+30mWARNING[43;33m][0m
+ [1msrc/app/features/d
+ashboard/pages/caregive
+r-dashboard/caregiver-d
+ashboard.scss exceeded 
+maximum budget. Budget 
+4.00 kB was not met by 
+4.80 kB with a total 
+of 8.80 kB.[0m
+
+
+[33mÔû▓ [43;33m[[43;
+30mWARNING[43;33m][0m
+ [1msrc/app/features/a
+lerts/pages/alert-list/
+alert-list.scss 
+exceeded maximum 
+budget. Budget 4.00 kB 
+was not met by 7.05 kB 
+with a total of 11.05 
+kB.[0m
+
+
+[33mÔû▓ [43;33m[[43;
+30mWARNING[43;33m][0m
+ [1msrc/app/features/p
+rofile/components/docto
+r-profile/doctor-profil
+e.scss exceeded 
+maximum budget. Budget 
+4.00 kB was not met by 
+3.16 kB with a total 
+of 7.16 kB.[0m
+
+
+[33mÔû▓ [43;33m[[43;
+30mWARNING[43;33m][0m
+ [1msrc/app/features/a
+lerts/pages/alert-detai
+l/alert-detail.scss 
+exceeded maximum 
+budget. Budget 4.00 kB 
+was not met by 3.48 kB 
+with a total of 7.48 
+kB.[0m
+
+
+[33mÔû▓ [43;33m[[43;
+30mWARNING[43;33m][0m
+ [1msrc/app/features/a
+dmin/assessments/cognit
+ive-dashboard/cognitive
+-dashboard.scss 
+exceeded maximum 
+budget. Budget 4.00 kB 
+was not met by 1.86 kB 
+with a total of 5.86 
+kB.[0m
+
+[39m[22m
+[1m[31m[31mX [41;31
+m[[41;97mERROR[41;31m
+][0m [1msrc/app/featu
+res/dashboard/pages/car
+egiver-dashboard/caregi
+ver-dashboard.scss 
+exceeded maximum 
+budget. Budget 8.00 kB 
+was not met by 801 
+bytes with a total of 
+8.80 kB.[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m [1
+msrc/app/features/alert
+s/pages/alert-list/aler
+t-list.scss exceeded 
+maximum budget. Budget 
+8.00 kB was not met by 
+3.05 kB with a total 
+of 11.05 kB.[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mThe 'admin/alerts/e
+dit/:id' route uses 
+prerendering and 
+includes parameters, 
+but 
+'getPrerenderParams' 
+is missing. Please 
+define 
+'getPrerenderParams' 
+function for this 
+route in your server 
+routing configuration 
+or specify a different 
+'renderMode'.[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mThe 
+'admin/users/edit/:id' 
+route uses 
+prerendering and 
+includes parameters, 
+but 
+'getPrerenderParams' 
+is missing. Please 
+define 
+'getPrerenderParams' 
+function for this 
+route in your server 
+routing configuration 
+or specify a different 
+'renderMode'.[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mThe 'admin/cognitiv
+e/edit/:id' route uses 
+prerendering and 
+includes parameters, 
+but 
+'getPrerenderParams' 
+is missing. Please 
+define 
+'getPrerenderParams' 
+function for this 
+route in your server 
+routing configuration 
+or specify a different 
+'renderMode'.[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mThe 'admin/autonomy
+/edit/:id' route uses 
+prerendering and 
+includes parameters, 
+but 
+'getPrerenderParams' 
+is missing. Please 
+define 
+'getPrerenderParams' 
+function for this 
+route in your server 
+routing configuration 
+or specify a different 
+'renderMode'.[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mThe 'admin/autonomy
+/dashboard/:patientId' 
+route uses 
+prerendering and 
+includes parameters, 
+but 
+'getPrerenderParams' 
+is missing. Please 
+define 
+'getPrerenderParams' 
+function for this 
+route in your server 
+routing configuration 
+or specify a different 
+'renderMode'.[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mThe 'admin/stock/ca
+tegories/modifier/:id' 
+route uses 
+prerendering and 
+includes parameters, 
+but 
+'getPrerenderParams' 
+is missing. Please 
+define 
+'getPrerenderParams' 
+function for this 
+route in your server 
+routing configuration 
+or specify a different 
+'renderMode'.[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mThe 'admin/stock/pr
+oduits/modifier/:id' 
+route uses 
+prerendering and 
+includes parameters, 
+but 
+'getPrerenderParams' 
+is missing. Please 
+define 
+'getPrerenderParams' 
+function for this 
+route in your server 
+routing configuration 
+or specify a different 
+'renderMode'.[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mThe 'admin/stock/co
+mmandes/:id' route 
+uses prerendering and 
+includes parameters, 
+but 
+'getPrerenderParams' 
+is missing. Please 
+define 
+'getPrerenderParams' 
+function for this 
+route in your server 
+routing configuration 
+or specify a different 
+'renderMode'.[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mThe 
+'app/alerts/:id' route 
+uses prerendering and 
+includes parameters, 
+but 
+'getPrerenderParams' 
+is missing. Please 
+define 
+'getPrerenderParams' 
+function for this 
+route in your server 
+routing configuration 
+or specify a different 
+'renderMode'.[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mThe 'app/store/cata
+logue/:id' route uses 
+prerendering and 
+includes parameters, 
+but 
+'getPrerenderParams' 
+is missing. Please 
+define 
+'getPrerenderParams' 
+function for this 
+route in your server 
+routing configuration 
+or specify a different 
+'renderMode'.[0m
+
+
+[31mX [41;31m[[41;97
+mERROR[41;31m][0m 
+[1mThe 'app/store/comm
+ande/:ref' route uses 
+prerendering and 
+includes parameters, 
+but 
+'getPrerenderParams' 
+is missing. Please 
+define 
+'getPrerenderParams' 
+function for this 
+route in your server 
+routing configuration 
+or specify a different 
+'renderMode'.[0m
+
+[39m[22m

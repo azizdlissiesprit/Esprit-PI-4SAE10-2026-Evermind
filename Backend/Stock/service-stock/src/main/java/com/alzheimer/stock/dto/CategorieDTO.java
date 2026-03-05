@@ -24,5 +24,5 @@ public class CategorieDTO {
 
     private LocalDateTime dateCreation;
     private LocalDateTime dateModification;
-    private int nombreProduits;
+    private Integer nombreProduits; // ✅ Integer instead of int — accepts null
 }
