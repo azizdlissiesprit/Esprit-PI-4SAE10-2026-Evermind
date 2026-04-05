@@ -1,0 +1,185 @@
+<div class="page-wrapper">
+  <div class="main-container">
+    <!-- Left Section (Image) -->
+    <div class="image-section">
+      <div class="logo">Alzheimer Care</div>
+      <img
+        class="bg-img"
+        src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1740&q=80"
+        alt="Medical Clinic Background"
+      />
+
+      <div class="promo-card">
+        <div class="promo-text">
+          Join our platform<br />
+          for secure patient monitoring.
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Section (Form) -->
+    <div class="form-section">
+      <!-- Stepper -->
+      <div class="stepper">
+        <div class="step active">
+          <div class="step-circle">1</div>
+          Account
+        </div>
+        <div class="step-line"></div>
+        <div class="step">
+          <div class="step-circle">2</div>
+          Confirm
+        </div>
+      </div>
+
+      <h1 class="form-title">Registration</h1>
+
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <div class="form-row">
+          <div class="form-group half">
+            <label class="label">First Name</label>
+            <div class="input-wrapper">
+              <input
+                type="text"
+                class="input-field"
+                [class.input-error]="isFieldInvalid('firstName')"
+                formControlName="firstName"
+                placeholder="John" />
+              <span class="error-icon" *ngIf="isFieldInvalid('firstName')">⚠️</span>
+            </div>
+            <span class="error-text" *ngIf="getFieldError('firstName')">
+              {{ getFieldError('firstName') }}
+            </span>
+          </div>
+
+          <div class="form-group half">
+            <label class="label">Last Name</label>
+            <div class="input-wrapper">
+              <input
+                type="text"
+                class="input-field"
+                [class.input-error]="isFieldInvalid('lastName')"
+                formControlName="lastName"
+                placeholder="Doe" />
+              <span class="error-icon" *ngIf="isFieldInvalid('lastName')">⚠️</span>
+            </div>
+            <span class="error-text" *ngIf="getFieldError('lastName')">
+              {{ getFieldError('lastName') }}
+            </span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="label">Email</label>
+          <div class="input-wrapper">
+            <input
+              type="email"
+              class="input-field"
+              [class.input-error]="isFieldInvalid('email')"
+              formControlName="email"
+              placeholder="example@mail.com" />
+            <span class="error-icon" *ngIf="isFieldInvalid('email')">⚠️</span>
+          </div>
+          <span class="error-text" *ngIf="getFieldError('email')">
+            {{ getFieldError('email') }}
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label class="label">Role</label>
+          <div class="input-wrapper">
+            <select
+              class="input-field"
+              [class.input-error]="isFieldInvalid('role')"
+              formControlName="role">
+              <option value="" disabled selected>Select your role</option>
+              <option *ngFor="let role of roles" [value]="role.value">
+                {{ role.label }}
+              </option>
+            </select>
+            <span class="error-icon" *ngIf="isFieldInvalid('role')">⚠️</span>
+          </div>
+          <span class="error-text" *ngIf="getFieldError('role')">
+            {{ getFieldError('role') }}
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label class="label">Password</label>
+          <div class="input-wrapper">
+            <input
+              type="password"
+              class="input-field"
+              [class.input-error]="isFieldInvalid('password')"
+              formControlName="password"
+              placeholder="••••••••••" />
+            <span class="error-icon" *ngIf="isFieldInvalid('password')">⚠️</span>
+          </div>
+
+          <!-- Password Strength Indicator -->
+          <div class="password-strength" *ngIf="registerForm.get('password')?.value">
+            <div class="strength-bar-container">
+              <div
+                class="strength-bar"
+                [class]="'strength-' + getPasswordStrength().level"
+                [style.width.%]="getPasswordStrength().score">
+              </div>
+            </div>
+            <div class="strength-label" [class]="'label-' + getPasswordStrength().level">
+              Difficulté: <strong>{{ getPasswordStrength().label }}</strong>
+            </div>
+          </div>
+
+          <span class="error-text" *ngIf="getFieldError('password')">
+            {{ getFieldError('password') }}
+          </span>
+          <small class="hint-text" *ngIf="registerForm.get('password')?.touched">
+            <span [class.valid]="registerForm.get('password')?.value?.match(/[A-Z]/)">✓ Contient majuscule</span>
+            <span [class.valid]="registerForm.get('password')?.value?.match(/[a-z]/)">✓ Contient minuscule</span>
+            <span [class.valid]="registerForm.get('password')?.value?.match(/[0-9]/)">✓ Contient chiffre</span>
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label class="label">Confirm Password</label>
+          <div class="input-wrapper">
+            <input
+              type="password"
+              class="input-field"
+              [class.input-error]="isFieldInvalid('confirmPassword')"
+              formControlName="confirmPassword"
+              placeholder="••••••••••" />
+            <span class="error-icon" *ngIf="isFieldInvalid('confirmPassword')">⚠️</span>
+          </div>
+          <span class="error-text" *ngIf="getFieldError('confirmPassword')">
+            {{ getFieldError('confirmPassword') }}
+          </span>
+        </div>
+
+        <div *ngIf="errorMessage" style="color: #dc2626; background-color: #fee2e2; padding: 10px; border-radius: 6px; margin-bottom: 15px; font-size: 14px; text-align: center;">
+          {{ errorMessage }}
+        </div>
+
+        <!-- ✅ CAPTCHA -->
+        <div class="form-group" style="display:flex; justify-content:center; margin-bottom: 14px;">
+          <re-captcha
+            formControlName="recaptcha"
+            siteKey="6LfWLoAsAAAAADs5GBuGWXl4DdEoukT1eT9YBGd3">
+          </re-captcha>
+        </div>
+
+        <div class="legal-text">
+          By clicking "Register", you agree to our Terms of Use and Privacy Policy.
+        </div>
+
+        <button class="submit-btn" type="submit" [disabled]="registerForm.invalid || isLoading">
+          {{ isLoading ? 'Creating...' : "Register" }}
+        </button>
+
+        <p class="login-link">
+          Already have an account? <a routerLink="/auth/login">Login</a>
+        </p>
+      </form>
+    </div>
+  </div>
+</div>

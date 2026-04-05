@@ -1,0 +1,139 @@
+<div class="page">
+  <div class="page-head">
+    <div>
+      <h1>Gestion des Utilisateurs</h1>
+    </div>
+
+    <div class="head-actions">
+      <button class="btn ghost" (click)="refresh()">Actualiser</button>
+      <button class="btn ghost" (click)="exportUsers()" [disabled]="!users.length">Exporter CSV</button>
+    </div>
+  </div>
+
+  <div class="feedback error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <div class="stats" *ngIf="!isLoading">
+    <div class="stat-card" *ngFor="let s of statCards">
+      <div class="stat-label">{{ s.label }}</div>
+      <div class="stat-value">{{ s.value }}</div>
+      <div class="stat-sub" *ngIf="s.sub">{{ s.sub }}</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="filters">
+      <input
+        class="input"
+        [ngModel]="searchTerm"
+        (ngModelChange)="onSearchChange($event)"
+        placeholder="Rechercher par nom ou email..."
+      />
+
+      <select class="select native-select" [ngModel]="selectedRole" (ngModelChange)="onRoleChange($event)">
+        <option *ngFor="let role of roleOptions" [ngValue]="role.value">{{ role.label }}</option>
+      </select>
+
+      <select
+        class="select native-select"
+        [ngModel]="selectedStatus"
+        (ngModelChange)="onStatusChange($event)"
+      >
+        <option *ngFor="let status of statusOptions" [ngValue]="status.value">{{ status.label }}</option>
+      </select>
+
+      <div class="spacer"></div>
+
+      <button class="btn ghost" (click)="resetFilters()">Reinitialiser</button>
+    </div>
+
+    <div class="table" *ngIf="!isLoading">
+      <div class="thead">
+        <div>Utilisateur</div>
+        <div>Role</div>
+        <div>Statut</div>
+        <div>Derniere connexion</div>
+        <div>Date d'ajout</div>
+        <div class="actions-col">Actions</div>
+      </div>
+
+      <div class="table-state" *ngIf="isRefreshingUsers">Mise a jour de la liste...</div>
+      <div class="table-state" *ngIf="!isRefreshingUsers && !users.length">
+        Aucun utilisateur ne correspond aux filtres actuels.
+      </div>
+
+      <div class="row" *ngFor="let u of pagedUsers">
+        <div class="user-cell">
+          <div class="avatar-sm">{{ getInitials(u) }}</div>
+          <div class="user-meta">
+            <div class="name">{{ getFullName(u) }}</div>
+            <div class="email">{{ u.email }}</div>
+          </div>
+        </div>
+
+        <div>
+          <span
+            class="pill"
+            [class.pill-admin]="u.userType === userType.ADMIN"
+            [class.pill-aidant]="u.userType === userType.AIDANT"
+            [class.pill-medecin]="u.userType === userType.MEDECIN"
+            [class.pill-responsable]="u.userType === userType.RESPONSABLE"
+          >
+            {{ getRoleLabel(u.userType) }}
+          </span>
+        </div>
+
+        <div>
+          <span
+            class="status"
+            [class.status-ok]="u.active && !u.banned"
+            [class.status-off]="u.banned"
+            [class.status-pending]="!u.active && !u.banned"
+          >
+            {{ getStatusLabel(u) }}
+          </span>
+        </div>
+
+        <div class="muted">{{ formatLastActivity(u) }}</div>
+        <div>{{ u.createdAt | date: 'dd/MM/yyyy HH:mm' }}</div>
+
+        <div class="actions-col">
+          <button class="btn-row" (click)="toggleBan(u)" [disabled]="activeActionUserId === u.userId">
+            {{ getActionLabel(u) }}
+          </button>
+          <button class="btn-row danger" (click)="deleteUser(u)" [disabled]="activeActionUserId === u.userId">
+            Suppr.
+          </button>
+        </div>
+      </div>
+
+      <div class="pagination-bar" *ngIf="!isRefreshingUsers && users.length > pageSize">
+        <span class="pagination-copy">{{ paginationLabel }}</span>
+
+        <div class="pagination-actions">
+          <button class="page-btn" type="button" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">
+            Prec.
+          </button>
+
+          <button
+            class="page-btn"
+            type="button"
+            *ngFor="let page of pageNumbers"
+            [class.active]="page === currentPage"
+            (click)="goToPage(page)"
+          >
+            {{ page }}
+          </button>
+
+          <button
+            class="page-btn"
+            type="button"
+            (click)="goToPage(currentPage + 1)"
+            [disabled]="currentPage === totalPages"
+          >
+            Suiv.
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

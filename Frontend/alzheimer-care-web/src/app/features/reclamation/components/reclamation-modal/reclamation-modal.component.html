@@ -1,0 +1,82 @@
+<div class="modal-backdrop" (click)="onBackdropClick($event)">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Nouvelle Réclamation</h2>
+      <button class="close-btn" (click)="close()" type="button">
+        <span>&times;</span>
+      </button>
+    </div>
+    
+    <form (ngSubmit)="onSubmit()" #reclamationForm="ngForm">
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="subject">Sujet *</label>
+          <input 
+            type="text" 
+            id="subject" 
+            name="subject"
+            [(ngModel)]="reclamation.subject" 
+            required
+            placeholder="Entrez le sujet de votre réclamation"
+            class="form-control">
+        </div>
+
+        <div class="form-group">
+          <label for="category">Catégorie *</label>
+          <select 
+            id="category" 
+            name="category"
+            [(ngModel)]="reclamation.category" 
+            required
+            class="form-control">
+            <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="priority">Priorité *</label>
+          <select 
+            id="priority" 
+            name="priority"
+            [(ngModel)]="reclamation.priority" 
+            required
+            class="form-control">
+            <option *ngFor="let prio of priorities" [value]="prio">{{ prio }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description *</label>
+          <textarea 
+            id="description" 
+            name="description"
+            [(ngModel)]="reclamation.description" 
+            required
+            rows="6"
+            placeholder="Décrivez votre réclamation en détail"
+            class="form-control"></textarea>
+        </div>
+
+        <div class="error-message" *ngIf="errorMessage">
+          {{ errorMessage }}
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button 
+          type="button" 
+          class="btn btn-secondary"
+          (click)="close()"
+          [disabled]="isSubmitting">
+          Annuler
+        </button>
+        <button 
+          type="submit" 
+          class="btn btn-primary"
+          [disabled]="isSubmitting || !reclamationForm.form.valid">
+          {{ isSubmitting ? 'Envoi en cours...' : 'Soumettre' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

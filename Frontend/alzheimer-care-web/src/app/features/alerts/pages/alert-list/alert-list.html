@@ -1,0 +1,259 @@
+<div class="page-container">
+    
+    <!-- HEADER -->
+    <header class="top-header">
+        <div class="breadcrumbs">
+            Home &gt; <span>Critical Alerts</span>
+        </div>
+        
+        <div class="header-controls">
+            <button class="facility-dropdown">
+                Facility: Neurology Ward <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="icon-btn">
+                <i class="fa-regular fa-bell"></i>
+            </div>
+            <div class="team-avatars">
+                <img src="https://i.pravatar.cc/150?img=33" alt="Team 1">
+                <img src="https://i.pravatar.cc/150?img=47" alt="Team 2">
+                <img src="https://i.pravatar.cc/150?img=12" alt="Team 3">
+                <span class="team-text">3 team members online</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- STATUS BAR -->
+    <section class="status-bar">
+        <div class="system-status">
+            <div class="pill-status">
+                <div class="dot-green"></div> Sensor connectivity: Stable
+            </div>
+            <div class="pill-status sync-text">
+                Sync status: Just now
+            </div>
+        </div>
+
+        <div class="filters">
+            <button class="filter-dropdown">
+                <span>Severity</span> All levels <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <button class="filter-dropdown">
+                <span>Patient</span> All patients <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <button class="filter-dropdown">
+                <span>Type</span> Fall, Vitals, Zone <i class="fa-solid fa-chevron-down"></i>
+            </button>
+        </div>
+    </section>
+
+    <!-- ACTIVE ALERTS -->
+    <section class="active-alerts">
+        <div class="section-header">
+            <h2 class="section-title">Active alerts</h2>
+            <span class="section-meta">3 critical, 2 high, 4 moderate</span>
+        </div>
+
+        <div class="alerts-grid">
+            
+            <!-- Card 1: Critical -->
+            <div class="alert-card card-critical">
+                <div class="card-top">
+                    <div class="alert-info">
+                        <div class="alert-icon-box">
+                            <i class="fa-solid fa-person-falling"></i>
+                        </div>
+                        <div class="alert-title-block">
+                            <h3>Fall detected <span class="badge critical">Critical</span></h3>
+                            <p class="alert-desc">Possible impact on left hip</p>
+                        </div>
+                    </div>
+                    <div class="time-stamp">08:42 AM (3 mins ago)</div>
+                </div>
+
+                <div class="patient-row">
+                    <div class="patient-details">
+                        <img src="https://i.pravatar.cc/150?img=10" class="patient-avatar" alt="Patient">
+                        <div class="patient-text">
+                            <h4>Eleanor Stewart</h4>
+                            <p>Room 204 &bull; Home sensor network</p>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <div class="mini-chart"></div>
+                        <span class="chart-label">Activity trend</span>
+                    </div>
+                </div>
+
+                <div class="metrics-container">
+                    <span class="metric-pill">Impact: 2.4 m/s</span>
+                    <span class="metric-pill">HR: 135 bpm</span>
+                    <span class="metric-pill">Posture: Floor</span>
+                </div>
+
+                <div class="card-context">
+                    Detected by: Camera 2 &bull; Wearable band
+                </div>
+
+                <div class="card-actions">
+                    <div class="progress-wrapper">
+                        <span class="escalation-label">Escalation: Auto-dialing...</span>
+                        <div class="progress-bar"><div class="progress-fill fill-red"></div></div>
+                    </div>
+                    <button class="btn-primary">Acknowledge</button>
+                    <button class="btn-secondary">Details</button>
+                </div>
+            </div>
+
+            <!-- Card 2: High -->
+            <div class="alert-card card-high">
+                <div class="card-top">
+                    <div class="alert-info">
+                        <div class="alert-icon-box">
+                            <i class="fa-solid fa-heart-pulse"></i>
+                        </div>
+                        <div class="alert-title-block">
+                            <h3>Heart rate spike <span class="badge high">High</span></h3>
+                            <p class="alert-desc">Sustained elevation > 130</p>
+                        </div>
+                    </div>
+                    <div class="time-stamp">08:39 AM (6 mins ago)</div>
+                </div>
+
+                <div class="patient-row">
+                    <div class="patient-details">
+                        <img src="https://i.pravatar.cc/150?img=11" class="patient-avatar" alt="Patient">
+                        <div class="patient-text">
+                            <h4>John Doe</h4>
+                            <p>Room 112 &bull; Monitored bed</p>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <div class="mini-chart" style="background-color: #729AF0;"></div>
+                        <span class="chart-label">Vitals deviation</span>
+                    </div>
+                </div>
+
+                <div class="metrics-container">
+                    <span class="metric-pill">HR: 128 bpm</span>
+                    <span class="metric-pill">SpO2: 91%</span>
+                    <span class="metric-pill">BP: 145 / 92</span>
+                </div>
+
+                <div class="card-context">
+                    Detected by: Wearable band &bull; Bedside monitor
+                </div>
+
+                <div class="card-actions">
+                     <div class="progress-wrapper">
+                        <span class="escalation-label">Escalation: Paging cardio...</span>
+                        <div class="progress-bar"><div class="progress-fill fill-orange"></div></div>
+                    </div>
+                    <button class="btn-primary">Acknowledge</button>
+                    <button class="btn-secondary">Details</button>
+                </div>
+            </div>
+
+            <!-- Card 3: Moderate -->
+            <div class="alert-card card-moderate">
+                <div class="card-top">
+                    <div class="alert-info">
+                        <div class="alert-icon-box">
+                            <i class="fa-solid fa-door-open"></i>
+                        </div>
+                        <div class="alert-title-block">
+                            <h3>Zone exit <span class="badge moderate">Moderate</span></h3>
+                            <p class="alert-desc">Wandering risk perimeter</p>
+                        </div>
+                    </div>
+                    <div class="time-stamp">08:30 AM (15 mins ago)</div>
+                </div>
+
+                <div class="patient-row">
+                    <div class="patient-details">
+                        <img src="https://i.pravatar.cc/150?img=13" class="patient-avatar" alt="Patient">
+                        <div class="patient-text">
+                            <h4>Michael Novak</h4>
+                            <p>Garden exit &bull; Zone B</p>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <div class="mini-chart"></div>
+                        <span class="chart-label">Movement history</span>
+                    </div>
+                </div>
+
+                <div class="metrics-container">
+                    <span class="metric-pill">Dir: East corridor</span>
+                    <span class="metric-pill">Speed: 0.8 m/s</span>
+                </div>
+
+                <div class="card-context">
+                    Detected by: Door sensor &bull; Camera
+                </div>
+
+                <div class="card-actions">
+                    <div class="progress-wrapper">
+                        <span class="escalation-label">Escalation: Notify security...</span>
+                        <div class="progress-bar"><div class="progress-fill fill-blue"></div></div>
+                    </div>
+                    <button class="btn-primary">Acknowledge</button>
+                    <button class="btn-secondary">Details</button>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- RECENT HISTORY -->
+    <section class="history-section">
+        <div class="history-header">
+            <h3>Recent history & resolved alerts</h3>
+            <div class="toggle-wrapper">
+                <div class="toggle-switch"></div>
+                Mark as false alarm for ML model
+            </div>
+        </div>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 40px;"></th>
+                        <th>Alert</th>
+                        <th>Patient</th>
+                        <th>Resolution</th>
+                        <th>Duration</th>
+                        <th>Report</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><div class="check-box"><i class="fa-solid fa-check"></i></div></td>
+                        <td><span class="alert-name">Wandering Garden exit</span></td>
+                        <td>Michael Novak</td>
+                        <td><span class="resolution-text">Resolved by Nurse Joy at 08:55 AM</span></td>
+                        <td><span class="duration-text">13 min</span></td>
+                        <td><a href="#" class="link-text">View report</a></td>
+                    </tr>
+                    <tr>
+                        <td><div class="check-box"><i class="fa-solid fa-check"></i></div></td>
+                        <td><span class="alert-name">Heart rate spike > 130</span></td>
+                        <td>John Doe</td>
+                        <td><span class="resolution-text">Resolved by Dr. Smith at 07:40 AM</span></td>
+                        <td><span class="duration-text">9 min</span></td>
+                        <td><a href="#" class="link-text">View report</a></td>
+                    </tr>
+                    <tr>
+                        <td><div class="check-box"><i class="fa-solid fa-check"></i></div></td>
+                        <td><span class="alert-name">Bed exit Night time</span></td>
+                        <td>Eleanor Stewart</td>
+                        <td><span class="resolution-text">False alarm marked by Nurse Lee</span></td>
+                        <td><span class="duration-text">2 min</span></td>
+                        <td><a href="#" class="link-text">View report</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</div>

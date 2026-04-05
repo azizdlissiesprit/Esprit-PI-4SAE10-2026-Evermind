@@ -1,0 +1,55 @@
+<div class="notification-shell" [class.compact]="compact">
+  <button
+    #triggerButton
+    class="bell-trigger"
+    mat-stroked-button
+    type="button"
+    (click)="togglePanel($event)"
+    [class.has-unread]="center.unreadCount() > 0"
+    [matBadge]="center.unreadCount() > 0 ? center.unreadCount() : null"
+    matBadgeColor="warn"
+    aria-label="Notifications reclamation"
+  >
+    <span class="bell-icon">•</span>
+    <span class="trigger-copy" *ngIf="!compact">Notifications</span>
+  </button>
+
+  <div class="notification-panel" *ngIf="center.isOpen()" [ngStyle]="panelStyle">
+    <div class="panel-head">
+      <div>
+        <strong>Flux reclamations</strong>
+        <p>{{ adminMode ? 'Notifications admin globales' : 'Notifications reclamation' }}</p>
+      </div>
+      <button mat-button class="refresh-btn" type="button" (click)="center.refresh()">Actualiser</button>
+    </div>
+
+    <div class="panel-state" *ngIf="center.isLoading()">Chargement...</div>
+    <div class="panel-state error" *ngIf="center.error()">{{ center.error() }}</div>
+
+    <div class="notification-list" *ngIf="!center.isLoading() && center.notifications().length; else emptyState">
+      <button
+        mat-card
+        type="button"
+        class="notification-card"
+        *ngFor="let item of center.notifications()"
+        [class.unread]="!item.read"
+        (click)="openNotification(item.notificationId, item.reclamationId)"
+      >
+        <div class="card-top">
+          <strong>{{ item.title }}</strong>
+          <span class="pill" [class.user]="item.audience === 'USER'" [class.admin]="item.audience === 'ADMIN'">
+            {{ item.audience }}
+          </span>
+        </div>
+        <p>{{ item.message }}</p>
+        <div class="card-meta">
+          <span>{{ item.createdAt | date: 'dd/MM HH:mm' }}</span>
+        </div>
+      </button>
+    </div>
+
+    <ng-template #emptyState>
+      <div class="panel-state">Aucune notification recente.</div>
+    </ng-template>
+  </div>
+</div>

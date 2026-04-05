@@ -1,0 +1,41 @@
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo"></div>
+      <div class="brand-title">NeuroDetect</div>
+    </div>
+
+    <div class="section-title">PLATEFORME</div>
+    <nav class="nav">
+      <a class="nav-item" routerLink="/app/backoffice/users" routerLinkActive="active">
+        Utilisateurs
+      </a>
+      <a class="nav-item" routerLink="/app/backoffice/reclamations" routerLinkActive="active">
+        Reclamations
+      </a>
+    </nav>
+
+    <div class="section-title">ADMINISTRATION</div>
+    <nav class="nav"></nav>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="top-actions">
+        <app-reclamation-notification-bell [adminMode]="true"></app-reclamation-notification-bell>
+        <button class="logout-btn" type="button" (click)="logout()">Deconnexion</button>
+        <div class="user">
+          <div class="user-text">
+            <div class="user-name">{{ currentUser.name }}</div>
+            <div class="user-role">{{ currentUser.role }}</div>
+          </div>
+          <div class="avatar">{{ currentUser.initials }}</div>
+        </div>
+      </div>
+    </header>
+
+    <section class="content">
+      <router-outlet></router-outlet>
+    </section>
+  </main>
+</div>

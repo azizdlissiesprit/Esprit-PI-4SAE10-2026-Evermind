@@ -1,0 +1,55 @@
+<!-- Add the [class.collapsed] binding here -->
+<nav class="sidebar" [class.collapsed]="isCollapsed">
+    
+    <div class="sidebar-header">
+        <!-- The logo disappears when collapsed -->
+        <div class="brand-logo" *ngIf="!isCollapsed">CLINIK</div>
+
+        <div class="header-actions">
+            <div class="nav-notification" [class.compact-wrap]="isCollapsed">
+                <app-reclamation-notification-bell [compact]="true"></app-reclamation-notification-bell>
+            </div>
+
+            <!-- Toggle Button -->
+            <button class="menu-toggle" (click)="toggleSidebar()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </div>
+
+    <ul class="nav-menu">
+        <li class="nav-item" *ngFor="let item of menuItems">
+            <a [routerLink]="item.route" routerLinkActive="active" class="nav-link" [title]="isCollapsed ? item.label : ''">
+                <span class="icon-box"><i [class]="item.icon"></i></span>
+                
+                <!-- Only show text if NOT collapsed (using CSS for smooth transition) -->
+                <span class="link-text">{{ item.label }}</span>
+            </a>
+        </li>
+    </ul>
+
+    <!-- User Section with Logout (Hidden when collapsed) -->
+    <div class="user-section" *ngIf="!isCollapsed">
+        <div class="user-info" *ngIf="currentUser">
+            <div class="user-avatar">
+                <i class="fa-solid fa-user-circle"></i>
+            </div>
+            <div class="user-details">
+                <p class="user-name">{{ currentUser.firstName }} {{ currentUser.lastName }}</p>
+                <p class="user-role">{{ currentUser.role }}</p>
+            </div>
+        </div>
+        <button class="btn-logout" (click)="logout()">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Déconnexion</span>
+        </button>
+    </div>
+
+    <!-- Logout button when collapsed -->
+    <div class="logout-collapsed" *ngIf="isCollapsed">
+        <button class="btn-logout-icon" (click)="logout()" title="Déconnexion">
+            <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+    </div>
+
+</nav>

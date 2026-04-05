@@ -1,0 +1,90 @@
+<div class="patients-page">
+  <h1>Gestion des Patients</h1>
+  <!-- Content goes here -->
+</div>
+a<div class="page">
+  <div class="page-head">
+    <div>
+      <h1>Gestion des Patients</h1>
+      <p>Gérez les patients, leur suivi, leurs scans et l’assignation médicale.</p>
+    </div>
+
+    <div class="head-actions">
+      <button class="btn ghost" (click)="onExport()">⬇ Exporter</button>
+      <button class="btn primary" (click)="onNewPatient()">＋ Nouveau Patient</button>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat-card" *ngFor="let s of stats">
+      <div class="stat-label">{{ s.label }}</div>
+      <div class="stat-value">{{ s.value }}</div>
+      <div class="stat-sub" *ngIf="s.sub">{{ s.sub }}</div>
+    </div>
+  </div>
+
+  <!-- TABLE CARD -->
+  <div class="card">
+    <div class="filters">
+      <input class="input" placeholder="Rechercher par nom, email, ID..." />
+
+      <div class="select">
+        <div class="select-label">Statut:</div>
+        <div class="select-value">Tous</div>
+      </div>
+
+      <div class="select">
+        <div class="select-label">Médecin:</div>
+        <div class="select-value">Tous</div>
+      </div>
+
+      <div class="spacer"></div>
+
+      <button class="btn ghost">≡ Plus de filtres</button>
+    </div>
+
+    <div class="table">
+      <div class="thead">
+        <div>Patient</div>
+        <div>ID</div>
+        <div>Statut</div>
+        <div>Dernier Scan</div>
+        <div>Médecin</div>
+        <div>Date d'ajout</div>
+        <div class="actions-col">Actions</div>
+      </div>
+
+      <div class="row" *ngFor="let p of patients">
+        <div class="user-cell">
+          <div class="avatar-sm"></div>
+          <div class="user-meta">
+            <div class="name">{{ p.fullName }}</div>
+            <div class="email">{{ p.email }}</div>
+          </div>
+        </div>
+
+        <div class="mono">{{ p.patientId }}</div>
+
+        <div>
+          <span class="status" [class.status-ok]="p.status==='Actif'" [class.status-off]="p.status==='Inactif'">
+            {{ p.status }}
+          </span>
+        </div>
+
+        <div class="muted">
+          {{ p.lastScan }}
+          <span class="pill" *ngIf="p.lastScanType !== '—'">{{ p.lastScanType }}</span>
+        </div>
+
+        <div>{{ p.doctor }}</div>
+
+        <div>{{ p.createdAt }}</div>
+
+        <div class="actions-col">
+          <button class="dots">···</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
