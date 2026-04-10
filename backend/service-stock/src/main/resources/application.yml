@@ -1,0 +1,72 @@
+server:
+  port: ${PORT:8081}
+
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:local}
+  application:
+    name: service-stock
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5MB
+      max-request-size: 10MB
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/alzheimer_stock}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:root}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    defer-datasource-initialization: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+  sql:
+    init:
+      mode: always
+
+springdoc:
+  api-docs:
+    path: /api/v3/api-docs
+  swagger-ui:
+    path: /api/swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: method
+
+info:
+  app:
+    name: Service Stock - Gestion de Stock
+    description: Microservice de gestion de stock (Catégories, Produits, Commandes, Panier)
+    version: 1.0.0
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  info:
+    env:
+      enabled: true
+
+app:
+  upload:
+    dir: uploads
+  mail:
+    admin-email: admin@pharmacare.tn
+  ai:
+    api-key: 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
+    api-url: https://openrouter.ai/api/v1/chat/completions
+    model: qwen/qwen3.6-plus:free
+    enabled: ${AI_ENABLED:true}
+
+eureka:
+  client:
+    enabled: false
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
