@@ -27,6 +27,9 @@
                 </select>
                 <i class="fa-solid fa-chevron-down arrow"></i>
             </div>
+            <button class="refresh-btn" (click)="refreshPatientData()" [disabled]="isLoading" title="Rafraîchir les données">
+                <i class="fa-solid fa-arrows-rotate" [class.fa-spin]="isLoading"></i>
+            </button>
         </div>
 
         <!-- TABS -->
@@ -92,6 +95,18 @@
                                 <i class="fa-solid fa-circle"></i>
                                 {{ getCognitiveStatus(cognitiveHistory[cognitiveHistory.length -1]?.mmseScore || 0).label }}
                             </div>
+                            <div class="cognitive-details" *ngIf="cognitiveHistory[cognitiveHistory.length -1]?.mmseScore">
+                                <div class="detail-item">
+                                    <span class="detail-label">État cognitif:</span>
+                                    <span class="detail-value" [ngClass]="getCognitiveStatus(cognitiveHistory[cognitiveHistory.length -1]?.mmseScore || 0).color.replace('text-', 'bg-')">
+                                        {{ getDetailedCognitiveState(cognitiveHistory[cognitiveHistory.length -1]?.mmseScore || 0) }}
+                                    </span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Recommandation:</span>
+                                    <span class="detail-recommendation">{{ getCognitiveRecommendation(cognitiveHistory[cognitiveHistory.length -1]?.mmseScore || 0) }}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -122,14 +137,25 @@
                     <div class="metric-card">
                         <div class="card-header">
                             <span class="card-label">MoCA Assessment</span>
+                            <i class="fa-solid fa-brain icon-light"></i>
                         </div>
                         <div class="card-body">
                             <div class="value-group">
                                 <span class="medium-number">{{ cognitiveHistory[cognitiveHistory.length -1]?.moocaScore || '--' }}</span>
                                 <span class="scale">/ 30</span>
                             </div>
+                            <div class="status-pill" [ngClass]="getMoCAStatus(cognitiveHistory[cognitiveHistory.length -1]?.moocaScore || 0).color">
+                                <i class="fa-solid fa-circle"></i>
+                                {{ getMoCAStatus(cognitiveHistory[cognitiveHistory.length -1]?.moocaScore || 0).label }}
+                            </div>
                             <div class="date-badge">
                                 {{ cognitiveHistory[cognitiveHistory.length -1]?.date | date:'mediumDate' }}
+                            </div>
+                            <div class="moca-details" *ngIf="cognitiveHistory[cognitiveHistory.length -1]?.moocaScore">
+                                <div class="detail-item">
+                                    <span class="detail-label">Fonctions exécutives:</span>
+                                    <span class="detail-value">{{ getExecutiveFunctionLevel(cognitiveHistory[cognitiveHistory.length -1]?.moocaScore || 0) }}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -189,7 +215,7 @@
                 <div class="radar-card card-box">
                     <div class="card-title-row">
                         <h3>ADL Profile</h3>
-                        <div class="score-badge">Score: {{ latestAutonomy?.totalScore || 0 }}/50</div>
+                        <div class="score-badge">Score: {{ latestAutonomy.totalScore || 0 }}/50</div>
                     </div>
                     
                     <div class="radar-wrapper">
@@ -216,7 +242,7 @@
                         </div>
                         <div class="insight-content">
                             <h4>Assistance Required</h4>
-                            <span class="highlight-text">{{ latestAutonomy?.assistanceLevel || 'Not assessed' }}</span>
+                            <span class="highlight-text">{{ latestAutonomy.assistanceLevel || 'Not assessed' }}</span>
                         </div>
                     </div>
 

@@ -11,7 +11,7 @@ const DEFAULT_PATIENT: Patient = {
   birthDate: '—',
   age: 0,
   secuNumber: '—',
-  avatar: 'https://storage.googleapis.com/banani-avatars/avatar%2Ffemale%2F65-80%2FEuropean%2F2',
+  avatar: '/assets/images/avatars/default-female-avatar.png',
   status: 'active',
   alzheimerStage: '—',
   riskLevel: 'medium',

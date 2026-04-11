@@ -1,0 +1,20 @@
+<div class="game-wrapper">
+  <div class="game-card">
+    <div class="game-header">
+      <div class="title">
+        <iconify-icon icon="lucide:target" style="font-size: 20px"></iconify-icon>
+        Réflexe Cognitif
+      </div>
+      <div class="score">Score: {{ score }}</div>
+    </div>
+    <div class="game-area">
+      <div class="countdown" *ngIf="started && countdown > 0">{{ countdown }}</div>
+      <button class="target" *ngIf="started && targetShown" (click)="hit()"></button>
+      <div class="idle" *ngIf="!started">Cliquez sur Démarrer</div>
+    </div>
+    <div class="actions">
+      <button class="btn" *ngIf="!started" (click)="start()">Démarrer</button>
+      <button class="btn secondary" *ngIf="started" (click)="stop()">Arrêter</button>
+    </div>
+  </div>
+</div>

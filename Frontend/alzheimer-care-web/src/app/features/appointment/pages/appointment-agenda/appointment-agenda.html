@@ -1,0 +1,277 @@
+<div class="appointment-agenda">
+  <div class="page">
+  <div class="page-message info" *ngIf="infoMessage">{{ infoMessage }}</div>
+  <div class="page-message error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <!-- EN-TÊTE -->
+  <div class="top-bar">
+    <h1 class="page-title">Agenda des rendez-vous</h1>
+    <div class="top-actions">
+      <button class="btn btn-ghost">Jour</button>
+      <button class="btn btn-ghost">Filtrer</button>
+      <button class="btn btn-ghost">Exporter</button>
+      <button class="btn btn-outline-icon" type="button" disabled>
+        <i class="fa-regular fa-pen-to-square btn-icon" aria-hidden="true"></i>
+        <span>Modifier</span>
+      </button>
+      <button class="btn btn-outline-danger" type="button" disabled>
+        <i class="fa-regular fa-trash-can btn-icon" aria-hidden="true"></i>
+        <span>Supprimer</span>
+      </button>
+      <button class="btn btn-primary" type="button" (click)="openNew()" [disabled]="submitting">
+        <i class="fa-solid fa-plus btn-icon" aria-hidden="true"></i>
+        <span>Nouveau RDV</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- CARTES STATS -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">RDV cette semaine</div>
+      <div class="stat-value">{{ weekAppointments.length }}</div>
+      <div class="stat-trend up">{{ backendAvailable ? 'Synchronise avec l API' : 'Mode local' }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Taux de confirmation</div>
+      <div class="stat-value">{{ confirmationRate }}%</div>
+      <div class="stat-trend up">{{ confirmedCount }} confirmes</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Annulations</div>
+      <div class="stat-value red">{{ cancelledCount }}</div>
+      <div class="stat-trend up red-txt">{{ pendingCount }} en attente</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Durée moy. consultation</div>
+      <div class="stat-value">{{ averageDuration }} <span class="unit">min</span></div>
+      <div class="stat-trend neutral">stable</div>
+    </div>
+  </div>
+
+  <!-- CONTENU PRINCIPAL -->
+  <div class="main-row">
+
+    <!-- CALENDRIER -->
+    <div class="cal-panel">
+
+      <!-- Navigation semaine -->
+      <div class="week-nav">
+        <button class="nav-btn" (click)="prevWeek()">‹</button>
+        <span class="week-label">{{ weekRangeLabel() }}</span>
+        <button class="nav-btn" (click)="nextWeek()">›</button>
+        <button class="btn btn-sm" (click)="goToday()">Aujourd'hui</button>
+      </div>
+
+      <!-- Grille -->
+      <div class="panel-empty" *ngIf="loading">Chargement des rendez-vous...</div>
+      <div class="cal-grid" *ngIf="!loading">
+
+        <!-- En-têtes jours -->
+        <div class="time-gutter-head"></div>
+        <div *ngFor="let day of weekDays; let i = index"
+             class="day-head"
+             [class.current-day]="isCurrentDay(day)">
+          <div class="day-abbr">{{ DAY_NAMES[i] }}</div>
+          <div class="day-num" [class.day-circle]="isCurrentDay(day)">
+            {{ day.getDate() }}
+          </div>
+        </div>
+
+        <!-- Lignes horaires -->
+        <ng-container *ngFor="let hour of timeSlots">
+          <div class="time-gutter">{{ hour < 10 ? '0'+hour : hour }}h</div>
+          <div *ngFor="let day of weekDays"
+               class="day-cell"
+               [class.current-col]="isCurrentDay(day)">
+            <div *ngFor="let rdv of getRdvForSlot(day, hour)"
+                 class="rdv-card"
+                 [ngClass]="'rdv-' + rdv.type.toLowerCase()"
+                 (click)="openEdit(rdv, $event)">
+              <div class="rdv-name">{{ rdv.patientNom }} {{ rdv.patientPrenom }}</div>
+              <div class="rdv-type">{{ getTypeLabel(rdv.type) }}</div>
+              <div class="rdv-note" *ngIf="rdv.notes">{{ rdv.notes }}</div>
+              <div class="rdv-actions">
+                <button class="action-btn modify" (click)="openEdit(rdv, $event)">
+                  <i class="fa-regular fa-pen-to-square" aria-hidden="true"></i>
+                  <span>Modifier</span>
+                </button>
+                <button class="action-btn delete" (click)="deleteRDV(rdv, $event)">
+                  <i class="fa-regular fa-trash-can" aria-hidden="true"></i>
+                  <span>Supprimer</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+      </div>
+    </div>
+
+    <!-- PANNEAU DROIT -->
+    <div class="right-col">
+
+      <!-- Mini-calendrier -->
+      <div class="panel mini-cal-panel">
+        <div class="mini-cal-header">
+          <button class="nav-btn-sm" type="button" (click)="prevWeek()">‹</button>
+          <span class="mini-cal-title">{{ getMiniCalendarTitle() }}</span>
+          <button class="nav-btn-sm" type="button" (click)="nextWeek()">›</button>
+        </div>
+        <div class="mini-cal-grid">
+          <div *ngFor="let n of MINI_DAYS" class="mini-day-name">{{ n }}</div>
+          <div *ngFor="let d of calendarDays"
+               class="mini-day"
+               [class.other-month]="!d.inMonth"
+               [class.mini-today]="isMiniToday(d.date)">
+            {{ d.date.getDate() }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Demandes de RDV -->
+      <div class="panel demandes-panel" *ngIf="demandes.length > 0">
+        <div class="panel-title">Demandes de RDV</div>
+        <div *ngFor="let d of demandes" class="demande-card">
+          <div class="demande-top">
+            <span class="demande-nom">{{ d.patientNom }} {{ d.patientPrenom }}</span>
+            <span class="badge-attente">En attente</span>
+          </div>
+          <div class="demande-info">
+            {{ d.date }} · {{ d.heure }} · {{ d.motif }}
+          </div>
+          <div class="demande-actions">
+            <button class="btn-refuser" (click)="refuserDemande(d)">Refuser</button>
+            <button class="btn-accepter" (click)="accepterDemande(d)">Accepter</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Taux de remplissage -->
+      <div class="panel fill-panel">
+        <div class="panel-title">Taux de remplissage</div>
+        <div class="fill-body">
+          <div class="donut-wrap">
+            <svg viewBox="0 0 88 88" width="88" height="88">
+              <circle cx="44" cy="44" r="36" fill="none" stroke="#e8f0fe" stroke-width="10"/>
+              <circle cx="44" cy="44" r="36" fill="none" stroke="#1a73e8"
+                      stroke-width="10"
+                      [attr.stroke-dasharray]="CIRCUMFERENCE"
+                      [attr.stroke-dashoffset]="dashOffset()"
+                      stroke-linecap="round"
+                      transform="rotate(-90 44 44)"/>
+              <text x="44" y="49" text-anchor="middle"
+                    font-size="14" fill="#1a73e8" font-weight="700">
+                {{ fillPercent() }}%
+              </text>
+            </svg>
+          </div>
+          <div class="fill-legend">
+            <div class="leg-item"><span class="leg-dot blue"></span> Confirmés ({{ confirmedCount }})</div>
+            <div class="leg-item"><span class="leg-dot orange"></span> En attente ({{ pendingCount }})</div>
+            <div class="leg-item"><span class="leg-dot red"></span> Annulés ({{ cancelledCount }})</div>
+            <div class="leg-item"><span class="leg-dot gray"></span> Libres ({{ freeCount }})</div>
+          </div>
+        </div>
+        <div class="fill-bar-row">
+          <span>Créneaux utilisés</span>
+          <span>{{ weekAppointments.length }}/{{ MAX_WEEK_SLOTS }}</span>
+        </div>
+        <div class="fill-bar-bg">
+          <div class="fill-bar-fg" [style.width.%]="fillPercent()"></div>
+        </div>
+      </div>
+
+      <!-- RDV du jour -->
+      <div class="panel today-panel">
+        <div class="panel-title">RDV du jour</div>
+        <div *ngFor="let rdv of getTodayRdv()" class="today-item">
+          <div class="today-time">
+            <span class="th">{{ formatHH(rdv.dateHeure) }}</span>
+            <span class="tm">{{ formatMM(rdv.dateHeure) }}</span>
+          </div>
+          <div class="today-info">
+            <div class="today-name">{{ rdv.patientNom }} {{ rdv.patientPrenom }}</div>
+            <div class="today-type">{{ rdv.notes || getTypeLabel(rdv.type) }}</div>
+            <span class="badge" [ngClass]="'badge-' + rdv.statut.toLowerCase()">
+              {{ getStatutLabel(rdv.statut) }}
+            </span>
+          </div>
+        </div>
+        <div *ngIf="getTodayRdv().length === 0" class="empty-today">
+          Aucun rendez-vous aujourd'hui
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal-box" (click)="$event.stopPropagation()">
+
+    <div class="modal-hd">
+      <h2>{{ isEditing ? 'Modifier le rendez-vous' : 'Nouveau rendez-vous' }}</h2>
+      <button class="modal-close" (click)="closeModal()">×</button>
+    </div>
+
+    <form [formGroup]="rdvForm" (ngSubmit)="saveRDV()" class="modal-body">
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nom</label>
+          <input type="text" formControlName="patientNom" placeholder="Dupont"/>
+        </div>
+        <div class="form-group">
+          <label>Prénom</label>
+          <input type="text" formControlName="patientPrenom" placeholder="Marie"/>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Type</label>
+          <select formControlName="type">
+            <option *ngFor="let t of TYPE_OPTIONS" [value]="t">{{ TYPE_LABELS[t] }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Statut</label>
+          <select formControlName="statut">
+            <option *ngFor="let s of STATUT_OPTIONS" [value]="s">{{ getStatutLabel(s) }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Date et heure</label>
+          <input type="datetime-local" formControlName="dateHeure"/>
+        </div>
+        <div class="form-group">
+          <label>Durée (min)</label>
+          <input type="number" formControlName="dureeMinutes" min="5" max="120"/>
+        </div>
+      </div>
+
+      <div class="form-group full">
+        <label>Notes</label>
+        <textarea formControlName="notes" rows="3" placeholder="Observations..."></textarea>
+      </div>
+
+      <div class="modal-ft">
+        <button type="button" class="btn btn-danger-sm" *ngIf="isEditing"
+                [disabled]="submitting"
+                (click)="deleteRDV(selectedRdv!, $event)">
+          Supprimer
+        </button>
+        <button type="button" class="btn btn-ghost" [disabled]="submitting" (click)="closeModal()">Annuler</button>
+        <button type="submit" class="btn btn-primary" [disabled]="rdvForm.invalid || submitting">
+          {{ submitting ? 'Enregistrement...' : (isEditing ? 'Enregistrer' : 'Créer') }}
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>

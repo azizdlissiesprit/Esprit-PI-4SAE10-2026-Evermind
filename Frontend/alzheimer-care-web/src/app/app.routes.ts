@@ -11,6 +11,13 @@ export const routes: Routes = [
     path: 'verify',
     component: VerifyComponent,
   },
+  {
+    path: 'interface',
+    loadComponent: () =>
+      import('./features/interface/patient-interface/patient-interface').then(
+        (m) => m.PatientInterfaceComponent,
+      ),
+  },
   // 1. Route for Auth (Login)
   {
     path: 'auth',
@@ -100,8 +107,25 @@ export const routes: Routes = [
           import('./features/admin/assessments/cognitive-dashboard/cognitive-dashboard').then((m) => m.CognitiveAssessmentsComponent),
       },
       {
+        path: 'cognitive/pdf/:patientId',
+        loadComponent: () =>
+          import('./features/admin/assessments/cognitive-pdf/cognitive-pdf').then((m) => m.CognitivePdfComponent),
+      },
+      {
         path: 'autonomy',
         loadComponent: () => import('./features/admin/assessments/autonomy-list/autonomy-list').then((m) => m.AutonomyAdminListComponent),
+      },
+      {
+        path: 'appointments',
+        loadComponent: () => import('./features/admin/appointments/appointments-calendar.component').then((m) => m.AppointmentsCalendarComponent),
+      },
+            {
+        path: 'appointments/new',
+        loadComponent: () => import('./features/admin/appointments/rendezvous-form.component').then((m) => m.RendezVousFormComponent),
+      },
+      {
+        path: 'appointments/edit/:id',
+        loadComponent: () => import('./features/admin/appointments/rendezvous-form.component').then((m) => m.RendezVousFormComponent),
       },
 
       // --- ADD THIS REDIRECT ---

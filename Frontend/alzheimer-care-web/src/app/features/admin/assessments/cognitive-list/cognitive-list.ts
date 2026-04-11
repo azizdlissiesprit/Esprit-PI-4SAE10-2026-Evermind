@@ -3,6 +3,8 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { CognitiveService } from '../../../../core/services/cognitive.service';
+import { Router } from '@angular/router';
+import { SelectedPatientService } from '../../../../core/services/selected-patient.service';
 import { CognitiveAssessment, TrendType, AssessmentType } from '../../../../core/models/assessment.models';
 
 @Component({
@@ -28,14 +30,16 @@ export class CognitiveAdminListComponent implements OnInit {
 
   // Pagination
   currentPage = 1;
-  pageSize = 10;
+  pageSize = 5;
   totalElements = 0;
   totalPages = 0;
 
   constructor(
     private cognitiveService: CognitiveService,
     private cd: ChangeDetectorRef,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private router: Router,
+    private selectedPatient: SelectedPatientService
   ) {}
 
   ngOnInit() {
@@ -87,6 +91,12 @@ export class CognitiveAdminListComponent implements OnInit {
     const startIndex = (this.currentPage - 1) * this.pageSize;
     this.displayedAssessments = temp.slice(startIndex, startIndex + this.pageSize);
   }
+
+  openInterface(patientId: string) {
+    this.selectedPatient.set(patientId);
+    this.router.navigate(['/interface']);
+  }
+
 
   onDelete(id: number) {
     if (confirm('Delete this assessment? This cannot be undone.')) {

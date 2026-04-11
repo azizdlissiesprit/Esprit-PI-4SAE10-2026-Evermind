@@ -14,21 +14,21 @@
             <div class="form-grid">
                 <div class="form-group">
                     <label>Patient ID</label>
-                    <input type="text" formControlName="patientId" placeholder="e.g. P-1024">
+                    <input type="text" formControlName="patientId" placeholder="e.g. P-1024" required>
                 </div>
                 <div class="form-group">
                     <label>Date</label>
-                    <input type="date" formControlName="date">
+                    <input type="date" formControlName="date" required>
                 </div>
                 <div class="form-group">
                     <label>Assessment Type</label>
-                    <select formControlName="type">
+                    <select formControlName="type" required>
                         <option *ngFor="let t of types" [value]="t">{{ t | titlecase }}</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>Evaluator Name</label>
-                    <input type="text" formControlName="evaluator" placeholder="Dr. Smith">
+                    <input type="text" formControlName="evaluator" placeholder="Dr. Smith" required>
                 </div>
             </div>
 
@@ -37,15 +37,15 @@
             <div class="form-grid">
                 <div class="form-group">
                     <label>MMSE Score (0-30)</label>
-                    <input type="number" formControlName="mmseScore" min="0" max="30">
+                    <input type="number" formControlName="mmseScore" min="0" max="30" readonly>
                 </div>
                 <div class="form-group">
                     <label>MoCA Score (0-30)</label>
-                    <input type="number" formControlName="moocaScore" min="0" max="30">
+                    <input type="number" formControlName="moocaScore" min="0" max="30" readonly>
                 </div>
                 <div class="form-group">
                     <label>Clinical Trend</label>
-                    <select formControlName="trend">
+                    <select formControlName="trend" required>
                         <option *ngFor="let t of trends" [value]="t">{{ t | titlecase }}</option>
                     </select>
                 </div>
@@ -53,29 +53,61 @@
 
             <!-- DETAILED SCORES (NESTED FORM GROUP) -->
             <h3 style="margin: 24px 0 16px; font-size: 16px; color: var(--accent-color);">Domain Breakdown</h3>
+            
+            <!-- Message d'erreur pour le total -->
+            <div class="error-message" *ngIf="hasTotalScoreError()" style="background: #fee2e2; border: 1px solid #fecaca; color: #dc2626; padding: 12px; border-radius: 6px; margin-bottom: 16px;">
+                <strong>⚠️ Erreur de score total:</strong> {{ getTotalScoreError() }}
+            </div>
+            
             <div class="form-grid" formGroupName="scores">
                 <div class="form-group">
                     <label>Memory</label>
-                    <input type="number" formControlName="memory">
+                    <input type="number" formControlName="memory" min="0" max="10" required>
+                    <div class="error-message" *ngIf="form.get('scores.memory')?.invalid && form.get('scores.memory')?.touched">
+                        {{ getDomainScoreError('memory') }}
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Orientation</label>
-                    <input type="number" formControlName="orientation">
+                    <input type="number" formControlName="orientation" min="0" max="10" required>
+                    <div class="error-message" *ngIf="form.get('scores.orientation')?.invalid && form.get('scores.orientation')?.touched">
+                        {{ getDomainScoreError('orientation') }}
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Language</label>
-                    <input type="number" formControlName="language">
+                    <input type="number" formControlName="language" min="0" max="10" required>
+                    <div class="error-message" *ngIf="form.get('scores.language')?.invalid && form.get('scores.language')?.touched">
+                        {{ getDomainScoreError('language') }}
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Executive Functions</label>
-                    <input type="number" formControlName="executiveFunctions">
+                    <input type="number" formControlName="executiveFunctions" min="0" max="10" required>
+                    <div class="error-message" *ngIf="form.get('scores.executiveFunctions')?.invalid && form.get('scores.executiveFunctions')?.touched">
+                        {{ getDomainScoreError('executiveFunctions') }}
+                    </div>
                 </div>
+            </div>
+
+            <!-- Information sur le total actuel -->
+            <div class="total-info" style="background: #f0f9ff; border: 1px solid #bae6fd; padding: 12px; border-radius: 6px; margin: 16px 0;">
+                <strong>📊 Total des scores de domaine:</strong> 
+                <span style="font-size: 18px; font-weight: bold; color: #0369a1;">
+                    {{ computeTotalFromDomains() }}/30
+                </span>
+                <span style="color: #64748b; font-size: 14px; margin-left: 8px;">
+                    (Memory: {{ form.get('scores.memory')?.value || 0 }} + 
+                     Orientation: {{ form.get('scores.orientation')?.value || 0 }} + 
+                     Language: {{ form.get('scores.language')?.value || 0 }} + 
+                     Executive: {{ form.get('scores.executiveFunctions')?.value || 0 }})
+                </span>
             </div>
 
             <!-- OBSERVATIONS -->
             <div class="form-group full-width" style="margin-top: 24px;">
                 <label>Medical Observations</label>
-                <textarea formControlName="observations" rows="4" placeholder="Clinical notes..."></textarea>
+                <textarea formControlName="observations" rows="4" placeholder="Clinical notes..." minlength="12" required></textarea>
             </div>
 
             <!-- ACTIONS -->

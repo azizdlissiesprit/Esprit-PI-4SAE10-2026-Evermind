@@ -17,6 +17,10 @@
             <iconify-icon icon="lucide:download" style="margin-right: 6px; font-size: 14px; vertical-align: middle;"></iconify-icon>
             Export PDF
           </button>
+          <button class="btn-sm" (click)="onShowPatientQR()">
+            <iconify-icon icon="lucide:qr-code" style="margin-right: 6px; font-size: 14px; vertical-align: middle;"></iconify-icon>
+            QR
+          </button>
           <button class="btn-sm" (click)="printAssessment()">
             <iconify-icon icon="lucide:printer" style="margin-right: 6px; font-size: 14px; vertical-align: middle;"></iconify-icon>
             Print
@@ -120,6 +124,22 @@
           <iconify-icon icon="lucide:line-chart" style="color: var(--primary)"></iconify-icon>
           Cognitive Evolution Tracking
         </div>
+        <div style="display: flex; gap: 12px; align-items: center">
+          <label style="display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted-foreground)">
+            <input type="checkbox" [checked]="showMMSE" (change)="showMMSE = !showMMSE" />
+            MMSE
+          </label>
+          <label style="display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted-foreground)">
+            <input type="checkbox" [checked]="showMoCA" (change)="showMoCA = !showMoCA" />
+            MoCA
+          </label>
+          <div style="display:flex; align-items:center; gap:6px">
+            <input #pidInput type="text" [value]="patientId" placeholder="Patient ID" style="height:28px; padding: 0 8px; border:1px solid var(--border); border-radius:6px; background: var(--card); color:var(--foreground); font-size:12px"/>
+            <button class="btn-sm" (click)="onChangePatient(pidInput.value)">
+              Load Patient
+            </button>
+          </div>
+        </div>
       </div>
       <div class="card-content-no-pad">
         <div class="chart-wrapper">
@@ -145,11 +165,11 @@
               <!-- Y-Axis Labels -->
               <text x="-25" y="5" font-size="11" fill="var(--muted-foreground)">30</text>
               <text x="-25" y="85" font-size="11" fill="var(--muted-foreground)">20</text>
-              <text x="-25" y="160" font-size="11" fill="var(--muted-foreground)">10</text>
+              <text x="-25" y="160" font-size="11" fill="var(--muted-foreground)">0</text>
 
               <!-- MMSE line -->
               <polyline
-                *ngIf="getMMSEPolylinePoints(chartData)"
+                *ngIf="showMMSE && getMMSEPolylinePoints(chartData)"
                 [attr.points]="getMMSEPolylinePoints(chartData)"
                 fill="none"
                 stroke="var(--primary)"
@@ -159,7 +179,7 @@
               />
               <!-- MoCA line -->
               <polyline
-                *ngIf="getMoCAPolylinePoints(chartData)"
+                *ngIf="showMoCA && getMoCAPolylinePoints(chartData)"
                 [attr.points]="getMoCAPolylinePoints(chartData)"
                 fill="none"
                 stroke="var(--warning)"
@@ -256,6 +276,9 @@
               <div class="table-actions" style="justify-content: flex-end">
                 <button class="btn-icon" title="Export assessment PDF" (click)="onExportAssessmentPDF(assessment.id)">
                   <iconify-icon icon="lucide:file-down"></iconify-icon>
+                </button>
+                <button class="btn-icon" title="Afficher QR code" (click)="onShowAssessmentQR(assessment.id)">
+                  <iconify-icon icon="lucide:qr-code"></iconify-icon>
                 </button>
                 <button class="btn-icon" title="View details" (click)="onViewDetails(assessment.id)">
                   <iconify-icon icon="lucide:eye"></iconify-icon>

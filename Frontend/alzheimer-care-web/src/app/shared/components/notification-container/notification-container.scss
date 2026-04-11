@@ -1,0 +1,144 @@
+.notification-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  max-width: 400px;
+  pointer-events: none;
+}
+
+.notification {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  margin-bottom: 12px;
+  pointer-events: all;
+  transform: translateX(0);
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  border-left: 4px solid #e5e7eb;
+  overflow: hidden;
+
+  &.notification-closing {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+
+  &.notification-success {
+    border-left-color: #22c55e;
+    
+    .notification-icon.icon-success {
+      color: #22c55e;
+    }
+  }
+
+  &.notification-warning {
+    border-left-color: #f59e0b;
+    
+    .notification-icon.icon-warning {
+      color: #f59e0b;
+    }
+  }
+
+  &.notification-error {
+    border-left-color: #ef4444;
+    
+    .notification-icon.icon-error {
+      color: #ef4444;
+    }
+  }
+
+  &.notification-info {
+    border-left-color: #3b82f6;
+    
+    .notification-icon.icon-info {
+      color: #3b82f6;
+    }
+  }
+}
+
+.notification-content {
+  padding: 16px;
+}
+
+.notification-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.notification-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.notification-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: #1f2937;
+  flex: 1;
+}
+
+.notification-close {
+  background: none;
+  border: none;
+  padding: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 0.2s;
+  
+  &:hover {
+    background-color: #f3f4f6;
+    color: #374151;
+  }
+}
+
+.notification-message {
+  color: #4b5563;
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.notification-time {
+  color: #9ca3af;
+  font-size: 11px;
+  text-align: right;
+  font-weight: 500;
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+  .notification-container {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+  
+  .notification {
+    transform: translateX(0) translateY(0);
+    
+    &.notification-closing {
+      transform: translateY(-120%);
+      opacity: 0;
+    }
+  }
+}
+
+/* Animation for new notifications */
+@keyframes slideInRight {
+  from {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.notification {
+  animation: slideInRight 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}

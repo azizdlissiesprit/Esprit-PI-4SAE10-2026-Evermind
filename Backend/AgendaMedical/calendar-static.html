@@ -1,0 +1,1667 @@
+<div
+  class="export-wrapper"
+  style="
+    width: 1440px;
+    min-height: 812px;
+    position: relative;
+    font-family: var(--font-family-body);
+    background-color: var(--background);
+  "
+>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@100;200;300;400;500;600;700;800;900&family=Geist:wght@100;200;300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@100;200;300;400;500;600;700&family=IBM+Plex+Sans:wght@100;200;300;400;500;600;700&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Nunito:wght@200;300;400;500;600;700;800;900&family=PT+Serif:wght@400;700&family=Roboto+Slab:wght@100;200;300;400;500;600;700;800;900&family=Roboto:wght@100;300;400;500;700;900&family=Shantell+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <html>
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Agenda des rendez-vous</title>
+      <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+      <style id="global-tokens">
+        :root {
+          --background: #f8fafc;
+          --foreground: #0f172a;
+          --muted: #f1f5f9;
+          --muted-foreground: #64748b;
+          --border: #e2e8f0;
+          --primary: #3b82f6;
+          --primary-foreground: #ffffff;
+          --card: #ffffff;
+          --radius-md: 8px;
+          --radius-sm: 4px;
+
+          /* Status colors */
+          --success: #16a34a;
+          --success-bg: #dcfce7;
+          --danger: #ef4444;
+          --danger-bg: #fee2e2;
+          --warning: #f59e0b;
+        }
+
+        * {
+          box-sizing: border-box;
+        }
+
+        .export-wrapper {
+          margin: 0;
+          padding: 24px;
+          font-family:
+            system-ui,
+            -apple-system,
+            sans-serif;
+          background-color: var(--background);
+          color: var(--foreground);
+          min-height: 100vh;
+        }
+      </style>
+
+      <style id="layout-styles">
+        .page-container {
+          max-width: 1440px;
+          margin: 0 auto;
+          display: flex;
+          flex-direction: column;
+          gap: 24px;
+        }
+
+        .header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .header h1 {
+          font-size: 24px;
+          margin: 0;
+          font-weight: 600;
+        }
+
+        .actions {
+          display: flex;
+          gap: 8px;
+          align-items: center;
+        }
+
+        .btn {
+          padding: 8px 16px;
+          border-radius: var(--radius-sm);
+          font-size: 14px;
+          font-weight: 500;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+          border: 1px solid var(--border);
+          background: white;
+          color: var(--foreground);
+          white-space: nowrap;
+        }
+
+        .btn-primary {
+          background: var(--primary);
+          color: var(--primary-foreground);
+          border-color: var(--primary);
+          margin-left: 8px;
+        }
+
+        .stats-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 16px;
+        }
+
+        .stat-card {
+          padding: 16px;
+          border: 1px solid var(--border);
+          border-radius: var(--radius-md);
+          background: var(--card);
+        }
+
+        .stat-title {
+          font-size: 13px;
+          color: var(--muted-foreground);
+          margin-bottom: 8px;
+        }
+
+        .stat-value {
+          font-size: 28px;
+          font-weight: 700;
+          display: flex;
+          align-items: baseline;
+          gap: 4px;
+          line-height: 1.2;
+        }
+
+        .stat-value small {
+          font-size: 16px;
+          font-weight: 500;
+          color: var(--muted-foreground);
+        }
+
+        .stat-value.danger {
+          color: var(--danger);
+        }
+
+        .stat-trend {
+          font-size: 12px;
+          margin-top: 4px;
+          font-weight: 500;
+        }
+
+        .stat-trend.success {
+          color: var(--success);
+        }
+
+        .stat-trend.danger {
+          color: var(--danger);
+        }
+
+        .stat-trend.neutral {
+          color: var(--muted-foreground);
+        }
+
+        .main-layout {
+          display: flex;
+          gap: 16px;
+          align-items: flex-start;
+        }
+      </style>
+
+      <style id="calendar-styles">
+        .calendar-container {
+          flex: 1;
+          border: 1px solid var(--border);
+          border-radius: var(--radius-md);
+          background: var(--card);
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+        }
+
+        .calendar-toolbar {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 16px;
+          border-bottom: 1px solid var(--border);
+        }
+
+        .calendar-nav-group {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+
+        .icon-btn {
+          width: 28px;
+          height: 28px;
+          border: 1px solid var(--border);
+          border-radius: var(--radius-sm);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: white;
+          color: var(--muted-foreground);
+          cursor: pointer;
+        }
+
+        .date-range {
+          font-weight: 600;
+          font-size: 15px;
+        }
+
+        .calendar-wrapper {
+          overflow-y: auto;
+          max-height: 600px;
+        }
+
+        .calendar-wrapper::-webkit-scrollbar {
+          width: 8px;
+        }
+        .calendar-wrapper::-webkit-scrollbar-thumb {
+          background: #cbd5e1;
+          border-radius: 4px;
+        }
+
+        .calendar-header-row {
+          display: flex;
+          border-bottom: 1px solid var(--border);
+          background: #fff;
+          position: sticky;
+          top: 0;
+          z-index: 10;
+        }
+
+        .time-col-header {
+          width: 50px;
+          flex-shrink: 0;
+          border-right: 1px solid var(--border);
+        }
+
+        .day-col-header {
+          flex: 1;
+          border-right: 1px solid var(--border);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 12px 0;
+        }
+
+        .day-col-header:last-child {
+          border-right: none;
+        }
+
+        .day-name {
+          font-size: 12px;
+          color: var(--muted-foreground);
+          text-transform: uppercase;
+          margin-bottom: 4px;
+        }
+
+        .day-num {
+          font-size: 18px;
+          font-weight: 500;
+          width: 32px;
+          height: 32px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+        }
+
+        .day-num.active {
+          background-color: var(--primary);
+          color: white;
+        }
+
+        .calendar-body {
+          display: flex;
+          position: relative;
+          height: 640px; /* 8 rows * 80px */
+        }
+
+        .time-col {
+          width: 50px;
+          flex-shrink: 0;
+          border-right: 1px solid var(--border);
+          display: flex;
+          flex-direction: column;
+        }
+
+        .time-slot {
+          height: 80px;
+          display: flex;
+          justify-content: center;
+          padding-top: 8px;
+          font-size: 11px;
+          color: var(--muted-foreground);
+        }
+
+        .day-col {
+          flex: 1;
+          border-right: 1px solid var(--border);
+          position: relative;
+          background-image: linear-gradient(
+            to bottom,
+            transparent 79px,
+            var(--border) 80px
+          );
+          background-size: 100% 80px;
+        }
+
+        .day-col:last-child {
+          border-right: none;
+        }
+
+        .event {
+          position: absolute;
+          left: 4px;
+          right: 4px;
+          border-radius: 4px;
+          padding: 6px 8px;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .event-title {
+          font-size: 12px;
+          font-weight: 600;
+          color: #0f172a;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          margin-bottom: 2px;
+        }
+
+        .event-subtitle {
+          font-size: 11px;
+          color: #475569;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        /* Event Colors */
+        .bg-pink {
+          background-color: #fce7f3;
+          border-left: 3px solid #db2777;
+        }
+        .bg-red-light {
+          background-color: #fee2e2;
+          border-left: 3px solid #ef4444;
+        }
+        .bg-green {
+          background-color: #dcfce7;
+          border-left: 3px solid #16a34a;
+        }
+        .bg-blue {
+          background-color: #e0f2fe;
+          border-left: 3px solid #0284c7;
+        }
+        .bg-yellow {
+          background-color: #fef08a;
+          border-left: 3px solid #ca8a04;
+        }
+        .bg-purple {
+          background-color: #f3e8ff;
+          border-left: 3px solid #9333ea;
+        }
+        .bg-gray {
+          background-color: #f1f5f9;
+          border-left: 3px solid #94a3b8;
+        }
+
+        .calendar-body {
+          height: 720px;
+        }
+        .time-slot {
+          height: 90px;
+        }
+        .day-col {
+          background-image: linear-gradient(
+            to bottom,
+            transparent 89px,
+            var(--border) 90px
+          );
+          background-size: 100% 90px;
+        }
+        .event {
+          padding: 8px;
+          gap: 6px;
+          overflow: hidden;
+        }
+        .event-subtitle {
+          margin-bottom: 0;
+        }
+        .event-actions {
+          display: flex;
+          gap: 6px;
+          margin-top: auto;
+        }
+        .event-action-btn {
+          flex: 1;
+          height: 24px;
+          border-radius: var(--radius-sm);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 4px;
+          font-size: 11px;
+          font-weight: 500;
+          white-space: nowrap;
+        }
+        .event-action-edit {
+          background: rgba(255, 255, 255, 0.72);
+          color: var(--foreground);
+          border: 1px solid rgba(15, 23, 36, 0.12);
+        }
+        .event-action-delete {
+          background: rgba(255, 255, 255, 0.9);
+          color: var(--destructive);
+          border: 1px solid rgba(239, 68, 68, 0.22);
+        }
+        .event-meta {
+          font-size: 10px;
+          color: #475569;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .event.bg-gray .event-action-edit,
+        .event.bg-gray .event-action-delete {
+          background: var(--card);
+        }
+        .event.bg-yellow .event-action-edit,
+        .event.bg-yellow .event-action-delete {
+          background: rgba(255, 255, 255, 0.86);
+        }
+      </style>
+
+      <style id="sidebar-styles">
+        .sidebar {
+          width: 320px;
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+          flex-shrink: 0;
+        }
+
+        .sidebar-card {
+          border: 1px solid var(--border);
+          border-radius: var(--radius-md);
+          background: var(--card);
+          padding: 16px;
+        }
+
+        .sidebar-card-title {
+          font-size: 14px;
+          font-weight: 600;
+          margin-bottom: 16px;
+          color: var(--foreground);
+        }
+
+        /* Mini Calendar */
+        .mini-cal-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 12px;
+          font-weight: 500;
+          font-size: 14px;
+        }
+
+        .mini-cal-icon-btn {
+          width: 24px;
+          height: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: 1px solid var(--border);
+          border-radius: 50%;
+          background: white;
+          color: var(--muted-foreground);
+          cursor: pointer;
+        }
+
+        .mini-cal-grid {
+          display: grid;
+          grid-template-columns: repeat(7, 1fr);
+          gap: 6px 0;
+          text-align: center;
+        }
+
+        .mini-cal-day-name {
+          font-size: 11px;
+          color: var(--muted-foreground);
+          margin-bottom: 4px;
+        }
+
+        .mini-cal-day {
+          font-size: 12px;
+          height: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--foreground);
+        }
+
+        .mini-cal-day.muted {
+          color: #cbd5e1;
+        }
+
+        .mini-cal-day.active {
+          background: var(--primary);
+          color: white;
+          border-radius: 50%;
+          width: 24px;
+          margin: 0 auto;
+        }
+
+        /* Fill Rate */
+        .fill-rate-content {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          margin-bottom: 16px;
+        }
+
+        .donut-chart {
+          width: 80px;
+          height: 80px;
+          border-radius: 50%;
+          background: conic-gradient(var(--primary) 0% 82%, #e2e8f0 82% 100%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+
+        .donut-inner {
+          width: 58px;
+          height: 58px;
+          background: white;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 700;
+          font-size: 14px;
+          color: var(--primary);
+        }
+
+        .legend {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          flex: 1;
+        }
+
+        .legend-item {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 12px;
+          color: var(--muted-foreground);
+        }
+
+        .legend-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          flex-shrink: 0;
+        }
+
+        .dot-blue {
+          background: var(--primary);
+        }
+        .dot-warning {
+          background: var(--warning);
+        }
+        .dot-danger {
+          background: var(--danger);
+        }
+        .dot-muted {
+          background: #cbd5e1;
+        }
+
+        .progress-container {
+          margin-top: 16px;
+        }
+
+        .progress-labels {
+          display: flex;
+          justify-content: space-between;
+          font-size: 11px;
+          color: var(--muted-foreground);
+          margin-bottom: 6px;
+        }
+
+        .progress-bar-bg {
+          height: 4px;
+          background: var(--border);
+          border-radius: 2px;
+          overflow: hidden;
+        }
+
+        .progress-bar-fill {
+          height: 100%;
+          width: 82%;
+          background: var(--primary);
+        }
+
+        /* Today's RDV */
+        .rdv-list-container {
+          max-height: 250px;
+          overflow-y: auto;
+        }
+
+        .rdv-list-container::-webkit-scrollbar {
+          width: 6px;
+        }
+        .rdv-list-container::-webkit-scrollbar-thumb {
+          background: #cbd5e1;
+          border-radius: 3px;
+        }
+
+        .rdv-list {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .rdv-item {
+          display: flex;
+          gap: 16px;
+          padding: 12px 0;
+          border-bottom: 1px solid var(--border);
+        }
+
+        .rdv-item:last-child {
+          border-bottom: none;
+          padding-bottom: 0;
+        }
+
+        .rdv-time {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          font-weight: 700;
+          font-size: 18px;
+          line-height: 1;
+          color: var(--foreground);
+          width: 40px;
+        }
+
+        .rdv-time span {
+          font-size: 11px;
+          color: var(--muted-foreground);
+          font-weight: 500;
+          margin-top: 4px;
+        }
+
+        .rdv-details {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .rdv-name {
+          font-size: 13px;
+          font-weight: 600;
+          margin-bottom: 2px;
+        }
+
+        .rdv-type {
+          font-size: 12px;
+          color: var(--muted-foreground);
+          margin-bottom: 8px;
+        }
+
+        .status-badge {
+          font-size: 11px;
+          padding: 2px 8px;
+          border-radius: 12px;
+          font-weight: 500;
+        }
+
+        .status-badge.confirmed {
+          background: var(--success-bg);
+          color: var(--success);
+        }
+
+        .request-list {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .request-item {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+          padding: 12px;
+          background: var(--muted);
+          border-radius: var(--radius-md);
+        }
+
+        .request-top {
+          display: flex;
+          justify-content: space-between;
+          gap: 12px;
+          align-items: flex-start;
+        }
+
+        .request-person {
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .request-name-row {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          flex-wrap: wrap;
+        }
+
+        .request-name {
+          font-size: 13px;
+          font-weight: 600;
+          color: var(--foreground);
+        }
+
+        .request-meta {
+          font-size: 12px;
+          color: var(--muted-foreground);
+          line-height: 1.4;
+        }
+
+        .request-badge {
+          font-size: 11px;
+          padding: 3px 8px;
+          border-radius: var(--radius-xl);
+          background: var(--warning);
+          color: var(--warning-foreground);
+          white-space: nowrap;
+          font-weight: 500;
+        }
+
+        .request-actions {
+          display: flex;
+          gap: 8px;
+        }
+
+        .btn-request {
+          flex: 1;
+          height: 32px;
+          padding: 0 12px;
+          border-radius: var(--radius-sm);
+          font-size: 13px;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+          white-space: nowrap;
+        }
+
+        .btn-accept {
+          background: var(--success);
+          color: var(--success-foreground);
+          border: 1px solid var(--success);
+        }
+
+        .btn-decline {
+          background: var(--card);
+          color: var(--foreground);
+          border: 1px solid var(--border);
+        }
+      </style>
+    </head>
+    <body>
+      <div class="page-container">
+        <!-- Header Section -->
+        <header class="header" id="page-header">
+          <h1>Agenda des rendez-vous</h1>
+          <div class="actions">
+            <button class="btn" data-media-type="banani-button">Jour</button>
+            <button class="btn" data-media-type="banani-button">Filtrer</button>
+            <button class="btn" data-media-type="banani-button">
+              Exporter
+            </button>
+            <button class="btn" data-media-type="banani-button">
+              <iconify-icon
+                icon="lucide:pencil"
+                style="color: #ea580c; font-size: 14px"
+              ></iconify-icon>
+              Modifier
+            </button>
+            <button class="btn" data-media-type="banani-button">
+              <iconify-icon
+                icon="lucide:trash-2"
+                style="color: #64748b; font-size: 14px"
+              ></iconify-icon>
+              Supprimer
+            </button>
+            <button class="btn btn-primary" data-media-type="banani-button">
+              + Nouveau RDV
+            </button>
+          </div>
+        </header>
+
+        <!-- Top Statistics -->
+        <section class="stats-grid" id="top-stats">
+          <div class="stat-card">
+            <div class="stat-title">RDV cette semaine</div>
+            <div class="stat-value">47</div>
+            <div class="stat-trend success">Semaine en cours</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Taux de confirmation</div>
+            <div class="stat-value">82%</div>
+            <div class="stat-trend success">Bon taux</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Annulations</div>
+            <div class="stat-value danger">4</div>
+            <div class="stat-trend danger">À surveiller</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Durée moy. consultation</div>
+            <div class="stat-value">23 <small>min</small></div>
+            <div class="stat-trend neutral">stable</div>
+          </div>
+        </section>
+
+        <!-- Main Layout -->
+        <section class="main-layout">
+          <!-- Calendar Area -->
+          <div class="calendar-container" id="calendar-main">
+            <div class="calendar-toolbar">
+              <div class="calendar-nav-group">
+                <button class="icon-btn" data-media-type="banani-button">
+                  <iconify-icon
+                    icon="lucide:chevron-left"
+                    style="font-size: 16px"
+                  ></iconify-icon>
+                </button>
+                <span class="date-range">31 mars - 4 avr. 2026</span>
+              </div>
+              <div class="calendar-nav-group">
+                <button class="icon-btn" data-media-type="banani-button">
+                  <iconify-icon
+                    icon="lucide:chevron-right"
+                    style="font-size: 16px"
+                  ></iconify-icon>
+                </button>
+                <button
+                  class="btn"
+                  style="padding: 4px 12px; height: 28px; font-size: 12px"
+                  data-media-type="banani-button"
+                >
+                  Aujourd'hui
+                </button>
+              </div>
+            </div>
+
+            <div class="calendar-wrapper">
+              <div class="calendar-header-row">
+                <div class="time-col-header"></div>
+                <div class="day-col-header">
+                  <div class="day-name">LUN</div>
+                  <div class="day-num">31</div>
+                </div>
+                <div class="day-col-header">
+                  <div class="day-name">MAR</div>
+                  <div class="day-num">1</div>
+                </div>
+                <div class="day-col-header">
+                  <div class="day-name">MER</div>
+                  <div class="day-num active">2</div>
+                </div>
+                <div class="day-col-header">
+                  <div class="day-name">JEU</div>
+                  <div class="day-num">3</div>
+                </div>
+                <div class="day-col-header">
+                  <div class="day-name">VEN</div>
+                  <div class="day-num">4</div>
+                </div>
+              </div>
+
+              <div class="calendar-body">
+                <div class="time-col">
+                  <div class="time-slot">08h</div>
+                  <div class="time-slot">09h</div>
+                  <div class="time-slot">10h</div>
+                  <div class="time-slot">11h</div>
+                  <div class="time-slot">12h</div>
+                  <div class="time-slot">13h</div>
+                  <div class="time-slot">14h</div>
+                  <div class="time-slot">15h</div>
+                </div>
+
+                <div class="day-col">
+                  <div
+                    class="event bg-pink"
+                    style="top: 180px; height: 86px"
+                    data-media-type="banani-button"
+                    id="event-kamal"
+                  >
+                    <div class="event-title">Kamal H.</div>
+                    <div class="event-subtitle">Téléconsult.</div>
+                    <div class="event-meta">Changer patient ou date</div>
+                    <div class="event-actions">
+                      <div
+                        class="event-action-btn event-action-edit"
+                        data-media-type="banani-button"
+                      >
+                        <iconify-icon
+                          icon="lucide:pencil"
+                          style="font-size: 12px"
+                        ></iconify-icon
+                        >Modifier
+                      </div>
+                      <div
+                        class="event-action-btn event-action-delete"
+                        data-media-type="banani-button"
+                      >
+                        <iconify-icon
+                          icon="lucide:trash-2"
+                          style="font-size: 12px"
+                        ></iconify-icon
+                        >Supprimer
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="event bg-blue"
+                    style="top: 450px; height: 86px"
+                    data-media-type="banani-button"
+                    id="event-riadh-lun"
+                  >
+                    <div class="event-title">Riadh S.</div>
+                    <div class="event-subtitle">Résultats</div>
+                    <div class="event-meta">Patient ou date modifiable</div>
+                    <div class="event-actions">
+                      <div
+                        class="event-action-btn event-action-edit"
+                        data-media-type="banani-button"
+                      >
+                        <iconify-icon
+                          icon="lucide:pencil"
+                          style="font-size: 12px"
+                        ></iconify-icon
+                        >Modifier
+                      </div>
+                      <div
+                        class="event-action-btn event-action-delete"
+                        data-media-type="banani-button"
+                      >
+                        <iconify-icon
+                          icon="lucide:trash-2"
+                          style="font-size: 12px"
+                        ></iconify-icon
+                        >Supprimer
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="event bg-blue"
+                    style="top: 630px; height: 86px"
+                    data-media-type="banani-button"
+                    id="event-sami"
+                  >
+                    <div class="event-title">Sami K.</div>
+                    <div class="event-subtitle">Consultation</div>
+                    <div class="event-meta">Patient ou date modifiable</div>
+                    <div class="event-actions">
+                      <div
+                        class="event-action-btn event-action-edit"
+                        data-media-type="banani-button"
+                      >
+                        <iconify-icon
+                          icon="lucide:pencil"
+                          style="font-size: 12px"
+                        ></iconify-icon
+                        >Modifier
+                      </div>
+                      <div
+                        class="event-action-btn event-action-delete"
+                        data-media-type="banani-button"
+                      >
+                        <iconify-icon
+                          icon="lucide:trash-2"
+                          style="font-size: 12px"
+                        ></iconify-icon
+                        >Supprimer
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="day-col">
+                  <div
+                    class="event bg-pink"
+                    style="top: 0px; height: 86px"
+                    data-media-type="banani-button"
+                    id="event-omar"
+                  >
+                    <div class="event-title">Omar F.</div>
+                    <div class="event-subtitle">Téléconsult.</div>
+                    <div class="event-meta">Patient ou date modifiable</div>
+                    <div class="event-actions">
+                      <div
+                        class="event-action-btn event-action-edit"
+                        data-media-type="banani-button"
+                      >
+                        <iconify-icon
+                          icon="lucide:pencil"
+                          style="font-size: 12px"
+                        ></iconify-icon
+                        >Modifier
+                      </div>
+                      <div
+                        class="event-action-btn event-action-delete"
+                        data-media-type="banani-button"
+                      >
+                        <iconify-icon
+                          icon="lucide:trash-2"
+                          style="font-size: 12px"
+                        ></iconify-icon
+                        >Supprimer
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="event bg-red-light"
+                    style="top: 90px; height: 86px"
+                    data-media-type="banani-button"
+                    id="event-leila-mar"
+                  >
+                    <div class="event-title">Leila B.</div>
+                    <div class="event-subtitle">1ère visite</div>
+                    <div class="event-meta">Patient ou date modifiable</div>
+                    <div class="event-actions">
+                      <div
+                        class="event-action-btn event-action-edit"
+                        data-media-type="banani-button"
+                      >
+                        <iconify-icon
+                          icon="lucide:pencil"
+                          style="font-size: 12px"
+                        ></iconify-icon
+                        >Modifier
+                      </div>
+                      <div
+                        class="event-action-btn event-action-delete"
+                        data-media-type="banani-button"
+                      >
+                        <iconify-icon
+                          icon="lucide:trash-2"
+                          style="font-size: 12px"
+                        ></iconify-icon
+                        >Supprimer
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="event bg-purple"
+                    style="top: 270px; height: 86px"
+                    data-media-type="banani-button"
+                    id="event-sara-mar"
+                  >
+                    <div class="event-title">Sara M.</div>
+                    <div class="event-subtitle">Éval. cog.</div>
+                    <div class="event-meta">Patient ou date modifiable</div>
+                    <div class="event-actions">
+                      <div
+                        class="event-action-btn event-action-edit"
+                        data-media-type="banani-button"
+                      >
+                        <iconify-icon
+                          icon="lucide:pencil"
+                          style="font-size: 12px"
+                        ></iconify-icon
+                        >Modifier
+                      </div>
+                      <div
+                        class="event-action-btn event-action-delete"
+                        data-media-type="banani-button"
+                      >
+                        <iconify-icon
+                          icon="lucide:trash-2"
+                          style="font-size: 12px"
+                        ></iconify-icon
+                        >Supprimer
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="event bg-green"
+                    style="top: 360px; height: 86px"
+                    data-media-type="banani-button"
+                    id="event-nadia"
+                  >
+                    <div class="event-title">Nadia B.</div>
+                    <div class="event-subtitle">Suivi auto.</div>
+                    <div class="event-meta">Patient ou date modifiable</div>
+                    <div class="event-actions">
+                      <div
+                        class="event-action-btn event-action-edit"
+                        data-media-type="banani-button"
+                      >
+                        <iconify-icon
+                          icon="lucide:pencil"
+                          style="font-size: 12px"
+                        ></iconify-icon
+                        >Modifier
+                      </div>
+                      <div
+                        class="event-action-btn event-action-delete"
+                        data-media-type="banani-button"
+                      >
+                        <iconify-icon
+                          icon="lucide:trash-2"
+                          style="font-size: 12px"
+                        ></iconify-icon
+                        >Supprimer
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="event bg-blue"
+                    style="top: 540px; height: 86px"
+                    data-media-type="banani-button"
+                    id="event-hedi"
+                  >
+                    <div class="event-title">Hedi T.</div>
+                    <div class="event-subtitle">Consultat.</div>
+                    <div class="event-meta">Patient ou date modifiable</div>
+                    <div class="event-actions">
+                      <div
+                        class="event-action-btn event-action-edit"
+                        data-media-type="banani-button"
+                      >
+                        <iconify-icon
+                          icon="lucide:pencil"
+                          style="font-size: 12px"
+                        ></iconify-icon
+                        >Modifier
+                      </div>
+                      <div
+                        class="event-action-btn event-action-delete"
+                        data-media-type="banani-button"
+                      >
+                        <iconify-icon
+                          icon="lucide:trash-2"
+                          style="font-size: 12px"
+                        ></iconify-icon
+                        >Supprimer
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="day-col">
+                  <div
+                    class="event bg-green"
+                    style="top: 0px; height: 86px"
+                    data-media-type="banani-button"
+                    id="event-amira"
+                  >
+                    <div class="event-title">Amira M.</div>
+                    <div class="event-subtitle">Suivi cog.</div>
+                    <div class="event-meta">Patient ou date modifiable</div>
+                    <div class="event-actions">
+                      <div
+                        class="event-action-btn event-action-edit"
+                        data-media-type="banani-button"
+                      >
+                        <iconify-icon
+                          icon="lucide:pencil"
+                          style="font-size: 12px"
+                        ></iconify-icon
+                        >Modifier
+                      </div>
+                      <div
+                        class="event-action-btn event-action-delete"
+                        data-media-type="banani-button"
+                      >
+                        <iconify-icon
+                          icon="lucide:trash-2"
+                          style="font-size: 12px"
+                        ></iconify-icon
+                        >Supprimer
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="event bg-yellow"
+                    style="top: 180px; height: 86px"
+                    data-media-type="banani-button"
+                    id="event-khaddad"
+                  >
+                    <div class="event-title">K. Haddad</div>
+                    <div class="event-subtitle">Bilan mé.</div>
+                    <div class="event-meta">Patient ou date modifiable</div>
+                    <div class="event-actions">
+                      <div
+                        class="event-action-btn event-action-edit"
+                        data-media-type="banani-button"
+                      >
+                        <iconify-icon
+                          icon="lucide:pencil"
+                          style="font-size: 12px"
+                        ></iconify-icon
+                        >Modifier
+                      </div>
+                      <div
+                        class="event-action-btn event-action-delete"
+                        data-media-type="banani-button"
+                      >
+                        <iconify-icon
+                          icon="lucide:trash-2"
+                          style="font-size: 12px"
+                        ></iconify-icon
+                        >Supprimer
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="event bg-gray"
+                    style="top: 270px; height: 86px"
+                    data-media-type="banani-button"
+                    id="event-leila-mer"
+                  >
+                    <div class="event-title">Leila B.</div>
+                    <div class="event-subtitle">En attente</div>
+                    <div class="event-meta">Changer patient ou date</div>
+                    <div class="event-actions">
+                      <div
+                        class="event-action-btn event-action-edit"
+                        data-media-type="banani-button"
+                      >
+                        <iconify-icon
+                          icon="lucide:pencil"
+                          style="font-size: 12px"
+                        ></iconify-icon
+                        >Modifier
+                      </div>
+                      <div
+                        class="event-action-btn event-action-delete"
+                        data-media-type="banani-button"
+                      >
+                        <iconify-icon
+                          icon="lucide:trash-2"
+                          style="font-size: 12px"
+                        ></iconify-icon
+                        >Supprimer
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="event bg-pink"
+                    style="top: 450px; height: 86px"
+                    data-media-type="banani-button"
+                    id="event-mohamed"
+                  >
+                    <div class="event-title">Mohamed.</div>
+                    <div class="event-subtitle">Téléconsult.</div>
+                    <div class="event-meta">Patient ou date modifiable</div>
+                    <div class="event-actions">
+                      <div
+                        class="event-action-btn event-action-edit"
+                        data-media-type="banani-button"
+                      >
+                        <iconify-icon
+                          icon="lucide:pencil"
+                          style="font-size: 12px"
+                        ></iconify-icon
+                        >Modifier
+                      </div>
+                      <div
+                        class="event-action-btn event-action-delete"
+                        data-media-type="banani-button"
+                      >
+                        <iconify-icon
+                          icon="lucide:trash-2"
+                          style="font-size: 12px"
+                        ></iconify-icon
+                        >Supprimer
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="day-col">
+                  <div
+                    class="event bg-blue"
+                    style="top: 90px; height: 86px"
+                    data-media-type="banani-button"
+                    id="event-fatma"
+                  >
+                    <div class="event-title">Fatma A.</div>
+                    <div class="event-subtitle">Consultat.</div>
+                    <div class="event-meta">Patient ou date modifiable</div>
+                    <div class="event-actions">
+                      <div
+                        class="event-action-btn event-action-edit"
+                        data-media-type="banani-button"
+                      >
+                        <iconify-icon
+                          icon="lucide:pencil"
+                          style="font-size: 12px"
+                        ></iconify-icon
+                        >Modifier
+                      </div>
+                      <div
+                        class="event-action-btn event-action-delete"
+                        data-media-type="banani-button"
+                      >
+                        <iconify-icon
+                          icon="lucide:trash-2"
+                          style="font-size: 12px"
+                        ></iconify-icon
+                        >Supprimer
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="event bg-pink"
+                    style="top: 360px; height: 86px"
+                    data-media-type="banani-button"
+                    id="event-ali"
+                  >
+                    <div class="event-title">Ali R.</div>
+                    <div class="event-subtitle">Téléconsult.</div>
+                    <div class="event-meta">Patient ou date modifiable</div>
+                    <div class="event-actions">
+                      <div
+                        class="event-action-btn event-action-edit"
+                        data-media-type="banani-button"
+                      >
+                        <iconify-icon
+                          icon="lucide:pencil"
+                          style="font-size: 12px"
+                        ></iconify-icon
+                        >Modifier
+                      </div>
+                      <div
+                        class="event-action-btn event-action-delete"
+                        data-media-type="banani-button"
+                      >
+                        <iconify-icon
+                          icon="lucide:trash-2"
+                          style="font-size: 12px"
+                        ></iconify-icon
+                        >Supprimer
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="event bg-blue"
+                    style="top: 630px; height: 86px"
+                    data-media-type="banani-button"
+                    id="event-riadh-jeu"
+                  >
+                    <div class="event-title">Riadh S.</div>
+                    <div class="event-subtitle">Consultation</div>
+                    <div class="event-meta">Patient ou date modifiable</div>
+                    <div class="event-actions">
+                      <div
+                        class="event-action-btn event-action-edit"
+                        data-media-type="banani-button"
+                      >
+                        <iconify-icon
+                          icon="lucide:pencil"
+                          style="font-size: 12px"
+                        ></iconify-icon
+                        >Modifier
+                      </div>
+                      <div
+                        class="event-action-btn event-action-delete"
+                        data-media-type="banani-button"
+                      >
+                        <iconify-icon
+                          icon="lucide:trash-2"
+                          style="font-size: 12px"
+                        ></iconify-icon
+                        >Supprimer
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="day-col" id="day-fri"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Sidebar -->
+          <div class="sidebar" id="sidebar-right">
+            <div class="sidebar-card">
+              <div class="mini-cal-header">
+                <button
+                  class="mini-cal-icon-btn"
+                  data-media-type="banani-button"
+                >
+                  <iconify-icon
+                    icon="lucide:chevron-left"
+                    style="font-size: 14px"
+                  ></iconify-icon>
+                </button>
+                <span>Avril 2026</span>
+                <button
+                  class="mini-cal-icon-btn"
+                  data-media-type="banani-button"
+                >
+                  <iconify-icon
+                    icon="lucide:chevron-right"
+                    style="font-size: 14px"
+                  ></iconify-icon>
+                </button>
+              </div>
+              <div class="mini-cal-grid">
+                <div class="mini-cal-day-name">L</div>
+                <div class="mini-cal-day-name">M</div>
+                <div class="mini-cal-day-name">M</div>
+                <div class="mini-cal-day-name">J</div>
+                <div class="mini-cal-day-name">V</div>
+                <div class="mini-cal-day-name">S</div>
+                <div class="mini-cal-day-name">D</div>
+
+                <div class="mini-cal-day muted">29</div>
+                <div class="mini-cal-day muted">30</div>
+                <div class="mini-cal-day">1</div>
+                <div class="mini-cal-day">2</div>
+                <div class="mini-cal-day active">3</div>
+                <div class="mini-cal-day">4</div>
+                <div class="mini-cal-day">5</div>
+
+                <div class="mini-cal-day">6</div>
+                <div class="mini-cal-day">7</div>
+                <div class="mini-cal-day">8</div>
+                <div class="mini-cal-day">9</div>
+                <div class="mini-cal-day">10</div>
+                <div class="mini-cal-day">11</div>
+                <div class="mini-cal-day">12</div>
+
+                <div class="mini-cal-day">13</div>
+                <div class="mini-cal-day">14</div>
+                <div class="mini-cal-day">15</div>
+                <div class="mini-cal-day">16</div>
+                <div class="mini-cal-day">17</div>
+                <div class="mini-cal-day">18</div>
+                <div class="mini-cal-day">19</div>
+
+                <div class="mini-cal-day">20</div>
+                <div class="mini-cal-day">21</div>
+                <div class="mini-cal-day">22</div>
+                <div class="mini-cal-day">23</div>
+                <div class="mini-cal-day">24</div>
+                <div class="mini-cal-day">25</div>
+                <div class="mini-cal-day">26</div>
+
+                <div class="mini-cal-day">27</div>
+                <div class="mini-cal-day">28</div>
+                <div class="mini-cal-day">29</div>
+                <div class="mini-cal-day">30</div>
+                <div class="mini-cal-day muted">1</div>
+                <div class="mini-cal-day muted">2</div>
+                <div class="mini-cal-day muted">3</div>
+              </div>
+            </div>
+
+            <div class="sidebar-card" id="requests-card">
+              <div class="sidebar-card-title">Demandes de RDV</div>
+              <div class="request-list">
+                <div class="request-item" data-media-type="banani-button">
+                  <div class="request-top">
+                    <div class="request-person">
+                      <div class="request-name-row">
+                        <div class="request-name">Inès Ben Ali</div>
+                        <div class="request-badge">En attente</div>
+                      </div>
+                      <div class="request-meta">
+                        Vendredi 4 avr. 10:30 Première consultation
+                      </div>
+                    </div>
+                  </div>
+                  <div class="request-actions">
+                    <div
+                      class="btn-request btn-decline"
+                      data-media-type="banani-button"
+                    >
+                      Refuser
+                    </div>
+                    <div
+                      class="btn-request btn-accept"
+                      data-media-type="banani-button"
+                    >
+                      Accepter
+                    </div>
+                  </div>
+                </div>
+
+                <div class="request-item" data-media-type="banani-button">
+                  <div class="request-top">
+                    <div class="request-person">
+                      <div class="request-name-row">
+                        <div class="request-name">Youssef Trabelsi</div>
+                        <div class="request-badge">En attente</div>
+                      </div>
+                      <div class="request-meta">
+                        Vendredi 4 avr. 14:00 Suivi mémoire
+                      </div>
+                    </div>
+                  </div>
+                  <div class="request-actions">
+                    <div
+                      class="btn-request btn-decline"
+                      data-media-type="banani-button"
+                    >
+                      Refuser
+                    </div>
+                    <div
+                      class="btn-request btn-accept"
+                      data-media-type="banani-button"
+                    >
+                      Accepter
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="sidebar-card">
+              <div class="sidebar-card-title">Taux de remplissage</div>
+              <div class="fill-rate-content">
+                <div class="donut-chart">
+                  <div class="donut-inner">82%</div>
+                </div>
+                <div class="legend">
+                  <div class="legend-item">
+                    <div class="legend-dot dot-blue"></div>
+                    <span>Confirmés (38)</span>
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-dot dot-warning"></div>
+                    <span>En attente (5)</span>
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-dot dot-danger"></div>
+                    <span>Annulés (4)</span>
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-dot dot-muted"></div>
+                    <span>Libres (9)</span>
+                  </div>
+                </div>
+              </div>
+              <div class="progress-container">
+                <div class="progress-labels">
+                  <span>Créneaux utilisés</span>
+                  <span>47/56</span>
+                </div>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="sidebar-card">
+              <div class="sidebar-card-title">RDV du jour</div>
+              <div class="rdv-list-container">
+                <div class="rdv-list">
+                  <div class="rdv-item" data-media-type="banani-button">
+                    <div class="rdv-time">
+                      09
+                      <span>:00</span>
+                    </div>
+                    <div class="rdv-details">
+                      <div class="rdv-name">Amira Mejri</div>
+                      <div class="rdv-type">Suivi cognitif</div>
+                      <div class="status-badge confirmed">Confirmé</div>
+                    </div>
+                  </div>
+                  <div class="rdv-item" data-media-type="banani-button">
+                    <div class="rdv-time">
+                      09
+                      <span>:45</span>
+                    </div>
+                    <div class="rdv-details">
+                      <div class="rdv-name">Kamal Haddad</div>
+                      <div class="rdv-type">Bilan Télé</div>
+                      <div class="status-badge confirmed">Confirmé</div>
+                    </div>
+                  </div>
+                  <div class="rdv-item" data-media-type="banani-button">
+                    <div class="rdv-time">
+                      11
+                      <span>:30</span>
+                    </div>
+                    <div class="rdv-details">
+                      <div class="rdv-name">Sara M.</div>
+                      <div class="rdv-type">Éval. cog.</div>
+                      <div
+                        class="status-badge confirmed"
+                        style="
+                          background: var(--muted);
+                          color: var(--muted-foreground);
+                        "
+                      >
+                        En attente
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </body>
+  </html>
+  <script src="https://code.iconify.design/iconify-icon/3.0.0/iconify-icon.min.js"></script>
+  <style>
+    :root {
+      --background: #f7fafc;
+      --foreground: #0f1724;
+      --border: #00000014;
+      --input: #ffffff;
+      --primary: #0b74ff;
+      --primary-foreground: #ffffff;
+      --secondary: #f1f5f9;
+      --secondary-foreground: #0f1724;
+      --muted: #e6eef8;
+      --muted-foreground: #6b7280;
+      --success: #10b981;
+      --success-foreground: #ffffff;
+      --accent: #ffd166;
+      --accent-foreground: #0f1724;
+      --destructive: #ef4444;
+      --destructive-foreground: #ffffff;
+      --warning: #f59e0b;
+      --warning-foreground: #0f1724;
+      --card: #ffffff;
+      --card-foreground: #0f1724;
+      --sidebar: #fbfdff;
+      --sidebar-foreground: #0f1724;
+      --sidebar-primary: #e8f0ff;
+      --sidebar-primary-foreground: #0b74ff;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 8px;
+      --radius-xl: 12px;
+      --font-family-body: Inter;
+    }
+  </style>
+</div>

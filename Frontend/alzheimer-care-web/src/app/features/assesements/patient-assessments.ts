@@ -115,6 +115,12 @@ export class PatientAssessmentsComponent implements OnInit {
     }
   }
 
+  refreshPatientData() {
+    if (this.selectedPatientId) {
+      this.loadPatientData(this.selectedPatientId);
+    }
+  }
+
   loadPatientData(id: string) {
     this.isLoading = true;
     console.log(`Loading data for Patient ${id}...`);
@@ -144,8 +150,9 @@ export class PatientAssessmentsComponent implements OnInit {
         const cogs = (results.cognitive as CognitiveAssessment[]) || [];
         
         if (cogs.length > 0) {
+            // Sort by date descending to get the latest assessment first
             this.cognitiveHistory = cogs.sort((a, b) => 
-                new Date(a.date).getTime() - new Date(b.date).getTime()
+                new Date(b.date).getTime() - new Date(a.date).getTime()
             );
             this.lineChartData.labels = this.cognitiveHistory.map(a => a.date);
             this.lineChartData.datasets[0].data = this.cognitiveHistory.map(a => a.mmseScore);
@@ -195,6 +202,37 @@ export class PatientAssessmentsComponent implements OnInit {
     if (score >= 24) return { label: 'Normal Cognition', color: 'text-green' };
     if (score >= 19) return { label: 'Mild Impairment', color: 'text-orange' };
     return { label: 'Severe Impairment', color: 'text-red' };
+  }
+
+  getDetailedCognitiveState(score: number): string {
+    if (score >= 27) return 'Fonctionnement normal';
+    if (score >= 24) return 'Légère altération cognitive';
+    if (score >= 20) return 'Déclin cognitif modéré';
+    if (score >= 17) return 'Déclin cognitif sévère';
+    if (score >= 10) return 'Démence modérée';
+    return 'Démence sévère';
+  }
+
+  getCognitiveRecommendation(score: number): string {
+    if (score >= 24) return 'Surveillance annuelle recommandée';
+    if (score >= 19) return 'Réévaluation tous les 6 mois';
+    if (score >= 10) return 'Suivi mensuel et soutien intensif';
+    return 'Soins palliatifs et assistance complète';
+  }
+
+  getMoCAStatus(score: number): { label: string, color: string } {
+    if (score >= 26) return { label: 'Normal', color: 'text-green' };
+    if (score >= 22) return { label: 'Mild', color: 'text-orange' };
+    if (score >= 17) return { label: 'Moderate', color: 'text-red' };
+    return { label: 'Severe', color: 'text-red' };
+  }
+
+  getExecutiveFunctionLevel(score: number): string {
+    if (score >= 26) return 'Excellentes';
+    if (score >= 22) return 'Légèrement altérées';
+    if (score >= 17) return 'Modérément altérées';
+    if (score >= 10) return 'Sévèrement altérées';
+    return 'Très sévèrement altérées';
   }
 
   getAutonomyRisk(mobilityScore: number): boolean {

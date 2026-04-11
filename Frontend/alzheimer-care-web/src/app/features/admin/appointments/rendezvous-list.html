@@ -1,0 +1,490 @@
+<div class="cognitive-admin-list">
+  <!-- Header -->
+  <div class="list-header">
+    <div class="header-title">
+      <h2>Gestion des Rendez-vous</h2>
+      <p class="text-muted">Liste complète des rendez-vous avec synchronisation Google Calendar</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary" (click)="onCreate()">
+        <i class="fas fa-plus"></i>
+        Nouveau Rendez-vous
+      </button>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-section">
+    <div class="filter-row">
+      <div class="filter-group">
+        <label>Recherche</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          placeholder="Nom, prénom ou type..."
+          [(ngModel)]="searchTerm"
+          (input)="applyFilters()"
+        >
+      </div>
+      
+      <div class="filter-group">
+        <label>Type</label>
+        <select class="form-control" [(ngModel)]="selectedType" (change)="applyFilters()">
+          <option value="ALL">Tous les types</option>
+          <option *ngFor="let type of types" [value]="type">{{getTypeLabel(type)}}</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label>Statut</label>
+        <select class="form-control" [(ngModel)]="selectedStatut" (change)="applyFilters()">
+          <option value="ALL">Tous les statuts</option>
+          <option *ngFor="let statut of statuts" [value]="statut">{{getStatutLabel(statut)}}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Chargement des rendez-vous...</p>
+  </div>
+
+  <!-- Data Table -->
+  <div *ngIf="!loading" class="data-table-container">
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Patient</th>
+            <th>Type</th>
+            <th>Statut</th>
+            <th>Date & Heure</th>
+            <th>Durée</th>
+            <th>Notes</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let rdv of displayedRendezVous">
+            <td>
+              <div class="patient-info">
+                <strong>{{rdv.patientPrenom}} {{rdv.patientNom}}</strong>
+                <small *ngIf="rdv.googleEventId" class="text-success">
+                  <i class="fas fa-check-circle"></i> Sync Google Calendar
+                </small>
+              </div>
+            </td>
+            <td>
+              <span class="badge {{getTypeClass(rdv.type)}}">
+                {{getTypeLabel(rdv.type)}}
+              </span>
+            </td>
+            <td>
+              <span class="badge {{getStatutClass(rdv.statut)}}">
+                {{getStatutLabel(rdv.statut)}}
+              </span>
+            </td>
+            <td>
+              <div class="datetime-info">
+                <i class="far fa-calendar"></i>
+                {{formatDate(rdv.dateHeure)}}
+              </div>
+            </td>
+            <td>
+              <span class="duration-badge">
+                <i class="far fa-clock"></i>
+                {{rdv.dureeMinutes}} min
+              </span>
+            </td>
+            <td>
+              <div class="notes-cell">
+                <span *ngIf="rdv.notes" class="notes-text">{{rdv.notes}}</span>
+                <span *ngIf="!rdv.notes" class="text-muted">-</span>
+              </div>
+            </td>
+            <td>
+              <div class="action-buttons">
+                <button class="btn btn-sm btn-outline-primary" (click)="onEdit(rdv.id!)" title="Modifier">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" (click)="onDelete(rdv.id!)" title="Supprimer">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="displayedRendezVous.length === 0" class="empty-state">
+      <div class="empty-icon">
+        <i class="fas fa-calendar-times"></i>
+      </div>
+      <h3>Aucun rendez-vous trouvé</h3>
+      <p>Aucun rendez-vous ne correspond à vos critères de recherche.</p>
+      <button class="btn btn-primary" (click)="onCreate()">
+        <i class="fas fa-plus"></i>
+        Créer un rendez-vous
+      </button>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="!loading && totalPages > 1" class="pagination-container">
+    <div class="pagination-info">
+      <span>Affichage de {{displayedRendezVous.length}} sur {{totalElements}} rendez-vous</span>
+    </div>
+    <div class="pagination">
+      <button 
+        class="btn btn-outline-primary" 
+        (click)="onPageChange(currentPage - 1)"
+        [disabled]="currentPage === 1"
+      >
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      
+      <span class="page-info">Page {{currentPage}} sur {{totalPages}}</span>
+      
+      <button 
+        class="btn btn-outline-primary" 
+        (click)="onPageChange(currentPage + 1)"
+        [disabled]="currentPage === totalPages"
+      >
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<style scoped>
+.cognitive-admin-list {
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.header-title h2 {
+  margin: 0 0 8px 0;
+  color: #1f2937;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.header-title p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.filters-section {
+  margin-bottom: 20px;
+  padding: 20px;
+  background: #f9fafb;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.filter-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 20px;
+  align-items: end;
+}
+
+.filter-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #374151;
+  font-size: 14px;
+}
+
+.filter-group .form-control {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.loading-state {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e5e7eb;
+  border-top: 4px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.data-table-container {
+  background: #fff;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.data-table th {
+  background: #f9fafb;
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.data-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f3f4f6;
+  vertical-align: middle;
+}
+
+.data-table tr:hover {
+  background: #f9fafb;
+}
+
+.patient-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.patient-info strong {
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.patient-info small {
+  color: #059669;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-blue { background: #dbeafe; color: #1e40af; }
+.badge-cyan { background: #cffafe; color: #0891b2; }
+.badge-green { background: #d1fae5; color: #059669; }
+.badge-orange { background: #fed7aa; color: #ea580c; }
+.badge-purple { background: #e9d5ff; color: #7c3aed; }
+.badge-pink { background: #fce7f3; color: #db2777; }
+.badge-indigo { background: #e0e7ff; color: #4f46e5; }
+
+.badge-green { background: #d1fae5; color: #059669; }
+.badge-yellow { background: #fef3c7; color: #d97706; }
+.badge-red { background: #fee2e2; color: #dc2626; }
+.badge-gray { background: #f3f4f6; color: #6b7280; }
+
+.datetime-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #374151;
+  font-size: 13px;
+}
+
+.duration-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: #f3f4f6;
+  border-radius: 12px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.notes-cell {
+  max-width: 200px;
+}
+
+.notes-text {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  padding: 6px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background: #fff;
+  color: #6b7280;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+
+.btn:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.btn-primary {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+.btn-outline-primary {
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
+.btn-outline-primary:hover {
+  background: #3b82f6;
+  color: #fff;
+}
+
+.btn-outline-danger {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.btn-outline-danger:hover {
+  background: #ef4444;
+  color: #fff;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #6b7280;
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+  color: #d1d5db;
+}
+
+.empty-state h3 {
+  margin: 0 0 12px 0;
+  color: #374151;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.empty-state p {
+  margin: 0 0 24px 0;
+  font-size: 14px;
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding: 20px;
+  background: #f9fafb;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.pagination-info {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.page-info {
+  color: #374151;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .filter-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .list-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .pagination-container {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .data-table {
+    font-size: 12px;
+  }
+  
+  .data-table th,
+  .data-table td {
+    padding: 8px 12px;
+  }
+}
+</style>

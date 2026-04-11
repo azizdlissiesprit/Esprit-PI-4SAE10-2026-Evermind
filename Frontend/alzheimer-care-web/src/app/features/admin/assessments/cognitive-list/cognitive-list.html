@@ -61,6 +61,10 @@
                             <button class="btn-icon" [routerLink]="['/admin/cognitive/dashboard', item.patientId]" title="View Dashboard">
                                 <i class="fa-solid fa-chart-line"></i>
                             </button>
+                            <!-- NEW BUTTON: Ouvrir Interface Patient -->
+                            <button class="btn-icon" (click)="openInterface(item.patientId)" title="Interface Patient">
+                                <i class="fa-solid fa-user"></i>
+                            </button>
 
                             <!-- Edit Button -->
                             <button class="btn-icon" [routerLink]="['/admin/cognitive/edit', item.id]">

@@ -19,7 +19,7 @@ export class AdminSidebarComponent {
     
     // 👇 NEW ITEMS ADDED HERE
     { label: 'Cognitive', icon: 'fa-solid fa-brain', route: '/admin/cognitive' },
-    { label: 'Autonomy', icon: 'fa-solid fa-person-walking-with-cane', route: '/admin/autonomy' },
+    { label: 'Appointments', icon: 'fa-solid fa-calendar-days', route: '/admin/appointments' },
     
     { label: 'Alerts', icon: 'fa-solid fa-triangle-exclamation', route: '/admin/alerts' },
     // { label: 'Interventions', icon: 'fa-solid fa-hand-holding-medical', route: '/admin/interventions' }, // Optional

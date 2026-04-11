@@ -1,0 +1,457 @@
+<div class="rendezvous-form">
+  <!-- Header -->
+  <div class="form-header">
+    <div class="header-title">
+      <button class="btn btn-outline-secondary" (click)="onCancel()">
+        <i class="fas fa-arrow-left"></i>
+        Retour
+      </button>
+      <h2>{{isEditing ? 'Modifier un Rendez-vous' : 'Nouveau Rendez-vous'}}</h2>
+    </div>
+    <div class="header-subtitle">
+      <p>Les rendez-vous sont automatiquement synchronisés avec Google Calendar</p>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Chargement du rendez-vous...</p>
+  </div>
+
+  <!-- Form -->
+  <div *ngIf="!loading" class="form-container">
+    <form [formGroup]="rdvForm" (ngSubmit)="onSubmit()">
+      <div class="form-grid">
+        <!-- Patient Information -->
+        <div class="form-section">
+          <h3>Informations Patient</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="patientNom">Nom du patient *</label>
+              <input 
+                type="text" 
+                id="patientNom" 
+                class="form-control" 
+                formControlName="patientNom"
+                placeholder="Ex: Martin"
+                [class.is-invalid]="isFieldInvalid('patientNom')"
+              >
+              <div *ngIf="isFieldInvalid('patientNom')" class="invalid-feedback">
+                {{getErrorMessage('patientNom')}}
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="patientPrenom">Prénom du patient *</label>
+              <input 
+                type="text" 
+                id="patientPrenom" 
+                class="form-control" 
+                formControlName="patientPrenom"
+                placeholder="Ex: Sophie"
+                [class.is-invalid]="isFieldInvalid('patientPrenom')"
+              >
+              <div *ngIf="isFieldInvalid('patientPrenom')" class="invalid-feedback">
+                {{getErrorMessage('patientPrenom')}}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rendez-vous Details -->
+        <div class="form-section">
+          <h3>Détails du Rendez-vous</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="type">Type de consultation *</label>
+              <select 
+                id="type" 
+                class="form-control" 
+                formControlName="type"
+                [class.is-invalid]="isFieldInvalid('type')"
+              >
+                <option *ngFor="let type of types" [value]="type.value">
+                  {{type.label}}
+                </option>
+              </select>
+              <div *ngIf="isFieldInvalid('type')" class="invalid-feedback">
+                {{getErrorMessage('type')}}
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="statut">Statut *</label>
+              <select 
+                id="statut" 
+                class="form-control" 
+                formControlName="statut"
+                [class.is-invalid]="isFieldInvalid('statut')"
+              >
+                <option *ngFor="let statut of statuts" [value]="statut.value">
+                  {{statut.label}}
+                </option>
+              </select>
+              <div *ngIf="isFieldInvalid('statut')" class="invalid-feedback">
+                {{getErrorMessage('statut')}}
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="dateHeure">Date et Heure *</label>
+              <input 
+                type="datetime-local" 
+                id="dateHeure" 
+                class="form-control" 
+                formControlName="dateHeure"
+                [class.is-invalid]="isFieldInvalid('dateHeure')"
+              >
+              <div *ngIf="isFieldInvalid('dateHeure')" class="invalid-feedback">
+                {{getErrorMessage('dateHeure')}}
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="dureeMinutes">Durée (minutes) *</label>
+              <input 
+                type="number" 
+                id="dureeMinutes" 
+                class="form-control" 
+                formControlName="dureeMinutes"
+                min="15"
+                max="180"
+                step="15"
+                [class.is-invalid]="isFieldInvalid('dureeMinutes')"
+              >
+              <div *ngIf="isFieldInvalid('dureeMinutes')" class="invalid-feedback">
+                {{getErrorMessage('dureeMinutes')}}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="form-section">
+          <h3>Notes</h3>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="notes">Notes (optionnel)</label>
+              <textarea 
+                id="notes" 
+                class="form-control" 
+                formControlName="notes"
+                rows="4"
+                placeholder="Informations supplémentaires sur le rendez-vous..."
+              ></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Google Calendar Info -->
+      <div class="google-calendar-info">
+        <div class="info-box">
+          <i class="fab fa-google"></i>
+          <div class="info-content">
+            <h4>Synchronisation Google Calendar</h4>
+            <p>Ce rendez-vous sera automatiquement ajouté à votre calendrier Google avec les rappels appropriés.</p>
+            <ul>
+              <li>Rappel email 24h avant</li>
+              <li>Rappel popup 30 minutes avant</li>
+              <li>Couleur selon le type de consultation</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">
+          <i class="fas fa-times"></i>
+          Annuler
+        </button>
+        <button 
+          type="submit" 
+          class="btn btn-primary" 
+          [disabled]="submitting || rdvForm.invalid"
+        >
+          <i *ngIf="!submitting" class="fas fa-save"></i>
+          <i *ngIf="submitting" class="fas fa-spinner fa-spin"></i>
+          {{submitting ? 'Enregistrement...' : (isEditing ? 'Mettre à jour' : 'Créer')}}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style scoped>
+.rendezvous-form {
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.form-header {
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.header-title h2 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.header-subtitle p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+  margin-left: 40px;
+}
+
+.loading-state {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e5e7eb;
+  border-top: 4px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.form-container {
+  background: #fff;
+}
+
+.form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-section {
+  background: #f9fafb;
+  padding: 20px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.form-section h3 {
+  margin: 0 0 20px 0;
+  color: #374151;
+  font-size: 18px;
+  font-weight: 600;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #374151;
+  font-size: 14px;
+}
+
+.form-control {
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-control.is-invalid {
+  border-color: #ef4444;
+}
+
+.form-control.is-invalid:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.invalid-feedback {
+  color: #ef4444;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+textarea.form-control {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.google-calendar-info {
+  margin: 24px 0;
+}
+
+.info-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px;
+  background: linear-gradient(135deg, #e8f5e8 0%, #e3f2fd 100%);
+  border-radius: 8px;
+  border: 1px solid #c3e6c3;
+}
+
+.info-box i.fab.fa-google {
+  font-size: 24px;
+  color: #4285f4;
+  margin-top: 4px;
+}
+
+.info-content h4 {
+  margin: 0 0 8px 0;
+  color: #2c5282;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.info-content p {
+  margin: 0 0 12px 0;
+  color: #2d3748;
+  font-size: 14px;
+}
+
+.info-content ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #2d3748;
+  font-size: 13px;
+}
+
+.info-content li {
+  margin-bottom: 4px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.btn {
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid transparent;
+}
+
+.btn-primary {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+.btn-primary:disabled {
+  background: #9ca3af;
+  border-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.btn-outline-secondary {
+  background: #fff;
+  border-color: #d1d5db;
+  color: #6b7280;
+}
+
+.btn-outline-secondary:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+  color: #374151;
+}
+
+@media (max-width: 768px) {
+  .rendezvous-form {
+    padding: 16px;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .header-title {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .header-subtitle p {
+    margin-left: 0;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .info-box {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+</style>

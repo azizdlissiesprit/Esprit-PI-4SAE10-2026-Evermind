@@ -1,0 +1,107 @@
+<div class="export-wrapper">
+  <div class="app-root">
+    <header class="patient-header">
+      <div class="patient-profile">
+        <img
+          src="https://storage.googleapis.com/banani-avatars/avatar%2Fmale%2F65-80%2FEuropean%2F1"
+          alt="Avatar"
+          class="patient-avatar"
+        />
+        <div class="patient-info">
+          <span class="patient-name">Robert Dupont</span>
+          <span class="patient-id">Dossier #PA-10492</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn-icon-outline" title="Notifications">
+          <iconify-icon icon="lucide:bell" style="font-size: 24px"></iconify-icon>
+        </button>
+        <button class="btn-outline" title="Déconnexion">
+          <iconify-icon icon="lucide:log-out" style="font-size: 20px"></iconify-icon>
+          Déconnexion
+        </button>
+      </div>
+    </header>
+
+    <main class="dashboard-container">
+      <section class="welcome-section">
+        <h1 class="page-title">Mes Évaluations Cognitives</h1>
+        <p class="page-subtitle">
+          Consultez vos derniers résultats et effectuez votre évaluation ludique.
+        </p>
+      </section>
+
+      <section class="scores-grid">
+        <div class="score-card">
+          <div class="score-header">
+            <div class="score-icon-wrapper">
+              <iconify-icon icon="lucide:brain" style="font-size: 32px; color: var(--secondary-foreground)"></iconify-icon>
+            </div>
+            <h2 class="score-title">Score MMSE</h2>
+            <p class="score-desc">
+              Évaluation des fonctions cognitives générales (mémoire, orientation, langage).
+            </p>
+          </div>
+          <div class="score-visual">
+            <svg viewBox="0 0 36 36" class="circular-chart">
+              <path class="score-circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+              <path class="score-circle-fill mmse-fill" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+            </svg>
+            <div class="score-value-text">
+              <span class="score-number">24</span>
+              <span class="score-total">/ 30</span>
+            </div>
+          </div>
+          <div class="score-status-badge status-warning">Léger déclin cognitif</div>
+        </div>
+
+        <div class="score-card">
+          <div class="score-header">
+            <div class="score-icon-wrapper" style="background-color: #d1fae5">
+              <iconify-icon icon="lucide:activity" style="font-size: 32px; color: #047857"></iconify-icon>
+            </div>
+            <h2 class="score-title">Score MoCA</h2>
+            <p class="score-desc">
+              Évaluation approfondie des fonctions exécutives et de l'attention.
+            </p>
+          </div>
+          <div class="score-visual">
+            <svg viewBox="0 0 36 36" class="circular-chart">
+              <path class="score-circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+              <path class="score-circle-fill moca-fill" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+            </svg>
+            <div class="score-value-text">
+              <span class="score-number">22</span>
+              <span class="score-total">/ 30</span>
+            </div>
+          </div>
+          <div class="score-status-badge status-success">Fonctions préservées</div>
+        </div>
+      </section>
+
+      <section class="game-cta-card">
+        <div class="game-cta-content">
+          <div class="game-badge">
+            <iconify-icon icon="lucide:sparkles" style="font-size: 16px"></iconify-icon>
+            Nouveau Test Interactif
+          </div>
+          <h2 class="game-title">Découvrez votre stade cognitif en jouant</h2>
+          <p class="game-desc">
+            Participez à notre série de mini-jeux interactifs. C'est un moyen simple, sans stress et ludique d'évaluer votre mémoire, vos réflexes et d'aider votre médecin à déterminer votre stade actuel.
+          </p>
+          <button class="btn-play-game">
+            <iconify-icon icon="lucide:play-circle" style="font-size: 32px"></iconify-icon>
+            Commencer le jeu d'évaluation
+          </button>
+        </div>
+        <div class="game-cta-visual">
+          <img
+            class="game-illustration"
+            alt="Illustration de jeu cognitif"
+            src="https://storage.googleapis.com/banani-generated-images/generated-images/d769c558-e91b-44a3-95b9-fbb46efac40f.jpg"
+          />
+        </div>
+      </section>
+    </main>
+  </div>
+</div>

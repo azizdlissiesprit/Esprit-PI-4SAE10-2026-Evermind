@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test CRUD Agenda Medical</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { background: #0056b3; }
+        .success { color: green; margin: 10px 0; }
+        .error { color: red; margin: 10px 0; }
+        .rdv-item { border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 4px; }
+        .rdv-item h3 { margin: 0 0 10px 0; color: #333; }
+    </style>
+</head>
+<body>
+    <h1>Test CRUD Agenda Medical (PostgreSQL)</h1>
+    
+    <div id="message"></div>
+    
+    <h2>Ajouter un Rendez-vous</h2>
+    <form id="rdvForm">
+        <div class="form-group">
+            <label for="patientNom">Nom du patient:</label>
+            <input type="text" id="patientNom" required>
+        </div>
+        <div class="form-group">
+            <label for="patientPrenom">Prénom du patient:</label>
+            <input type="text" id="patientPrenom" required>
+        </div>
+        <div class="form-group">
+            <label for="type">Type:</label>
+            <select id="type" required>
+                <option value="CONSULTATION">Consultation</option>
+                <option value="TELECONSULTATION">Téléconsultation</option>
+                <option value="SUIVI">Suivi</option>
+                <option value="BILAN">Bilan</option>
+                <option value="EVALUATION">Évaluation</option>
+                <option value="RESULTATS">Résultats</option>
+                <option value="PREMIERE_VISITE">Première visite</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="statut">Statut:</label>
+            <select id="statut" required>
+                <option value="CONFIRME">Confirmé</option>
+                <option value="EN_ATTENTE">En attente</option>
+                <option value="ANNULE">Annulé</option>
+                <option value="LIBRE">Libre</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="dateHeure">Date et heure:</label>
+            <input type="datetime-local" id="dateHeure" required>
+        </div>
+        <div class="form-group">
+            <label for="dureeMinutes">Durée (minutes):</label>
+            <input type="number" id="dureeMinutes" min="15" max="180" value="30" required>
+        </div>
+        <div class="form-group">
+            <label for="notes">Notes:</label>
+            <textarea id="notes" rows="3"></textarea>
+        </div>
+        <button type="submit">Créer le rendez-vous</button>
+    </form>
+    
+    <h2>Liste des Rendez-vous</h2>
+    <button onclick="loadRendezVous()">Actualiser la liste</button>
+    <div id="rdvList"></div>
+    
+    <script>
+        const API_BASE = 'http://localhost:8080/api/rendezvous';
+        
+        function showMessage(message, isError = false) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.innerHTML = `<div class="${isError ? 'error' : 'success'}">${message}</div>`;
+            setTimeout(() => messageDiv.innerHTML = '', 5000);
+        }
+        
+        async function createRendezVous(event) {
+            event.preventDefault();
+            
+            const rdv = {
+                patientNom: document.getElementById('patientNom').value,
+                patientPrenom: document.getElementById('patientPrenom').value,
+                type: document.getElementById('type').value,
+                statut: document.getElementById('statut').value,
+                dateHeure: document.getElementById('dateHeure').value,
+                dureeMinutes: parseInt(document.getElementById('dureeMinutes').value),
+                notes: document.getElementById('notes').value
+            };
+            
+            try {
+                const response = await fetch(API_BASE, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(rdv)
+                });
+                
+                if (response.ok) {
+                    const created = await response.json();
+                    showMessage(`Rendez-vous créé avec succès! ID: ${created.id}, Google Event ID: ${created.googleEventId}`);
+                    document.getElementById('rdvForm').reset();
+                    loadRendezVous();
+                } else {
+                    showMessage('Erreur lors de la création: ' + response.statusText, true);
+                }
+            } catch (error) {
+                showMessage('Erreur: ' + error.message, true);
+            }
+        }
+        
+        async function loadRendezVous() {
+            try {
+                const response = await fetch(API_BASE);
+                const rdvs = await response.json();
+                
+                const listDiv = document.getElementById('rdvList');
+                listDiv.innerHTML = '';
+                
+                if (rdvs.length === 0) {
+                    listDiv.innerHTML = '<p>Aucun rendez-vous trouvé.</p>';
+                    return;
+                }
+                
+                rdvs.forEach(rdv => {
+                    const rdvDiv = document.createElement('div');
+                    rdvDiv.className = 'rdv-item';
+                    rdvDiv.innerHTML = `
+                        <h3>${rdv.patientNom} ${rdv.patientPrenom} - ${rdv.type}</h3>
+                        <p><strong>Date:</strong> ${new Date(rdv.dateHeure).toLocaleString('fr-FR')}</p>
+                        <p><strong>Statut:</strong> ${rdv.statut}</p>
+                        <p><strong>Durée:</strong> ${rdv.dureeMinutes} minutes</p>
+                        <p><strong>Notes:</strong> ${rdv.notes || 'Aucune'}</p>
+                        <p><strong>Google Event ID:</strong> ${rdv.googleEventId || 'Non synchronisé'}</p>
+                        <button onclick="deleteRendezVous(${rdv.id})">Supprimer</button>
+                        <button onclick="updateRendezVous(${rdv.id})">Modifier</button>
+                    `;
+                    listDiv.appendChild(rdvDiv);
+                });
+            } catch (error) {
+                showMessage('Erreur lors du chargement: ' + error.message, true);
+            }
+        }
+        
+        async function deleteRendezVous(id) {
+            if (!confirm('Êtes-vous sûr de vouloir supprimer ce rendez-vous?')) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
+                
+                if (response.ok) {
+                    showMessage('Rendez-vous supprimé avec succès!');
+                    loadRendezVous();
+                } else {
+                    showMessage('Erreur lors de la suppression: ' + response.statusText, true);
+                }
+            } catch (error) {
+                showMessage('Erreur: ' + error.message, true);
+            }
+        }
+        
+        async function updateRendezVous(id) {
+            const newNotes = prompt('Nouvelles notes:');
+            if (!newNotes) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ notes: newNotes })
+                });
+                
+                if (response.ok) {
+                    showMessage('Rendez-vous mis à jour avec succès!');
+                    loadRendezVous();
+                } else {
+                    showMessage('Erreur lors de la mise à jour: ' + response.statusText, true);
+                }
+            } catch (error) {
+                showMessage('Erreur: ' + error.message, true);
+            }
+        }
+        
+        // Initialisation
+        document.getElementById('rdvForm').addEventListener('submit', createRendezVous);
+        
+        // Définir la date par défaut à maintenant
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        document.getElementById('dateHeure').value = now.toISOString().slice(0, 16);
+        
+        // Charger la liste au démarrage
+        loadRendezVous();
+    </script>
+</body>
+</html>

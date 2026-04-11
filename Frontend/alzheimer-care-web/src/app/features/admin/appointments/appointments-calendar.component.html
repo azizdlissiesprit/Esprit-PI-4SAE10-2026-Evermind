@@ -1,0 +1,188 @@
+<div class="export-wrapper">
+  <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+
+  <div class="page">
+    <div class="top-bar">
+      <h1 class="page-title">Agenda des rendez-vous</h1>
+      <div class="top-actions">
+        <button class="btn btn-ghost" type="button">Jour</button>
+        <button class="btn btn-ghost" type="button">Filtrer</button>
+        <button class="btn btn-ghost" type="button">Exporter</button>
+        <button class="btn btn-outline-icon" type="button">
+          <iconify-icon inline icon="solar:pen-linear" width="13"></iconify-icon>
+          <span>Modifier</span>
+        </button>
+        <button class="btn btn-outline-danger" type="button">
+          <iconify-icon inline icon="solar:trash-bin-minimalistic-2-linear" width="13"></iconify-icon>
+          <span>Supprimer</span>
+        </button>
+        <button class="btn btn-primary" type="button" (click)="createNewRdv()">
+          <iconify-icon inline icon="solar:add-circle-bold" width="14"></iconify-icon>
+          <span>Nouveau RDV</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">RDV cette semaine</div>
+        <div class="stat-value">{{ weekAppointments.length }}</div>
+        <div class="stat-trend up">+ 12% vs sem. préc.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Taux de confirmation</div>
+        <div class="stat-value">{{ confirmationRate }}%</div>
+        <div class="stat-trend up">+ 5pts</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Annulations</div>
+        <div class="stat-value red">{{ cancelledCount }}</div>
+        <div class="stat-trend red-txt">+ 2 vs sem. préc.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Durée moy. consultation</div>
+        <div class="stat-value">{{ averageDuration }} <span class="unit">min</span></div>
+        <div class="stat-trend neutral">stable</div>
+      </div>
+    </div>
+
+    <div class="main-row">
+      <div class="cal-panel">
+        <div class="week-nav">
+          <button class="nav-btn" type="button" (click)="previousWeek()">‹</button>
+          <span class="week-label">{{ weekRangeLabel() }}</span>
+          <button class="nav-btn" type="button" (click)="nextWeek()">›</button>
+          <button class="btn btn-sm" type="button" (click)="goToToday()">Aujourd'hui</button>
+        </div>
+
+        <div class="panel-empty" *ngIf="loading">Chargement des rendez-vous...</div>
+        <div class="cal-grid" *ngIf="!loading">
+          <div class="time-gutter-head"></div>
+          <div *ngFor="let day of weekDays; let i = index"
+               class="day-head"
+               [class.current-day]="isCurrentDay(day)">
+            <div class="day-abbr">{{ DAY_NAMES[i] }}</div>
+            <div class="day-num" [class.day-circle]="isCurrentDay(day)">
+              {{ day.getDate() }}
+            </div>
+          </div>
+
+          <ng-container *ngFor="let hour of timeSlots">
+            <div class="time-gutter">{{ hour < 10 ? '0' + hour : hour }}h</div>
+            <div *ngFor="let day of weekDays"
+                 class="day-cell"
+                 [class.current-col]="isCurrentDay(day)">
+              <div *ngFor="let rdv of getRdvForSlot(day, hour)"
+                   class="rdv-card"
+                   [ngClass]="'rdv-' + rdv.type.toLowerCase()"
+                   (click)="editEvent(rdv.id!)">
+                <div class="rdv-name">{{ rdv.patientNom }} {{ rdv.patientPrenom }}</div>
+                <div class="rdv-type">{{ getTypeLabel(rdv.type) }}</div>
+                <div class="rdv-note">{{ rdv.notes || 'Patient no info modifiable' }}</div>
+                <div class="rdv-actions">
+                  <button class="action-btn modify" type="button" (click)="editEvent(rdv.id!); $event.stopPropagation()">
+                    <iconify-icon inline icon="solar:pen-linear" width="11"></iconify-icon>
+                    <span>Modifier</span>
+                  </button>
+                  <button class="action-btn delete" type="button" (click)="deleteEvent(rdv.id!); $event.stopPropagation()">
+                    <iconify-icon inline icon="solar:trash-bin-minimalistic-2-linear" width="11"></iconify-icon>
+                    <span>Supprimer</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="right-col">
+        <div class="panel mini-cal-panel">
+          <div class="mini-cal-header">
+            <button class="nav-btn-sm" type="button" (click)="previousWeek()">‹</button>
+            <span class="mini-cal-title">{{ getMiniCalendarTitle() }}</span>
+            <button class="nav-btn-sm" type="button" (click)="nextWeek()">›</button>
+          </div>
+          <div class="mini-cal-grid">
+            <div *ngFor="let n of MINI_DAYS" class="mini-day-name">{{ n }}</div>
+            <div *ngFor="let d of miniCalendarDays"
+                 class="mini-day"
+                 [class.other-month]="!d.inMonth"
+                 [class.mini-today]="isMiniToday(d.date)">
+              {{ d.date.getDate() }}
+            </div>
+          </div>
+        </div>
+
+        <div class="panel demandes-panel" *ngIf="pendingRequests.length > 0">
+          <div class="panel-title">Demandes de RDV</div>
+          <div *ngFor="let request of pendingRequests" class="demande-card">
+            <div class="demande-top">
+              <span class="demande-nom">{{ request.patientNom }} {{ request.patientPrenom }}</span>
+              <span class="badge-attente">En attente</span>
+            </div>
+            <div class="demande-info">
+              {{ request.dateHeure | date:'EEEE d MMM.' }} · {{ request.dateHeure | date:'HH:mm' }} · {{ getTypeLabel(request.type) }}
+            </div>
+            <div class="demande-actions">
+              <button class="btn-refuser" type="button" (click)="declineRequest(request.id!)">Refuser</button>
+              <button class="btn-accepter" type="button" (click)="acceptRequest(request.id!)">Accepter</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel fill-panel">
+          <div class="panel-title">Taux de remplissage</div>
+          <div class="fill-body">
+            <div class="donut-wrap">
+              <svg viewBox="0 0 88 88" width="88" height="88">
+                <circle cx="44" cy="44" r="36" fill="none" stroke="#e8f0fe" stroke-width="10"></circle>
+                <circle cx="44" cy="44" r="36" fill="none" stroke="#1a73e8"
+                        stroke-width="10"
+                        [attr.stroke-dasharray]="226.1946710584651"
+                        [attr.stroke-dashoffset]="226.1946710584651 * (1 - fillPercent() / 100)"
+                        stroke-linecap="round"
+                        transform="rotate(-90 44 44)"></circle>
+                <text x="44" y="49" text-anchor="middle" font-size="14" fill="#1a73e8" font-weight="700">
+                  {{ fillPercent() }}%
+                </text>
+              </svg>
+            </div>
+            <div class="fill-legend">
+              <div class="leg-item"><span class="leg-dot blue"></span> Confirmés ({{ confirmedCount }})</div>
+              <div class="leg-item"><span class="leg-dot orange"></span> En attente ({{ pendingCount }})</div>
+              <div class="leg-item"><span class="leg-dot red"></span> Annulés ({{ cancelledCount }})</div>
+              <div class="leg-item"><span class="leg-dot gray"></span> Libres ({{ freeCount }})</div>
+            </div>
+          </div>
+          <div class="fill-bar-row">
+            <span>Créneaux utilisés</span>
+            <span>{{ weekAppointments.length }}/{{ MAX_WEEK_SLOTS }}</span>
+          </div>
+          <div class="fill-bar-bg">
+            <div class="fill-bar-fg" [style.width.%]="fillPercent()"></div>
+          </div>
+        </div>
+
+        <div class="panel today-panel">
+          <div class="panel-title">RDV du jour</div>
+          <div *ngFor="let rdv of todayEvents" class="today-item" (click)="editEvent(rdv.id!)">
+            <div class="today-time">
+              <span class="th">{{ rdv.dateHeure | date:'HH' }}</span>
+              <span class="tm">{{ rdv.dateHeure | date:'mm' }}</span>
+            </div>
+            <div class="today-info">
+              <div class="today-name">{{ rdv.patientNom }} {{ rdv.patientPrenom }}</div>
+              <div class="today-type">{{ rdv.notes || getTypeLabel(rdv.type) }}</div>
+              <span class="badge" [ngClass]="'badge-' + rdv.statut.toLowerCase()">
+                {{ getStatutLabel(rdv.statut) }}
+              </span>
+            </div>
+          </div>
+          <div *ngIf="todayEvents.length === 0" class="empty-today">
+            Aucun rendez-vous aujourd'hui
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

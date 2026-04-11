@@ -17,6 +17,7 @@ export class SidebarComponent {
     { label: 'Home', icon: 'fa-solid fa-table-columns', route: '/app/dashboard' },
     { label: 'Patients', icon: 'fa-regular fa-user', route: '/app/patients' },
     { label: 'Guardians', icon: 'fa-solid fa-users-viewfinder', route: '/app/guardians' },
+    { label: 'Appointments', icon: 'fa-solid fa-calendar-days', route: '/admin/appointments' },
     { label: 'Alerts', icon: 'fa-solid fa-triangle-exclamation', route: '/app/alerts' },
     { label: 'Messages', icon: 'fa-regular fa-comment-dots', route: '/app/messages' },
     { label: 'Settings', icon: 'fa-solid fa-gear', route: '/app/settings' },

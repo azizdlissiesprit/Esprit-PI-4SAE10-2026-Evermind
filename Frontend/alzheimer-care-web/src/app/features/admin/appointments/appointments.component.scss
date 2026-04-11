@@ -1,0 +1,15 @@
+:host {
+  display: block;
+  // On s'assure que Tailwind prend le dessus, mais on peut ajouter des styles spécifiques ici
+  .calendar-grid {
+    transition: all 0.3s ease;
+  }
+}
+
+// Pour cacher la barre de défilement tout en gardant le scroll
+.overflow-x-auto {
+  scrollbar-width: none; 
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

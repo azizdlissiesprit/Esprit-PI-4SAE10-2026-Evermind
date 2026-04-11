@@ -1,0 +1,135 @@
+<div class="evaluation-container">
+  <header class="evaluation-header">
+    <h1>🧠 Évaluation Cognitive Professionnelle</h1>
+    <p class="subtitle">Système d'Intelligence Artificielle Avancé</p>
+  </header>
+
+  <!-- ===== LOADING ===== -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Chargement des données cognitives...</p>
+  </div>
+
+  <!-- ===== SÉLECTION DES JEUX ===== -->
+  <div *ngIf="gamePhase === 'selection' && !isLoading" class="selection-phase">
+    <div class="phase-header">
+      <h2>🎮 Sélection des Jeux Cognitifs</h2>
+      <div class="progress-info">
+        <span>Jeux complétés: {{ completedGames.length }}/{{ availableGames.length }}</span>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="(completedGames.length / availableGames.length) * 100"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Jeux Disponibles -->
+    <div class="games-grid">
+      <div 
+        *ngFor="let game of availableGames" 
+        class="game-card"
+        [class.completed]="game.completed"
+        [class.locked]="game.completed && !allGamesCompleted">
+        
+        <div class="game-header">
+          <div class="game-icon">{{ game.icon }}</div>
+          <div class="game-info">
+            <h3>{{ game.name }}</h3>
+            <p>{{ game.description }}</p>
+          </div>
+          <div class="game-status">
+            <div class="difficulty-badge" [style.background-color]="getDifficultyColor(game.difficulty)">
+              {{ game.difficulty }}
+            </div>
+            <div class="time-estimate">⏱️ {{ game.estimatedTime }}min</div>
+          </div>
+        </div>
+
+        <div class="game-footer">
+          <div *ngIf="game.completed" class="completed-info">
+            <span class="score-display">✅ Score: {{ game.score }}%</span>
+            <span class="completion-date">Terminé</span>
+          </div>
+          
+          <button 
+            *ngIf="!game.completed"
+            class="btn-play"
+            (click)="selectGame(game.id)"
+            [disabled]="isLoading">
+            🎮 Jouer
+          </button>
+          
+          <button 
+            *ngIf="game.completed && !allGamesCompleted"
+            class="btn-replay"
+            (click)="selectGame(game.id)">
+            🔄 Refaire
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions Globales -->
+    <div class="global-actions">
+      <button 
+        *ngIf="completedGames.length > 0"
+        class="btn-reset"
+        (click)="startNewSession()">
+        🔄 Nouvelle Session
+      </button>
+      
+      <div class="session-summary" *ngIf="completedGames.length > 0">
+        <span>Score Moyen: {{ calculateTotalScore() }}%</span>
+        <span>Temps Total: {{ calculateTotalEstimatedTime() }}min</span>
+        <span>Niveau: {{ getCognitiveStage(calculateTotalScore()) }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== JEU EN COURS ===== -->
+  <div *ngIf="gamePhase === 'playing'" class="playing-phase">
+    <div class="game-header-info">
+      <button class="btn-back" (click)="resetToIdle()">← Retour</button>
+      <div class="current-game-info">
+        <h3>{{ currentGame?.icon }} {{ currentGame?.name }}</h3>
+        <span>Difficulté: {{ currentGame?.difficulty }}</span>
+      </div>
+    </div>
+
+    <!-- Intégration des vrais jeux -->
+    <div class="game-container">
+      <app-cards-game 
+        *ngIf="selectedGameType === 'cards'"
+        [config]="gameConfig"
+        (gameComplete)="onGameComplete($event)">
+      </app-cards-game>
+
+      <app-sequence-game 
+        *ngIf="selectedGameType === 'sequence'"
+        [config]="gameConfig"
+        (gameComplete)="onGameComplete($event)">
+      </app-sequence-game>
+
+      <app-pattern-game 
+        *ngIf="selectedGameType === 'pattern'"
+        [config]="gameConfig"
+        (gameComplete)="onGameComplete($event)">
+      </app-pattern-game>
+
+      <!-- Jeu Verbal (simulé pour l'instant) -->
+      <div *ngIf="selectedGameType === 'verbal'" class="verbal-game-placeholder">
+        <div class="placeholder-content">
+          <h3>🗣️ Évaluation Verbale</h3>
+          <p>Ce jeu sera bientôt disponible avec interface vocale interactive</p>
+          <button class="btn-complete" (click)="simulateVerbalGame()">Compléter Simulation</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== INSIGHTS ML AVANCÉS ===== -->
+  <app-ml-insights 
+    *ngIf="!isLoading"
+    [patientId]="patientId"
+    [currentDifficulty]="currentDifficulty">
+  </app-ml-insights>
+</div>

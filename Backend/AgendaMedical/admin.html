@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Agenda Medical</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            margin-top: 0.5rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            background: white;
+            border-radius: 8px 8px 0 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .nav-tab {
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .nav-tab:hover {
+            background: #f8f9fa;
+        }
+        
+        .nav-tab.active {
+            background: white;
+            border-bottom-color: #667eea;
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .tab-content {
+            background: white;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            min-height: 500px;
+        }
+        
+        .tab-pane {
+            display: none;
+            padding: 2rem;
+        }
+        
+        .tab-pane.active {
+            display: block;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .rdv-list {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .rdv-card {
+            background: white;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .rdv-card:hover {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .rdv-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .rdv-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .rdv-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .meta-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+        
+        .meta-value {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .status-confirmed {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-free {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+        
+        .rdv-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            color: #666;
+            margin-top: 0.5rem;
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .search-box input {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>EverMind - Administration</h1>
+        <p>Système de gestion des rendez-vous médicaux</p>
+    </header>
+    
+    <div class="container">
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('appointments')">Rendez-vous</button>
+            <button class="nav-tab" onclick="showTab('statistics')">Statistiques</button>
+            <button class="nav-tab" onclick="showTab('calendar')">Calendrier</button>
+        </div>
+        
+        <div class="tab-content">
+            <!-- Rendez-vous Tab -->
+            <div id="appointments" class="tab-pane active">
+                <div id="alertMessage"></div>
+                
+                <h2>Gestion des Rendez-vous</h2>
+                
+                <form id="rdvForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="patientNom">Nom du patient *</label>
+                            <input type="text" id="patientNom" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="patientPrenom">Prénom du patient *</label>
+                            <input type="text" id="patientPrenom" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="type">Type de rendez-vous *</label>
+                            <select id="type" required>
+                                <option value="">Sélectionner...</option>
+                                <option value="CONSULTATION">Consultation</option>
+                                <option value="TELECONSULTATION">Téléconsultation</option>
+                                <option value="SUIVI">Suivi</option>
+                                <option value="BILAN">Bilan</option>
+                                <option value="EVALUATION">Évaluation</option>
+                                <option value="RESULTATS">Résultats</option>
+                                <option value="PREMIERE_VISITE">Première visite</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="statut">Statut *</label>
+                            <select id="statut" required>
+                                <option value="">Sélectionner...</option>
+                                <option value="CONFIRME">Confirmé</option>
+                                <option value="EN_ATTENTE">En attente</option>
+                                <option value="ANNULE">Annulé</option>
+                                <option value="LIBRE">Libre</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="dateHeure">Date et heure *</label>
+                            <input type="datetime-local" id="dateHeure" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="dureeMinutes">Durée (minutes) *</label>
+                            <input type="number" id="dureeMinutes" min="15" max="180" value="30" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notes">Notes</label>
+                        <textarea id="notes" rows="3" placeholder="Notes supplémentaires..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <span id="submitBtnText">Créer le rendez-vous</span>
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="resetForm()">Réinitialiser</button>
+                </form>
+                
+                <div style="margin: 2rem 0;">
+                    <h3>Liste des Rendez-vous</h3>
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="Rechercher par nom de patient...">
+                        <button class="btn btn-primary" onclick="searchAppointments()">Rechercher</button>
+                        <button class="btn btn-secondary" onclick="loadAppointments()">Actualiser</button>
+                    </div>
+                </div>
+                
+                <div id="rdvList" class="rdv-list"></div>
+            </div>
+            
+            <!-- Statistics Tab -->
+            <div id="statistics" class="tab-pane">
+                <h2>Statistiques des Rendez-vous</h2>
+                <div id="statsGrid" class="stats-grid"></div>
+                <button class="btn btn-primary" onclick="loadStatistics()">Actualiser les statistiques</button>
+            </div>
+            
+            <!-- Calendar Tab -->
+            <div id="calendar" class="tab-pane">
+                <h2>Vue Calendrier</h2>
+                <p>Intégration avec Google Calendar</p>
+                <div id="calendarInfo"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const API_BASE = 'http://localhost:8080/api/rendezvous';
+        let editingId = null;
+        
+        // Tab management
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            
+            // Load data for the tab
+            if (tabName === 'appointments') {
+                loadAppointments();
+            } else if (tabName === 'statistics') {
+                loadStatistics();
+            }
+        }
+        
+        // Alert management
+        function showAlert(message, type = 'success') {
+            const alertDiv = document.getElementById('alertMessage');
+            alertDiv.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            setTimeout(() => alertDiv.innerHTML = '', 5000);
+        }
+        
+        // Form handling
+        document.getElementById('rdvForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const rdv = {
+                patientNom: document.getElementById('patientNom').value,
+                patientPrenom: document.getElementById('patientPrenom').value,
+                type: document.getElementById('type').value,
+                statut: document.getElementById('statut').value,
+                dateHeure: document.getElementById('dateHeure').value,
+                dureeMinutes: parseInt(document.getElementById('dureeMinutes').value),
+                notes: document.getElementById('notes').value
+            };
+            
+            try {
+                const url = editingId ? `${API_BASE}/${editingId}` : API_BASE;
+                const method = editingId ? 'PUT' : 'POST';
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(rdv)
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    showAlert(editingId ? 'Rendez-vous mis à jour avec succès!' : 'Rendez-vous créé avec succès!');
+                    resetForm();
+                    loadAppointments();
+                } else {
+                    showAlert('Erreur: ' + response.statusText, 'danger');
+                }
+            } catch (error) {
+                showAlert('Erreur: ' + error.message, 'danger');
+            }
+        });
+        
+        function resetForm() {
+            document.getElementById('rdvForm').reset();
+            editingId = null;
+            document.getElementById('submitBtnText').textContent = 'Créer le rendez-vous';
+            
+            // Set default date/time
+            const now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            document.getElementById('dateHeure').value = now.toISOString().slice(0, 16);
+        }
+        
+        // Load appointments
+        async function loadAppointments() {
+            try {
+                const response = await fetch(API_BASE);
+                const rdvs = await response.json();
+                
+                const listDiv = document.getElementById('rdvList');
+                listDiv.innerHTML = '';
+                
+                if (rdvs.length === 0) {
+                    listDiv.innerHTML = '<p>Aucun rendez-vous trouvé.</p>';
+                    return;
+                }
+                
+                rdvs.sort((a, b) => new Date(b.dateHeure) - new Date(a.dateHeure));
+                
+                rdvs.forEach(rdv => {
+                    const rdvCard = createRdvCard(rdv);
+                    listDiv.appendChild(rdvCard);
+                });
+            } catch (error) {
+                showAlert('Erreur lors du chargement: ' + error.message, 'danger');
+            }
+        }
+        
+        function createRdvCard(rdv) {
+            const div = document.createElement('div');
+            div.className = 'rdv-card';
+            
+            const statusClass = getStatusClass(rdv.statut);
+            const date = new Date(rdv.dateHeure).toLocaleString('fr-FR');
+            
+            div.innerHTML = `
+                <div class="rdv-header">
+                    <div class="rdv-title">${rdv.patientNom} ${rdv.patientPrenom}</div>
+                    <span class="status-badge ${statusClass}">${rdv.statut}</span>
+                </div>
+                <div class="rdv-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Type</span>
+                        <span class="meta-value">${rdv.type}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Date</span>
+                        <span class="meta-value">${date}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Durée</span>
+                        <span class="meta-value">${rdv.dureeMinutes} min</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Google Calendar</span>
+                        <span class="meta-value">${rdv.googleEventId || 'Non synchronisé'}</span>
+                    </div>
+                </div>
+                ${rdv.notes ? `<p style="margin: 1rem 0; color: #666;">${rdv.notes}</p>` : ''}
+                <div class="rdv-actions">
+                    <button class="btn btn-secondary" onclick="editRdv(${rdv.id})">Modifier</button>
+                    <button class="btn btn-danger" onclick="deleteRdv(${rdv.id})">Supprimer</button>
+                </div>
+            `;
+            
+            return div;
+        }
+        
+        function getStatusClass(statut) {
+            const statusMap = {
+                'CONFIRME': 'status-confirmed',
+                'EN_ATTENTE': 'status-pending',
+                'ANNULE': 'status-cancelled',
+                'LIBRE': 'status-free'
+            };
+            return statusMap[statut] || 'status-free';
+        }
+        
+        async function editRdv(id) {
+            try {
+                const response = await fetch(`${API_BASE}/${id}`);
+                const rdv = await response.json();
+                
+                // Fill form with existing data
+                document.getElementById('patientNom').value = rdv.patientNom;
+                document.getElementById('patientPrenom').value = rdv.patientPrenom;
+                document.getElementById('type').value = rdv.type;
+                document.getElementById('statut').value = rdv.statut;
+                document.getElementById('dateHeure').value = rdv.dateHeureString;
+                document.getElementById('dureeMinutes').value = rdv.dureeMinutes;
+                document.getElementById('notes').value = rdv.notes || '';
+                
+                editingId = id;
+                document.getElementById('submitBtnText').textContent = 'Mettre à jour le rendez-vous';
+                
+                // Scroll to form
+                document.getElementById('rdvForm').scrollIntoView({ behavior: 'smooth' });
+            } catch (error) {
+                showAlert('Erreur: ' + error.message, 'danger');
+            }
+        }
+        
+        async function deleteRdv(id) {
+            if (!confirm('Êtes-vous sûr de vouloir supprimer ce rendez-vous?')) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
+                
+                if (response.ok) {
+                    showAlert('Rendez-vous supprimé avec succès!');
+                    loadAppointments();
+                } else {
+                    showAlert('Erreur lors de la suppression: ' + response.statusText, 'danger');
+                }
+            } catch (error) {
+                showAlert('Erreur: ' + error.message, 'danger');
+            }
+        }
+        
+        async function searchAppointments() {
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            
+            if (!searchTerm) {
+                loadAppointments();
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/search?term=${encodeURIComponent(searchTerm)}`);
+                const rdvs = await response.json();
+                
+                const listDiv = document.getElementById('rdvList');
+                listDiv.innerHTML = '';
+                
+                if (rdvs.length === 0) {
+                    listDiv.innerHTML = '<p>Aucun rendez-vous trouvé pour cette recherche.</p>';
+                    return;
+                }
+                
+                rdvs.forEach(rdv => {
+                    const rdvCard = createRdvCard(rdv);
+                    listDiv.appendChild(rdvCard);
+                });
+            } catch (error) {
+                showAlert('Erreur lors de la recherche: ' + error.message, 'danger');
+            }
+        }
+        
+        // Statistics
+        async function loadStatistics() {
+            try {
+                const response = await fetch(`${API_BASE}/stats`);
+                const stats = await response.json();
+                
+                const statsGrid = document.getElementById('statsGrid');
+                statsGrid.innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.totalJour}</div>
+                        <div class="stat-label">Rendez-vous aujourd'hui</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.totalSemaine}</div>
+                        <div class="stat-label">Rendez-vous cette semaine</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.confirmes}</div>
+                        <div class="stat-label">Confirmés</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.enAttente}</div>
+                        <div class="stat-label">En attente</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.annules}</div>
+                        <div class="stat-label">Annulés</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.tauxConfirmation.toFixed(1)}%</div>
+                        <div class="stat-label">Taux de confirmation</div>
+                    </div>
+                `;
+            } catch (error) {
+                showAlert('Erreur lors du chargement des statistiques: ' + error.message, 'danger');
+            }
+        }
+        
+        // Initialize
+        resetForm();
+        loadAppointments();
+    </script>
+</body>
+</html>

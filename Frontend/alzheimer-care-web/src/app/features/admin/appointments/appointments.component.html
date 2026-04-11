@@ -1,0 +1,114 @@
+<div class="min-h-screen bg-slate-50 p-8 font-sans">
+  
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-2xl font-bold text-slate-800">Agenda des rendez-vous</h1>
+    <div class="flex items-center space-x-2">
+      <div class="flex bg-white border rounded-lg overflow-hidden shadow-sm mr-4">
+        <button class="px-4 py-2 text-sm font-medium hover:bg-gray-50 border-r">Jour</button>
+        <button class="px-4 py-2 text-sm font-medium hover:bg-gray-50 border-r">Filtrer</button>
+        <button class="px-4 py-2 text-sm font-medium hover:bg-gray-50">Exporter</button>
+      </div>
+      <button class="px-4 py-2 text-sm font-medium text-orange-500 bg-white border rounded-lg shadow-sm">Modifier</button>
+      <button class="px-4 py-2 text-sm font-medium text-slate-400 bg-white border rounded-lg shadow-sm">Supprimer</button>
+      <button class="px-6 py-2 text-sm font-bold text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 transition">+ Nouveau RDV</button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+    <div *ngFor="let stat of stats" class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+      <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{{stat.label}}</p>
+      <div class="flex items-baseline space-x-2">
+        <span class="text-3xl font-black text-slate-800">{{stat.value}}</span>
+      </div>
+      <p class="text-xs mt-3 flex items-center" [ngClass]="{'text-green-500': stat.trendType === 'up', 'text-red-500': stat.trendType === 'down', 'text-gray-400': stat.trendType === 'neutral'}">
+        <span *ngIf="stat.trendType === 'up'" class="mr-1"></span>
+        <span *ngIf="stat.trendType === 'down'" class="mr-1"></span>
+        {{stat.trend}}
+      </p>
+    </div>
+  </div>
+
+  <div class="flex flex-col lg:flex-row gap-8">
+    <div class="flex-grow bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+      <div class="flex items-center justify-between mb-8">
+        <div class="flex items-center space-x-6">
+          <div class="flex items-center space-x-2">
+            <button class="p-2 hover:bg-gray-100 rounded-full">&lt;</button>
+            <span class="font-bold text-lg text-slate-700">31 mars  4 avr. 2026</span>
+            <button class="p-2 hover:bg-gray-100 rounded-full">&gt;</button>
+          </div>
+          <button class="px-4 py-1.5 bg-slate-100 text-slate-600 rounded-lg text-sm font-semibold">Aujourd'hui</button>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full border-separate border-spacing-0">
+          <thead>
+            <tr>
+              <th class="w-20"></th>
+              <th *ngFor="let day of days" class="pb-4 px-2">
+                <div class="text-xs font-bold text-gray-400 mb-1">{{day.name}}</div>
+                <div [class]="day.active ? 'w-8 h-8 flex items-center justify-center bg-blue-600 text-white rounded-full mx-auto' : 'text-xl font-bold text-slate-700'">
+                  {{day.date}}
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let hour of hours" class="group">
+              <td class="py-6 text-sm font-bold text-slate-400 border-t border-gray-50">{{hour}}</td>
+              <td *ngFor="let day of days" class="border-t border-l border-gray-50 relative p-2 min-w-[150px] min-h-[100px]">
+                <div *ngIf="getAppointment(day.name, hour) as app" [class]="app.color + ' p-3 rounded-xl border shadow-sm relative group cursor-pointer h-full'">
+                  <p class="font-black text-slate-800 text-sm mb-0.5">{{app.name}}</p>
+                  <p class="text-[10px] text-slate-500 font-medium mb-3 italic">{{app.type}}</p>
+                  <div class="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button class="bg-white/80 hover:bg-white px-2 py-1 rounded-md text-[9px] font-bold border border-gray-200">Modifier</button>
+                    <button class="bg-white/80 hover:bg-red-50 px-2 py-1 rounded-md text-[9px] font-bold text-red-500 border border-red-100">Supprimer</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="w-full lg:w-96 flex flex-col gap-6">
+      <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+        <div class="flex justify-between items-center mb-6">
+            <button class="p-1">&lt;</button>
+            <span class="font-bold text-slate-800">Avril 2026</span>
+            <button class="p-1">&gt;</button>
+        </div>
+        <div class="grid grid-cols-7 text-center gap-y-3">
+          <span *ngFor="let d of ['L','M','M','J','V','S','D']" class="text-[10px] font-bold text-slate-300 uppercase">{{d}}</span>
+          <span *ngFor="let date of [29,30,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,1,2,3]" 
+                class="text-xs font-semibold py-1 rounded-full cursor-pointer hover:bg-blue-50"
+                [ngClass]="{'bg-blue-600 text-white shadow-md': date === 2, 'text-slate-300': date > 28 || date < 5}">
+            {{date}}
+          </span>
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+        <h3 class="font-bold text-slate-800 mb-6 flex items-center justify-between">
+            Demandes de RDV
+            <span class="text-[10px] bg-slate-100 px-2 py-1 rounded text-slate-500">2 nouvelles</span>
+        </h3>
+        <div class="space-y-4">
+          <div *ngFor="let req of [{n:'Inès Ben Ali', t:'10:30', m:'Première consultation'}, {n:'Youssef Trabelsi', t:'14:00', m:'Suivi mémoire'}]" class="p-4 bg-slate-50 rounded-2xl border border-gray-50">
+            <div class="flex justify-between items-start mb-1">
+              <span class="font-bold text-sm text-slate-800">{{req.n}}</span>
+              <span class="px-2 py-0.5 bg-orange-100 text-orange-600 text-[9px] font-bold rounded-full">En attente</span>
+            </div>
+            <p class="text-[10px] text-slate-400 mb-4 font-medium italic">Vendredi 4 avr.  {{req.t}}  {{req.m}}</p>
+            <div class="flex gap-2">
+              <button class="flex-1 py-2 text-[11px] font-bold text-slate-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50">Refuser</button>
+              <button class="flex-1 py-2 text-[11px] font-bold text-white bg-emerald-500 rounded-xl hover:bg-emerald-600 shadow-sm transition">Accepter</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

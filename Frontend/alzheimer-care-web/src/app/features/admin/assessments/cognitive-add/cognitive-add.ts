@@ -30,19 +30,19 @@ export class CognitiveAddComponent implements OnInit {
     // Initialize Form with nested 'scores' group
     this.form = this.fb.group({
       patientId: ['', Validators.required],
-      date: [new Date().toISOString().split('T')[0], Validators.required], // Default to today
+      date: [new Date().toISOString().split('T')[0], Validators.required],
       type: [AssessmentType.INITIAL, Validators.required],
       evaluator: ['', Validators.required],
       mmseScore: [0, [Validators.required, Validators.min(0), Validators.max(30)]],
       moocaScore: [0, [Validators.required, Validators.min(0), Validators.max(30)]],
       trend: [TrendType.STABLE, Validators.required],
-      observations: [''],
+      observations: ['', [Validators.required, Validators.minLength(12)]],
       // Nested Embeddable Scores
       scores: this.fb.group({
-        memory: [0, Validators.required],
-        orientation: [0, Validators.required],
-        language: [0, Validators.required],
-        executiveFunctions: [0, Validators.required]
+        memory: [0, [Validators.required, Validators.min(0), Validators.max(10)]],
+        orientation: [0, [Validators.required, Validators.min(0), Validators.max(10)]],
+        language: [0, [Validators.required, Validators.min(0), Validators.max(10)]],
+        executiveFunctions: [0, [Validators.required, Validators.min(0), Validators.max(10)]]
       })
     });
   }
@@ -55,7 +55,60 @@ export class CognitiveAddComponent implements OnInit {
       this.service.getById(this.id).subscribe(data => {
         this.form.patchValue(data);
       });
+    } else {
+      const patientId = this.route.snapshot.queryParamMap.get('patientId');
+      if (patientId) {
+        this.form.patchValue({ patientId });
+      }
     }
+
+    const scoresGroup = this.form.get('scores');
+    scoresGroup?.valueChanges.subscribe(() => {
+      const total = this.computeTotalFromDomains();
+      this.form.patchValue(
+        { mmseScore: total, moocaScore: total },
+        { emitEvent: false }
+      );
+    });
+    const initialTotal = this.computeTotalFromDomains();
+    this.form.patchValue({ mmseScore: initialTotal, moocaScore: initialTotal }, { emitEvent: false });
+  }
+
+  // Helper methods for template
+  getDomainScoreError(domain: string): string {
+    const scores = this.form.get('scores')?.value;
+    if (!scores || !scores[domain]) {
+      return 'Score requis pour ce domaine';
+    }
+    const score = scores[domain];
+    if (score < 0 || score > 30) {
+      return 'Score invalide (0-30)';
+    }
+    return '';
+  }
+
+  computeTotalFromDomains(): number {
+    const scores = this.form.get('scores')?.value || {};
+    let total = 0;
+    Object.values(scores).forEach((score) => {
+      total += (score as number) || 0;
+    });
+    return total;
+  }
+
+  hasTotalScoreError(): boolean {
+    const mmseScore = this.form.get('mmseScore')?.value;
+    const moocaScore = this.form.get('moocaScore')?.value;
+    return mmseScore < 0 || mmseScore > 30 || moocaScore < 0 || moocaScore > 30;
+  }
+
+  getTotalScoreError(): string {
+    const mmseScore = this.form.get('mmseScore')?.value;
+    const moocaScore = this.form.get('moocaScore')?.value;
+    if (mmseScore < 0 || mmseScore > 30 || moocaScore < 0 || moocaScore > 30) {
+      return 'Les scores doivent être entre 0 et 30';
+    }
+    return '';
   }
 
   onSubmit() {
