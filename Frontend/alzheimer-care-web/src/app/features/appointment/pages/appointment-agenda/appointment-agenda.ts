@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
-import { RendezVousDTO, RendezVousService } from '../../../admin/appointments/rendezvous.service';
+import { RendezVousDTO, RendezVousService } from '../../../../services/rendezvous.service';
 
 export type TypeConsultation =
   | 'CONSULTATION' | 'TELECONSULTATION' | 'SUIVI'
@@ -193,6 +193,15 @@ export class AppointmentAgendaComponent implements OnInit {
     return new Date(dt).getMinutes().toString().padStart(2,'0');
   }
 
+  formatDateTimeLocal(date: Date): string {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  }
+
   getTypeLabel(t: TypeConsultation): string { return this.TYPE_LABELS[t] ?? t; }
 
   getStatutLabel(s: StatutRDV): string {
@@ -275,6 +284,28 @@ export class AppointmentAgendaComponent implements OnInit {
     this.showModal = true;
   }
 
+  openNewForDate(date: Date, hour: number): void {
+    this.isEditing = false;
+    this.selectedRdv = null;
+    this.errorMessage = '';
+    
+    // Create a new form with the selected date and time pre-filled
+    const selectedDateTime = new Date(date);
+    selectedDateTime.setHours(hour, 0, 0, 0);
+    
+    this.rdvForm = this.fb.group({
+      patientNom:    ['', Validators.required],
+      patientPrenom: ['', Validators.required],
+      type:          ['CONSULTATION', Validators.required],
+      statut:        ['CONFIRME', Validators.required],
+      dateHeure:     [this.formatDateTimeLocal(selectedDateTime), Validators.required],
+      dureeMinutes:  [30, [Validators.required, Validators.min(5)]],
+      notes:         ['']
+    });
+    
+    this.showModal = true;
+  }
+
   openEdit(rdv: RendezVous, e: Event): void {
     e.stopPropagation();
     this.isEditing   = true;
@@ -305,15 +336,21 @@ export class AppointmentAgendaComponent implements OnInit {
         .subscribe({
           next: () => {
             this.infoMessage = this.isEditing
-              ? 'Rendez-vous modifie avec succes.'
-              : 'Rendez-vous cree avec succes.';
+              ? 'Rendez-vous modifié avec succès.'
+              : 'Rendez-vous créé avec succès.';
             this.closeModal();
             this.loadRdv();
           },
-          error: () => {
-            this.errorMessage = this.isEditing
-              ? 'La modification a echoue.'
-              : 'La creation a echoue.';
+          error: (err) => {
+            console.error('API Error:', err);
+            // Fallback to local mode if API fails
+            this.backendAvailable = false;
+            this.saveLocally(payload);
+            this.submitting = false;
+            this.infoMessage = this.isEditing
+              ? 'Rendez-vous modifié en mode local (API indisponible).'
+              : 'Rendez-vous créé en mode local (API indisponible).';
+            this.closeModal();
           }
         });
       return;
@@ -322,8 +359,8 @@ export class AppointmentAgendaComponent implements OnInit {
     this.saveLocally(payload);
     this.submitting = false;
     this.infoMessage = this.isEditing
-      ? 'Rendez-vous modifie en mode local.'
-      : 'Rendez-vous cree en mode local.';
+      ? 'Rendez-vous modifié en mode local.'
+      : 'Rendez-vous créé en mode local.';
     this.closeModal();
   }
 
@@ -333,35 +370,49 @@ export class AppointmentAgendaComponent implements OnInit {
       return;
     }
 
+    console.log('Deleting RDV:', rdv);
     this.errorMessage = '';
 
-    if (this.backendAvailable) {
-      this.submitting = true;
-      this.rendezVousService
-        .delete(rdv.id)
-        .pipe(finalize(() => (this.submitting = false)))
-        .subscribe({
-          next: () => {
-            this.infoMessage = 'Rendez-vous supprime avec succes.';
-            this.rdvList = this.rdvList.filter((item) => item.id !== rdv.id);
-            this.syncDemandesFromAppointments();
-            if (this.selectedRdv?.id === rdv.id) {
-              this.closeModal();
+    try {
+      if (this.backendAvailable) {
+        this.submitting = true;
+        this.rendezVousService
+          .delete(rdv.id)
+          .pipe(finalize(() => (this.submitting = false)))
+          .subscribe({
+            next: () => {
+              console.log('RDV deleted successfully via API');
+              this.infoMessage = 'Rendez-vous supprimé avec succès.';
+              this.rdvList = this.rdvList.filter((item) => item.id !== rdv.id);
+              this.syncDemandesFromAppointments();
+              if (this.selectedRdv?.id === rdv.id) {
+                this.closeModal();
+              }
+            },
+            error: (err) => {
+              console.error('API delete failed:', err);
+              // Fallback to local delete
+              this.deleteLocally(rdv);
             }
-          },
-          error: () => {
-            this.errorMessage = 'La suppression a echoue.';
-          }
-        });
-      return;
-    }
+          });
+        return;
+      }
 
+      this.deleteLocally(rdv);
+    } catch (error) {
+      console.error('Error during delete operation:', error);
+      this.errorMessage = 'Erreur lors de la suppression du rendez-vous.';
+    }
+  }
+
+  private deleteLocally(rdv: RendezVous): void {
     this.rdvList = this.rdvList.filter((item) => item.id !== rdv.id);
     this.syncDemandesFromAppointments();
     if (this.selectedRdv?.id === rdv.id) {
       this.closeModal();
     }
-    this.infoMessage = 'Rendez-vous supprime en mode local.';
+    this.infoMessage = 'Rendez-vous supprimé en mode local.';
+    console.log('RDV deleted locally');
   }
 
   accepterDemande(d: DemandeRDV): void {
@@ -408,7 +459,8 @@ export class AppointmentAgendaComponent implements OnInit {
           this.syncDemandesFromAppointments();
           this.infoMessage = '';
         },
-        error: () => {
+        error: (err) => {
+          console.error('Backend API unavailable:', err);
           this.backendAvailable = false;
           this.rdvList = this.getMockRDV();
           this.syncDemandesFromAppointments();
@@ -418,43 +470,69 @@ export class AppointmentAgendaComponent implements OnInit {
   }
 
   private saveLocally(payload: RendezVousDTO): void {
-    if (this.isEditing && this.selectedRdv) {
-      this.rdvList = this.rdvList.map((rdv) =>
-        rdv.id === this.selectedRdv!.id
-          ? this.normalizeRdv({ ...payload, id: this.selectedRdv!.id })
-          : rdv
-      );
-    } else {
-      const nextId = this.rdvList.length
-        ? Math.max(...this.rdvList.map((rdv) => rdv.id)) + 1
-        : 1;
-      this.rdvList = [...this.rdvList, this.normalizeRdv({ ...payload, id: nextId })];
-    }
+    try {
+      console.log('Saving locally:', payload);
+      
+      if (this.isEditing && this.selectedRdv) {
+        console.log('Updating existing RDV with ID:', this.selectedRdv.id);
+        this.rdvList = this.rdvList.map((rdv) =>
+          rdv.id === this.selectedRdv!.id
+            ? this.normalizeRdv({ ...payload, id: this.selectedRdv!.id })
+            : rdv
+        );
+        this.infoMessage = 'Rendez-vous modifié en mode local.';
+      } else {
+        const nextId = this.rdvList.length
+          ? Math.max(...this.rdvList.map((rdv) => rdv.id)) + 1
+          : 1;
+        console.log('Creating new RDV with ID:', nextId);
+        this.rdvList = [...this.rdvList, this.normalizeRdv({ ...payload, id: nextId })];
+        this.infoMessage = 'Rendez-vous créé en mode local.';
+      }
 
-    this.rdvList.sort((a, b) => new Date(a.dateHeure).getTime() - new Date(b.dateHeure).getTime());
-    this.syncDemandesFromAppointments();
+      this.rdvList.sort((a, b) => new Date(a.dateHeure).getTime() - new Date(b.dateHeure).getTime());
+      this.syncDemandesFromAppointments();
+      console.log('Local save successful, updated list:', this.rdvList);
+    } catch (error) {
+      console.error('Error during local save:', error);
+      this.errorMessage = 'Erreur lors de la sauvegarde locale.';
+    }
   }
 
   private persistStatusChange(rdv: RendezVous, message: string): void {
-    const payload = this.toDto(rdv);
+    try {
+      console.log('Updating status for RDV:', rdv);
+      const payload = this.toDto(rdv);
 
-    if (this.backendAvailable) {
-      this.rendezVousService.update(rdv.id, payload).subscribe({
-        next: () => {
-          this.rdvList = this.rdvList.map((item) => (item.id === rdv.id ? rdv : item));
-          this.syncDemandesFromAppointments();
-          this.infoMessage = message;
-        },
-        error: () => {
-          this.errorMessage = 'La mise a jour du statut a echoue.';
-        }
-      });
-      return;
+      if (this.backendAvailable) {
+        this.rendezVousService.update(rdv.id, payload).subscribe({
+          next: () => {
+            console.log('Status updated successfully via API');
+            this.rdvList = this.rdvList.map((item) => (item.id === rdv.id ? rdv : item));
+            this.syncDemandesFromAppointments();
+            this.infoMessage = message;
+          },
+          error: (err) => {
+            console.error('API status update failed:', err);
+            // Fallback to local update
+            this.updateStatusLocally(rdv, message);
+          }
+        });
+        return;
+      }
+
+      this.updateStatusLocally(rdv, message);
+    } catch (error) {
+      console.error('Error during status change:', error);
+      this.errorMessage = 'Erreur lors de la mise à jour du statut.';
     }
+  }
 
+  private updateStatusLocally(rdv: RendezVous, message: string): void {
     this.rdvList = this.rdvList.map((item) => (item.id === rdv.id ? rdv : item));
     this.syncDemandesFromAppointments();
     this.infoMessage = `${message} Mode local actif.`;
+    console.log('Status updated locally:', rdv);
   }
 
   private syncDemandesFromAppointments(): void {

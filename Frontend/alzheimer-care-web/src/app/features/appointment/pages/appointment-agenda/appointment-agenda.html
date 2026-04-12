@@ -82,8 +82,9 @@
         <ng-container *ngFor="let hour of timeSlots">
           <div class="time-gutter">{{ hour < 10 ? '0'+hour : hour }}h</div>
           <div *ngFor="let day of weekDays"
-               class="day-cell"
-               [class.current-col]="isCurrentDay(day)">
+               class="day-cell clickable"
+               [class.current-col]="isCurrentDay(day)"
+               (click)="openNewForDate(day, hour)">
             <div *ngFor="let rdv of getRdvForSlot(day, hour)"
                  class="rdv-card"
                  [ngClass]="'rdv-' + rdv.type.toLowerCase()"
@@ -121,9 +122,10 @@
         <div class="mini-cal-grid">
           <div *ngFor="let n of MINI_DAYS" class="mini-day-name">{{ n }}</div>
           <div *ngFor="let d of calendarDays"
-               class="mini-day"
+               class="mini-day clickable"
                [class.other-month]="!d.inMonth"
-               [class.mini-today]="isMiniToday(d.date)">
+               [class.mini-today]="isMiniToday(d.date)"
+               (click)="openNewForDate(d.date, 9)">
             {{ d.date.getDate() }}
           </div>
         </div>
@@ -220,12 +222,18 @@
 
       <div class="form-row">
         <div class="form-group">
-          <label>Nom</label>
+          <label>Nom *</label>
           <input type="text" formControlName="patientNom" placeholder="Dupont"/>
+          <div class="error-message" *ngIf="rdvForm.get('patientNom')?.invalid && rdvForm.get('patientNom')?.touched">
+            Le nom est requis
+          </div>
         </div>
         <div class="form-group">
-          <label>Prénom</label>
+          <label>Prénom *</label>
           <input type="text" formControlName="patientPrenom" placeholder="Marie"/>
+          <div class="error-message" *ngIf="rdvForm.get('patientPrenom')?.invalid && rdvForm.get('patientPrenom')?.touched">
+            Le prénom est requis
+          </div>
         </div>
       </div>
 
@@ -246,12 +254,18 @@
 
       <div class="form-row">
         <div class="form-group">
-          <label>Date et heure</label>
+          <label>Date et heure *</label>
           <input type="datetime-local" formControlName="dateHeure"/>
+          <div class="error-message" *ngIf="rdvForm.get('dateHeure')?.invalid && rdvForm.get('dateHeure')?.touched">
+            La date et heure sont requises
+          </div>
         </div>
         <div class="form-group">
-          <label>Durée (min)</label>
+          <label>Durée (min) *</label>
           <input type="number" formControlName="dureeMinutes" min="5" max="120"/>
+          <div class="error-message" *ngIf="rdvForm.get('dureeMinutes')?.invalid && rdvForm.get('dureeMinutes')?.touched">
+            La durée doit être entre 5 et 120 minutes
+          </div>
         </div>
       </div>
 

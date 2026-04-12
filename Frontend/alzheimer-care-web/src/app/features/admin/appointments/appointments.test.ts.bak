@@ -1,0 +1,186 @@
+import { TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
+import { AppointmentService, Appointment } from '../../../core/services/appointment.service';
+import { AppointmentsComponent } from './appointments.component';
+
+describe('AppointmentsComponent CRUD Tests', () => {
+  let component: AppointmentsComponent;
+  let service: AppointmentService;
+  let mockAppointmentService: jasmine.SpyObj<AppointmentService>;
+
+  const mockAppointments: Appointment[] = [
+    { id: '1', day: 'MAR', hour: '08h', name: 'Omar E.', type: 'Téléconsult', color: 'bg-pink-100 border-pink-300', status: 'confirmed' },
+    { id: '2', day: 'MAR', hour: '09h', name: 'Leila D.', type: '1ère visite', color: 'bg-red-50 border-red-200', status: 'confirmed' }
+  ];
+
+  beforeEach(async () => {
+    mockAppointmentService = jasmine.createSpyObj('AppointmentService', [
+      'getAppointments', 
+      'getStats', 
+      'addAppointment', 
+      'updateAppointment', 
+      'deleteAppointment'
+    ]);
+
+    await TestBed.configureTestingModule({
+      declarations: [ AppointmentsComponent ],
+      providers: [
+        { provide: AppointmentService, useValue: mockAppointmentService }
+      ]
+    }).compileComponents();
+
+    component = TestBed.createComponent(AppointmentsComponent).componentInstance;
+    service = TestBed.inject(AppointmentService);
+  });
+
+  it('should create the component', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should load appointments on initialization', () => {
+    mockAppointmentService.getAppointments.and.returnValue(of(mockAppointments));
+    
+    component.ngOnInit();
+    
+    expect(mockAppointmentService.getAppointments).toHaveBeenCalled();
+    expect(component.appointments.length).toBe(2);
+  });
+
+  it('should open appointment modal for new appointment', () => {
+    component.openAppointmentModal();
+    
+    expect(component.showAppointmentModal).toBe(true);
+    expect(component.selectedAppointment).toBeNull();
+  });
+
+  it('should open appointment modal for editing', () => {
+    const appointment = mockAppointments[0];
+    component.openAppointmentModal(appointment);
+    
+    expect(component.showAppointmentModal).toBe(true);
+    expect(component.selectedAppointment).toBe(appointment);
+  });
+
+  it('should add new appointment', () => {
+    const newAppointment: Appointment = {
+      id: '3',
+      day: 'MER',
+      hour: '10h',
+      name: 'Test User',
+      type: 'Consultation',
+      color: 'bg-blue-100 border-blue-300',
+      status: 'confirmed'
+    };
+
+    mockAppointmentService.addAppointment.and.returnValue(of(newAppointment));
+    mockAppointmentService.getAppointments.and.returnValue(of([...mockAppointments, newAppointment]));
+    
+    component.appointmentForm.setValue({
+      name: 'Test User',
+      day: 'MER',
+      hour: '10h',
+      type: 'Consultation'
+    });
+
+    component.saveAppointment();
+    
+    expect(mockAppointmentService.addAppointment).toHaveBeenCalled();
+  });
+
+  it('should update existing appointment', () => {
+    const updatedAppointment = { ...mockAppointments[0], name: 'Updated Name' };
+    
+    mockAppointmentService.updateAppointment.and.returnValue(of(updatedAppointment));
+    mockAppointmentService.getAppointments.and.returnValue(of(mockAppointments));
+    
+    component.selectedAppointment = mockAppointments[0];
+    component.appointmentForm.setValue({
+      name: 'Updated Name',
+      day: 'MAR',
+      hour: '08h',
+      type: 'Téléconsult'
+    });
+
+    component.saveAppointment();
+    
+    expect(mockAppointmentService.updateAppointment).toHaveBeenCalledWith(mockAppointments[0].id, jasmine.any(Object));
+  });
+
+  it('should delete appointment', () => {
+    mockAppointmentService.deleteAppointment.and.returnValue(of(void 0));
+    mockAppointmentService.getAppointments.and.returnValue(of(mockAppointments.slice(1)));
+    
+    component.deleteAppointment(mockAppointments[0].id);
+    
+    expect(mockAppointmentService.deleteAppointment).toHaveBeenCalledWith(mockAppointments[0].id);
+  });
+
+  it('should close modal and reset form', () => {
+    component.closeAppointmentModal();
+    
+    expect(component.showAppointmentModal).toBe(false);
+    expect(component.appointmentForm.value.name).toBe('');
+    expect(component.error).toBeNull();
+  });
+
+  it('should handle form validation', () => {
+    component.appointmentForm.setValue({
+      name: '',
+      day: '',
+      hour: '',
+      type: ''
+    });
+
+    const isValid = component.isFormValid();
+    
+    expect(isValid).toBe(false);
+  });
+
+  it('should load statistics', () => {
+    const mockStats = {
+      total: 10,
+      confirmed: 8,
+      pending: 2,
+      cancelled: 0
+    };
+
+    mockAppointmentService.getStats.and.returnValue(of(mockStats));
+    
+    component.loadStats();
+    
+    expect(mockAppointmentService.getStats).toHaveBeenCalled();
+    expect(component.stats).toEqual(mockStats);
+  });
+
+  it('should filter appointments by name', () => {
+    component.searchTerm = 'Omar';
+    component.filteredAppointments = mockAppointments;
+    
+    component.filterAppointments();
+    
+    expect(component.filteredAppointments.length).toBe(1);
+    expect(component.filteredAppointments[0].name).toContain('Omar');
+  });
+
+  it('should filter appointments by type', () => {
+    component.filterType = 'Téléconsult';
+    component.filteredAppointments = mockAppointments;
+    
+    component.filterAppointments();
+    
+    expect(component.filteredAppointments.length).toBe(1);
+    expect(component.filteredAppointments[0].type).toBe('Téléconsult');
+  });
+
+  it('should reset filters', () => {
+    component.searchTerm = 'Omar';
+    component.filterType = 'Téléconsult';
+    component.filteredAppointments = mockAppointments;
+    
+    component.resetFilters();
+    
+    expect(component.searchTerm).toBe('');
+    expect(component.filterType).toBe('');
+    expect(component.filteredAppointments).toEqual(mockAppointments);
+  });
+});

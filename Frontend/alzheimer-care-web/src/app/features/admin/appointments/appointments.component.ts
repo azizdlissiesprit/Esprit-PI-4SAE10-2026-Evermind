@@ -1,51 +1,234 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { RendezVousDTO, RendezVousService } from '../../../services/rendezvous.service';
 
 @Component({
   selector: 'app-appointments',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './appointments.component.html',
   styleUrls: ['./appointments.component.scss']
 })
 export class AppointmentsComponent implements OnInit {
   
-  // Statistiques du haut
-  stats = [
-    { label: 'RDV cette semaine', value: '47', trend: '12% vs sem. préc.', trendType: 'up' },
-    { label: 'Taux de confirmation', value: '82%', trend: '5pts', trendType: 'up' },
-    { label: 'Annulations', value: '4', trend: '2 vs sem. préc.', trendType: 'down' },
-    { label: 'Durée moy. consultation', value: '23 min', trend: 'stable', trendType: 'neutral' }
+  // Données
+  appointments: RendezVousDTO[] = [];
+  stats: any[] = [];
+  isLoading = false;
+  error: string | null = null;
+
+  // Formulaire
+  showAppointmentModal = false;
+  isEditing = false;
+  currentAppointment: RendezVousDTO | null = null;
+  appointmentForm!: FormGroup;
+  submitting = false;
+
+  // Types de rendez-vous disponibles
+  readonly TYPE_OPTIONS = [
+    'CONSULTATION', 'TELECONSULTATION', 'SUIVI', 
+    'BILAN', 'EVALUATION', 'RESULTATS', 'PREMIERE_VISITE'
   ];
 
-  // Configuration du calendrier
-  days = [
-    { name: 'LUN', date: '31' },
-    { name: 'MAR', date: '1' },
-    { name: 'MER', date: '2', active: true },
-    { name: 'JEU', date: '3' },
-    { name: 'VEN', date: '4' }
-  ];
+  readonly STATUT_OPTIONS = ['CONFIRME', 'EN_ATTENTE', 'ANNULE'];
 
-  hours = ['08h', '09h', '10h', '11h', '12h', '13h'];
+  constructor(
+    private fb: FormBuilder,
+    private rendezVousService: RendezVousService
+  ) { }
 
-  // Données simulées pour le calendrier
-  appointments = [
-    { day: 'MAR', hour: '08h', name: 'Omar E.', type: 'Téléconsult', color: 'bg-pink-100 border-pink-300' },
-    { day: 'MAR', hour: '09h', name: 'Leila D.', type: '1ère visite', color: 'bg-red-50 border-red-200' },
-    { day: 'MAR', hour: '11h', name: 'Sami M.', type: 'Suivi cap.', color: 'bg-purple-100 border-purple-300' },
-    { day: 'MAR', hour: '12h', name: 'Nadia B.', type: 'Suivi auto.', color: 'bg-green-100 border-green-300' },
-    { day: 'MER', hour: '08h', name: 'Amira M.', type: 'Suivi cap.', color: 'bg-green-100 border-green-300' },
-    { day: 'MER', hour: '10h', name: 'K. Haddad', type: 'Bilan mé.', color: 'bg-yellow-100 border-yellow-300' },
-    { day: 'JEU', hour: '09h', name: 'Salma A.', type: 'Consultat.', color: 'bg-blue-100 border-blue-300' },
-    { day: 'JEU', hour: '12h', name: 'Ali D.', type: 'Téléconsult', color: 'bg-pink-100 border-pink-300' },
-  ];
+  ngOnInit(): void {
+    this.initForm();
+    this.loadAppointments();
+    this.loadStats();
+  }
 
-  constructor() { }
+  private initForm(): void {
+    this.appointmentForm = this.fb.group({
+      patientNom: ['', Validators.required],
+      patientPrenom: ['', Validators.required],
+      type: ['CONSULTATION', Validators.required],
+      statut: ['CONFIRME', Validators.required],
+      dateHeure: ['', Validators.required],
+      dureeMinutes: [30, [Validators.required, Validators.min(5)]],
+      notes: ['']
+    });
+  }
 
-  ngOnInit(): void { }
+  // Charger les rendez-vous
+  loadAppointments(): void {
+    this.isLoading = true;
+    this.rendezVousService.getAll().subscribe({
+      next: (appointments: RendezVousDTO[]) => {
+        this.appointments = appointments;
+        this.isLoading = false;
+      },
+      error: (err: any) => {
+        this.error = 'Erreur lors du chargement des rendez-vous';
+        this.isLoading = false;
+        console.error('Error loading appointments:', err);
+      }
+    });
+  }
 
-  getAppointment(day: string, hour: string) {
-    return this.appointments.find(a => a.day === day && a.hour === hour);
+  // Charger les statistiques
+  loadStats(): void {
+    // Créer des statistiques basées sur les données locales
+    const total = this.appointments.length;
+    const confirmed = this.appointments.filter(a => a.statut === 'CONFIRME').length;
+    const pending = this.appointments.filter(a => a.statut === 'EN_ATTENTE').length;
+    const cancelled = this.appointments.filter(a => a.statut === 'ANNULE').length;
+    
+    this.stats = [
+      { label: 'RDV cette semaine', value: total.toString(), trend: '12% vs sem. préc.', trendType: 'up' },
+      { label: 'Taux de confirmation', value: total > 0 ? Math.round((confirmed / total) * 100) + '%' : '0%', trend: '5pts', trendType: 'up' },
+      { label: 'Annulations', value: cancelled.toString(), trend: '2 vs sem. préc.', trendType: 'down' },
+      { label: 'Durée moy. consultation', value: '23 min', trend: 'stable', trendType: 'neutral' }
+    ];
+  }
+
+  // Ouvrir le modal pour créer
+  openAddAppointmentModal(): void {
+    this.isEditing = false;
+    this.currentAppointment = null;
+    this.resetForm();
+    this.showAppointmentModal = true;
+  }
+
+  // Ouvrir le modal pour modifier
+  openEditAppointmentModal(appointment: RendezVousDTO): void {
+    this.isEditing = true;
+    this.currentAppointment = appointment;
+    this.appointmentForm.patchValue({
+      patientNom: appointment.patientNom,
+      patientPrenom: appointment.patientPrenom,
+      type: appointment.type,
+      statut: appointment.statut,
+      dateHeure: appointment.dateHeure,
+      dureeMinutes: appointment.dureeMinutes,
+      notes: appointment.notes
+    });
+    this.showAppointmentModal = true;
+  }
+
+  // Supprimer un rendez-vous
+  deleteAppointment(appointment: RendezVousDTO): void {
+    if (!appointment.id) return;
+    
+    if (confirm(`Êtes-vous sûr de vouloir supprimer le rendez-vous de ${appointment.patientPrenom} ${appointment.patientNom} ?`)) {
+      this.submitting = true;
+      this.rendezVousService.delete(appointment.id).subscribe({
+        next: () => {
+          this.loadAppointments();
+          this.loadStats();
+          this.submitting = false;
+        },
+        error: (err: any) => {
+          this.error = 'Erreur lors de la suppression du rendez-vous';
+          this.submitting = false;
+          console.error('Error deleting appointment:', err);
+        }
+      });
+    }
+  }
+
+  // Sauvegarder (CREATE ou UPDATE)
+  saveAppointment(): void {
+    if (this.appointmentForm.invalid || this.submitting) {
+      this.appointmentForm.markAllAsTouched();
+      return;
+    }
+
+    this.submitting = true;
+    this.error = '';
+
+    if (this.isEditing && this.currentAppointment?.id) {
+      // UPDATE
+      this.rendezVousService.update(this.currentAppointment.id, this.appointmentForm.value).subscribe({
+        next: () => {
+          this.closeModal();
+          this.loadAppointments();
+          this.loadStats();
+          this.submitting = false;
+        },
+        error: (err: any) => {
+          this.error = 'Erreur lors de la mise à jour du rendez-vous';
+          this.submitting = false;
+          console.error('Error updating appointment:', err);
+        }
+      });
+    } else {
+      // CREATE
+      this.rendezVousService.create(this.appointmentForm.value).subscribe({
+        next: () => {
+          this.closeModal();
+          this.loadAppointments();
+          this.loadStats();
+          this.submitting = false;
+        },
+        error: (err: any) => {
+          this.error = 'Erreur lors de la création du rendez-vous';
+          this.submitting = false;
+          console.error('Error creating appointment:', err);
+        }
+      });
+    }
+  }
+
+  // Fermer le modal
+  closeModal(): void {
+    this.showAppointmentModal = false;
+    this.resetForm();
+    this.error = null;
+  }
+
+  // Réinitialiser le formulaire
+  private resetForm(): void {
+    this.appointmentForm.reset({
+      patientNom: '',
+      patientPrenom: '',
+      type: 'CONSULTATION',
+      statut: 'CONFIRME',
+      dateHeure: '',
+      dureeMinutes: 30,
+      notes: ''
+    });
+    this.error = null;
+  }
+
+  // Obtenir les labels pour l'affichage
+  getTypeLabel(type: string): string {
+    const labels: { [key: string]: string } = {
+      'CONSULTATION': 'Consultation',
+      'TELECONSULTATION': 'Téléconsultation',
+      'SUIVI': 'Suivi',
+      'BILAN': 'Bilan',
+      'EVALUATION': 'Évaluation',
+      'RESULTATS': 'Résultats',
+      'PREMIERE_VISITE': '1ère visite'
+    };
+    return labels[type] || type;
+  }
+
+  getStatutLabel(statut: string): string {
+    const labels: { [key: string]: string } = {
+      'CONFIRME': 'Confirmé',
+      'EN_ATTENTE': 'En attente',
+      'ANNULE': 'Annulé'
+    };
+    return labels[statut] || statut;
+  }
+
+  // Formater la date pour l'affichage
+  formatDateTime(dateHeure: string): string {
+    if (!dateHeure) return '';
+    const date = new Date(dateHeure);
+    return date.toLocaleString('fr-FR', {
+      day: '2-digit',
+      month: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   }
 }
