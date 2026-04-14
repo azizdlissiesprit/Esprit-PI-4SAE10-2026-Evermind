@@ -6,7 +6,7 @@ export interface RendezVousDTO {
   id?: number;
   patientNom: string;
   patientPrenom: string;
-  type: 'CONSULTATION' | 'TELECONSULTATION' | 'SUIVI' | 'BILAN' | 'EVALUATION' | 'RESULTATS' | 'PREMIERE_VISITE';
+  type: 'CONSULTATION' | 'TELECONSULTATION' | 'VIDEOCONSULTATION' | 'SUIVI' | 'BILAN' | 'EVALUATION' | 'RESULTATS' | 'PREMIERE_VISITE';
   statut: 'CONFIRME' | 'EN_ATTENTE' | 'ANNULE' | 'LIBRE';
   dateHeure: string;
   dureeMinutes: number;

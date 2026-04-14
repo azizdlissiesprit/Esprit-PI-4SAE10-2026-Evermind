@@ -2,10 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
-import { RendezVousDTO, RendezVousService } from '../../../../services/rendezvous.service';
+import { RendezVousService, RendezVousDTO } from '../../../../services/rendezvous.service';
+import { VideoService, VideoRoomResponse } from '../../../../services/video.service';
+import { VideoCallModalComponent } from '../../../../shared/components/video-call-modal/video-call-modal.component';
 
 export type TypeConsultation =
-  | 'CONSULTATION' | 'TELECONSULTATION' | 'SUIVI'
+  | 'CONSULTATION' | 'TELECONSULTATION' | 'VIDEOCONSULTATION' | 'SUIVI'
   | 'BILAN' | 'EVALUATION' | 'RESULTATS' | 'PREMIERE_VISITE';
 
 export type StatutRDV = 'CONFIRME' | 'EN_ATTENTE' | 'ANNULE' | 'LIBRE';
@@ -16,9 +18,12 @@ export interface RendezVous {
   patientPrenom: string;
   type: TypeConsultation;
   statut: StatutRDV;
-  dateHeure: string;
+  dateHeure: Date;
   dureeMinutes: number;
   notes?: string;
+  googleEventId?: string;
+  roomUrl?: string;
+  roomName?: string;
 }
 
 export interface DemandeRDV {
@@ -34,7 +39,7 @@ export interface DemandeRDV {
 @Component({
   selector: 'app-appointment-agenda',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, VideoCallModalComponent],
   templateUrl: './appointment-agenda.html',
   styleUrls: ['./appointment-agenda.scss']
 })
@@ -55,6 +60,15 @@ export class AppointmentAgendaComponent implements OnInit {
   infoMessage = '';
   errorMessage = '';
 
+  // Video consultation properties
+  showVideoModal = false;
+  currentRoomUrl = '';
+  currentToken = '';
+  currentPatientName = '';
+
+  // Video appointments list properties
+  showVideoAppointments = false;
+
   readonly DAY_NAMES   = ['LUN','MAR','MER','JEU','VEN'];
   readonly MINI_DAYS   = ['L','M','M','J','V','S','D'];
   readonly MONTHS_SHORT = ['jan','fév','mars','avr','mai','juin',
@@ -63,6 +77,7 @@ export class AppointmentAgendaComponent implements OnInit {
   readonly TYPE_LABELS: Record<TypeConsultation, string> = {
     CONSULTATION:    'Consultation',
     TELECONSULTATION:'Téléconsult.',
+    VIDEOCONSULTATION:'Vidéoconsult.',
     SUIVI:           'Suivi',
     BILAN:           'Bilan mé.',
     EVALUATION:      'Éval. cog.',
@@ -71,7 +86,7 @@ export class AppointmentAgendaComponent implements OnInit {
   };
 
   readonly TYPE_OPTIONS: TypeConsultation[] = [
-    'CONSULTATION','TELECONSULTATION','SUIVI',
+    'CONSULTATION','TELECONSULTATION','VIDEOCONSULTATION','SUIVI',
     'BILAN','EVALUATION','RESULTATS','PREMIERE_VISITE'
   ];
 
@@ -81,7 +96,8 @@ export class AppointmentAgendaComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private rendezVousService: RendezVousService
+    private rendezVousService: RendezVousService,
+    private videoService: VideoService
   ) {}
 
   ngOnInit(): void {
@@ -97,7 +113,7 @@ export class AppointmentAgendaComponent implements OnInit {
       patientPrenom: [rdv?.patientPrenom ?? '', Validators.required],
       type:          [rdv?.type          ?? 'CONSULTATION', Validators.required],
       statut:        [rdv?.statut        ?? 'CONFIRME',     Validators.required],
-      dateHeure:     [rdv?.dateHeure ? rdv.dateHeure.substring(0,16) : '', Validators.required],
+      dateHeure:     [rdv?.dateHeure ? this.formatDateTimeLocal(rdv.dateHeure) : '', Validators.required],
       dureeMinutes:  [rdv?.dureeMinutes  ?? 30, [Validators.required, Validators.min(5)]],
       notes:         [rdv?.notes         ?? '']
     });
@@ -535,6 +551,64 @@ export class AppointmentAgendaComponent implements OnInit {
     console.log('Status updated locally:', rdv);
   }
 
+  // Video consultation methods
+  lancerTeleconsultation(rendezVous: RendezVous): void {
+    console.log('Starting video consultation for:', rendezVous);
+    
+    if (rendezVous.roomUrl) {
+      // Room déjà créée -> rejoindre directement
+      this.ouvrirModal(rendezVous.roomUrl, rendezVous.roomName || '', rendezVous.patientPrenom + ' ' + rendezVous.patientNom);
+    } else {
+      // Créer la room
+      this.videoService.createRoom(rendezVous.id, rendezVous.patientPrenom + ' ' + rendezVous.patientNom)
+        .subscribe({
+          next: (response) => {
+            console.log('Video room created:', response);
+            // Update local rendez-vous with video info
+            const updatedRdv = { ...rendezVous, roomUrl: response.roomUrl, roomName: response.roomName };
+            this.rdvList = this.rdvList.map(item => item.id === rendezVous.id ? updatedRdv : item);
+            this.ouvrirModal(response.roomUrl, response.roomName, rendezVous.patientPrenom + ' ' + rendezVous.patientNom);
+          },
+          error: (err) => {
+            console.error('Error creating video room:', err);
+            this.errorMessage = 'Erreur lors de la création de la salle vidéo';
+          }
+        });
+    }
+  }
+
+  ouvrirModal(roomUrl: string, roomName: string, patientName: string): void {
+    this.videoService.getToken(roomName, 'Médecin')
+      .subscribe({
+        next: ({ token }) => {
+          this.currentRoomUrl = roomUrl;
+          this.currentToken = token;
+          this.currentPatientName = patientName;
+          this.showVideoModal = true;
+        },
+        error: (err) => {
+          console.error('Error getting video token:', err);
+          this.errorMessage = 'Erreur lors de l\'accès à la consultation vidéo';
+        }
+      });
+  }
+
+  fermerModal(): void {
+    this.showVideoModal = false;
+    this.currentRoomUrl = '';
+    this.currentToken = '';
+    this.currentPatientName = '';
+  }
+
+  // Video appointments list methods
+  showAllAppointmentsForVideo(): void {
+    this.showVideoAppointments = true;
+  }
+
+  hideVideoAppointments(): void {
+    this.showVideoAppointments = false;
+  }
+
   private syncDemandesFromAppointments(): void {
     this.demandes = this.rdvList
       .filter((rdv) => rdv.statut === 'EN_ATTENTE')
@@ -546,7 +620,7 @@ export class AppointmentAgendaComponent implements OnInit {
         patientPrenom: rdv.patientPrenom,
         statut: 'EN_ATTENTE',
         date: this.formatDemandeDate(rdv.dateHeure),
-        heure: `${this.formatHH(rdv.dateHeure)}:${this.formatMM(rdv.dateHeure)}`,
+        heure: `${rdv.dateHeure.getHours().toString().padStart(2, '0')}:${rdv.dateHeure.getMinutes().toString().padStart(2, '0')}`,
         motif: this.getTypeLabel(rdv.type)
       }));
   }
@@ -558,7 +632,7 @@ export class AppointmentAgendaComponent implements OnInit {
       patientPrenom: rdv.patientPrenom,
       type: rdv.type,
       statut: rdv.statut,
-      dateHeure: rdv.dateHeure,
+      dateHeure: new Date(rdv.dateHeure),
       dureeMinutes: rdv.dureeMinutes,
       notes: rdv.notes ?? ''
     };
@@ -570,22 +644,26 @@ export class AppointmentAgendaComponent implements OnInit {
       patientPrenom: source.patientPrenom ?? '',
       type: (source.type ?? 'CONSULTATION') as TypeConsultation,
       statut: (source.statut ?? 'CONFIRME') as StatutRDV,
-      dateHeure: this.normalizeDateHeure(source.dateHeure ?? ''),
+      dateHeure: this.normalizeDateHeure(source.dateHeure),
       dureeMinutes: Number(source.dureeMinutes ?? 30),
       notes: source.notes ?? ''
     };
   }
 
-  private normalizeDateHeure(value: string): string {
+  private normalizeDateHeure(value: Date | string | undefined): string {
     if (!value) {
-      return value;
+      return '';
     }
-
+    
+    if (value instanceof Date) {
+      return this.formatDateTimeLocal(value);
+    }
+    
     return value.length === 16 ? `${value}:00` : value;
   }
 
-  private formatDemandeDate(dateHeure: string): string {
-    const date = new Date(dateHeure);
+  private formatDemandeDate(dateHeure: Date | string): string {
+    const date = dateHeure instanceof Date ? dateHeure : new Date(dateHeure);
     return date.toLocaleDateString('fr-FR', {
       weekday: 'long',
       day: 'numeric',
@@ -618,21 +696,19 @@ export class AppointmentAgendaComponent implements OnInit {
   }
 
   getMockRDV(): RendezVous[] {
+    const today = new Date();
+    
     return [
-      { id:1,  patientNom:'Omar',    patientPrenom:'F.',      type:'TELECONSULTATION', statut:'CONFIRME',   dateHeure:'2026-04-01T08:00', dureeMinutes:30, notes:'Patient no data modifiable' },
-      { id:2,  patientNom:'Leila',   patientPrenom:'B.',      type:'PREMIERE_VISITE',  statut:'CONFIRME',   dateHeure:'2026-04-01T09:00', dureeMinutes:45, notes:'Patient no data modifiable' },
-      { id:3,  patientNom:'Sara',    patientPrenom:'M.',      type:'EVALUATION',       statut:'CONFIRME',   dateHeure:'2026-04-01T11:00', dureeMinutes:30, notes:'Patient no data modifiable' },
-      { id:4,  patientNom:'Nadia',   patientPrenom:'B.',      type:'SUIVI',            statut:'CONFIRME',   dateHeure:'2026-04-01T12:00', dureeMinutes:20, notes:'Patient no data modifiable' },
-      { id:5,  patientNom:'Hedi',    patientPrenom:'T.',      type:'CONSULTATION',     statut:'CONFIRME',   dateHeure:'2026-04-01T14:00', dureeMinutes:30, notes:'Patient no data modifiable' },
-      { id:6,  patientNom:'Amira',   patientPrenom:'M.',      type:'CONSULTATION',     statut:'CONFIRME',   dateHeure:'2026-04-02T08:00', dureeMinutes:30, notes:'Patient no data modifiable' },
-      { id:7,  patientNom:'K.',      patientPrenom:'Haddad',  type:'BILAN',            statut:'CONFIRME',   dateHeure:'2026-04-02T10:00', dureeMinutes:30, notes:'Bilan mé.' },
-      { id:8,  patientNom:'Leila',   patientPrenom:'B.',      type:'CONSULTATION',     statut:'EN_ATTENTE', dateHeure:'2026-04-02T11:00', dureeMinutes:30, notes:'En attente' },
-      { id:9,  patientNom:'Ali',     patientPrenom:'R.',      type:'TELECONSULTATION', statut:'CONFIRME',   dateHeure:'2026-04-02T12:00', dureeMinutes:20, notes:'Patient no data modifiable' },
-      { id:10, patientNom:'Mohamed', patientPrenom:'.',       type:'TELECONSULTATION', statut:'EN_ATTENTE', dateHeure:'2026-04-02T13:00', dureeMinutes:20, notes:'Champ non mo data' },
-      { id:11, patientNom:'Fatma',   patientPrenom:'A.',      type:'CONSULTATION',     statut:'CONFIRME',   dateHeure:'2026-04-03T09:00', dureeMinutes:30, notes:'' },
-      { id:12, patientNom:'Kamal',   patientPrenom:'H.',      type:'TELECONSULTATION', statut:'CONFIRME',   dateHeure:'2026-03-31T10:00', dureeMinutes:20, notes:'Patient no data modifiable' },
-      { id:13, patientNom:'Riadh',   patientPrenom:'S.',      type:'RESULTATS',        statut:'CONFIRME',   dateHeure:'2026-03-31T13:00', dureeMinutes:25, notes:'Résultats' },
-      { id:14, patientNom:'Amira',   patientPrenom:'Mejri',   type:'SUIVI',            statut:'CONFIRME',   dateHeure:'2026-04-03T09:00', dureeMinutes:30, notes:'Suivi cognitif' },
+      { id:1,  patientNom:'Omar',    patientPrenom:'F.',      type:'TELECONSULTATION', statut:'CONFIRME',   dateHeure:new Date(today.getFullYear(), today.getMonth(), today.getDate(), 8, 0, 0), dureeMinutes:30, notes:'Patient no data modifiable' },
+      { id:2,  patientNom:'Leila',   patientPrenom:'B.',      type:'PREMIERE_VISITE',  statut:'CONFIRME',   dateHeure:new Date(today.getFullYear(), today.getMonth(), today.getDate(), 9, 0, 0), dureeMinutes:45, notes:'Patient no data modifiable' },
+      { id:3,  patientNom:'Sara',    patientPrenom:'M.',      type:'EVALUATION',       statut:'CONFIRME',   dateHeure:new Date(today.getFullYear(), today.getMonth(), today.getDate(), 11, 0, 0), dureeMinutes:30, notes:'Patient no data modifiable' },
+      { id:4,  patientNom:'Nadia',   patientPrenom:'B.',      type:'SUIVI',            statut:'CONFIRME',   dateHeure:new Date(today.getFullYear(), today.getMonth(), today.getDate(), 12, 0, 0), dureeMinutes:20, notes:'Patient no data modifiable' },
+      { id:5,  patientNom:'Hedi',    patientPrenom:'T.',      type:'CONSULTATION',     statut:'CONFIRME',   dateHeure:new Date(today.getFullYear(), today.getMonth(), today.getDate(), 14, 0, 0), dureeMinutes:30, notes:'Patient no data modifiable' },
+      { id:6,  patientNom:'Amira',   patientPrenom:'M.',      type:'VIDEOCONSULTATION', statut:'CONFIRME',   dateHeure:new Date(today.getFullYear(), today.getMonth(), today.getDate(), 15, 0, 0), dureeMinutes:30, notes:'Téléconsultation vidéo' },
+      { id:7,  patientNom:'K.',      patientPrenom:'Haddad',  type:'BILAN',            statut:'CONFIRME',   dateHeure:new Date(today.getFullYear(), today.getMonth(), today.getDate(), 16, 0, 0), dureeMinutes:30, notes:'Bilan mé.' },
+      { id:8,  patientNom:'Leila',   patientPrenom:'B.',      type:'CONSULTATION',     statut:'EN_ATTENTE', dateHeure:new Date(today.getFullYear(), today.getMonth(), today.getDate(), 10, 0, 0), dureeMinutes:30, notes:'En attente' },
+      { id:9,  patientNom:'Ali',     patientPrenom:'R.',      type:'TELECONSULTATION', statut:'CONFIRME',   dateHeure:new Date(today.getFullYear(), today.getMonth(), today.getDate(), 13, 0, 0), dureeMinutes:20, notes:'Patient no data modifiable' },
+      { id:10, patientNom:'Mohamed', patientPrenom:'.',       type:'TELECONSULTATION', statut:'EN_ATTENTE', dateHeure:new Date(today.getFullYear(), today.getMonth(), today.getDate(), 17, 0, 0), dureeMinutes:20, notes:'Champ non mo data' },
     ];
   }
 }

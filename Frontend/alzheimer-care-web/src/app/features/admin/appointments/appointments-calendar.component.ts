@@ -206,6 +206,11 @@ export class AppointmentsCalendarComponent implements OnInit {
     this.router.navigate(['/admin/appointments/new']);
   }
 
+  showAppointmentsList() {
+    this.router.navigate(['/admin/appointments/list']);
+  }
+
+  
   weekRangeLabel(): string {
     if (!this.weekDays.length) {
       return '';

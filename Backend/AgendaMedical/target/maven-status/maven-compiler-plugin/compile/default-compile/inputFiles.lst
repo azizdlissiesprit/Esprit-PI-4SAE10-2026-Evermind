@@ -1,10 +1,14 @@
-C:\finalnchallah\EverMind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\dto\RendezVousDTO.java
-C:\finalnchallah\EverMind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\entity\RendezVous.java
-C:\finalnchallah\EverMind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\AgendaMedicalApplication.java
-C:\finalnchallah\EverMind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\controller\GoogleCalendarController.java
-C:\finalnchallah\EverMind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\controller\RendezVousController.java
-C:\finalnchallah\EverMind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\repository\RendezVousRepository.java
-C:\finalnchallah\EverMind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\service\GoogleCalendarService.java
-C:\finalnchallah\EverMind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\config\GoogleCalendarConfig.java
-C:\finalnchallah\EverMind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\dto\RendezVousStats.java
-C:\finalnchallah\EverMind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\service\RendezVousService.java
+C:\finalnchallah - Copie - Copie\EverMind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\controller\GoogleCalendarController.java
+C:\finalnchallah - Copie - Copie\EverMind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\service\DailyCoService.java
+C:\finalnchallah - Copie - Copie\EverMind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\AgendaMedicalApplication.java
+C:\finalnchallah - Copie - Copie\EverMind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\controller\VideoController.java
+C:\finalnchallah - Copie - Copie\EverMind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\dto\RendezVousDTO.java
+C:\finalnchallah - Copie - Copie\EverMind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\controller\RendezVousController.java
+C:\finalnchallah - Copie - Copie\EverMind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\dto\RendezVousStats.java
+C:\finalnchallah - Copie - Copie\EverMind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\entity\RendezVous.java
+C:\finalnchallah - Copie - Copie\EverMind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\service\RendezVousService.java
+C:\finalnchallah - Copie - Copie\EverMind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\repository\RendezVousRepository.java
+C:\finalnchallah - Copie - Copie\EverMind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\service\GoogleCalendarService.java
+C:\finalnchallah - Copie - Copie\EverMind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\dto\VideoRoomRequest.java
+C:\finalnchallah - Copie - Copie\EverMind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\dto\VideoRoomResponse.java
+C:\finalnchallah - Copie - Copie\EverMind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\config\GoogleCalendarConfig.java

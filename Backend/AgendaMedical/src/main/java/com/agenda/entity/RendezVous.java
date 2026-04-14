@@ -37,6 +37,12 @@ public class RendezVous {
     @Column(name = "google_event_id")
     private String googleEventId;
 
+    @Column(name = "room_url")
+    private String roomUrl;
+
+    @Column(name = "room_name")
+    private String roomName;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -157,6 +163,24 @@ public class RendezVous {
 
     public void setGoogleEventId(String googleEventId) {
         this.googleEventId = googleEventId;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public String getRoomUrl() {
+        return roomUrl;
+    }
+
+    public void setRoomUrl(String roomUrl) {
+        this.roomUrl = roomUrl;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public String getRoomName() {
+        return roomName;
+    }
+
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
         this.updatedAt = LocalDateTime.now();
     }
 

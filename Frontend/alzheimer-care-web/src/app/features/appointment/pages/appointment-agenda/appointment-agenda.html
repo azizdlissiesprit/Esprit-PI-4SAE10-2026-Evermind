@@ -14,9 +14,9 @@
         <i class="fa-regular fa-pen-to-square btn-icon" aria-hidden="true"></i>
         <span>Modifier</span>
       </button>
-      <button class="btn btn-outline-danger" type="button" disabled>
-        <i class="fa-regular fa-trash-can btn-icon" aria-hidden="true"></i>
-        <span>Supprimer</span>
+      <button class="btn btn-video" type="button" (click)="showAllAppointmentsForVideo()">
+        <i class="fa-solid fa-video btn-icon" aria-hidden="true"></i>
+        <span>Vidéo</span>
       </button>
       <button class="btn btn-primary" type="button" (click)="openNew()" [disabled]="submitting">
         <i class="fa-solid fa-plus btn-icon" aria-hidden="true"></i>
@@ -96,6 +96,10 @@
                 <button class="action-btn modify" (click)="openEdit(rdv, $event)">
                   <i class="fa-regular fa-pen-to-square" aria-hidden="true"></i>
                   <span>Modifier</span>
+                </button>
+                <button class="action-btn video" (click)="lancerTeleconsultation(rdv)">
+                  <i class="fa-solid fa-video" aria-hidden="true"></i>
+                  <span>Vidéo</span>
                 </button>
                 <button class="action-btn delete" (click)="deleteRDV(rdv, $event)">
                   <i class="fa-regular fa-trash-can" aria-hidden="true"></i>
@@ -189,8 +193,8 @@
         <div class="panel-title">RDV du jour</div>
         <div *ngFor="let rdv of getTodayRdv()" class="today-item">
           <div class="today-time">
-            <span class="th">{{ formatHH(rdv.dateHeure) }}</span>
-            <span class="tm">{{ formatMM(rdv.dateHeure) }}</span>
+            <span class="th">{{ rdv.dateHeure.getHours().toString().padStart(2, '0') }}</span>
+            <span class="tm">{{ rdv.dateHeure.getMinutes().toString().padStart(2, '0') }}</span>
           </div>
           <div class="today-info">
             <div class="today-name">{{ rdv.patientNom }} {{ rdv.patientPrenom }}</div>
@@ -276,16 +280,64 @@
 
       <div class="modal-ft">
         <button type="button" class="btn btn-danger-sm" *ngIf="isEditing"
-                [disabled]="submitting"
-                (click)="deleteRDV(selectedRdv!, $event)">
-          Supprimer
+                (click)="deleteRDV(selectedRdv!, $event)" [disabled]="submitting">
+          <i class="fas fa-trash"></i> Supprimer
         </button>
-        <button type="button" class="btn btn-ghost" [disabled]="submitting" (click)="closeModal()">Annuler</button>
+        <button type="button" class="btn btn-video" *ngIf="isEditing && selectedRdv"
+                (click)="lancerTeleconsultation(selectedRdv)" [disabled]="submitting">
+          <i class="fas fa-video"></i> Vidéo
+        </button>
+        <button type="button" class="btn btn-ghost" (click)="closeModal()" [disabled]="submitting">
+          Annuler
+        </button>
         <button type="submit" class="btn btn-primary" [disabled]="rdvForm.invalid || submitting">
-          {{ submitting ? 'Enregistrement...' : (isEditing ? 'Enregistrer' : 'Créer') }}
+          <i *ngIf="!submitting" class="fas fa-save"></i>
+          <i *ngIf="submitting" class="fas fa-spinner fa-spin"></i>
+          {{submitting ? 'Enregistrement...' : (isEditing ? 'Mettre à jour' : 'Créer')}}
         </button>
       </div>
 
     </form>
   </div>
 </div>
+
+<!-- Video Appointments List -->
+<div class="video-appointments-modal" *ngIf="showVideoAppointments">
+  <div class="modal-overlay" (click)="hideVideoAppointments()"></div>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Consultations Vidéo - Test API</h2>
+      <button class="close-btn" (click)="hideVideoAppointments()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="appointments-list">
+        <div *ngFor="let rdv of rdvList" class="appointment-item">
+          <div class="appointment-info">
+            <div class="patient-name">{{ rdv.patientNom }} {{ rdv.patientPrenom }}</div>
+            <div class="appointment-details">
+              <span class="type">{{ getTypeLabel(rdv.type) }}</span>
+              <span class="date">{{ rdv.dateHeure | date:'dd/MM/yyyy HH:mm' }}</span>
+              <span class="status" [class]="'status-' + rdv.statut.toLowerCase()">{{ rdv.statut }}</span>
+            </div>
+            <div class="notes" *ngIf="rdv.notes">{{ rdv.notes }}</div>
+          </div>
+          <button class="video-action-btn" (click)="lancerTeleconsultation(rdv)">
+            <i class="fas fa-video"></i>
+            <span>Lancer Vidéo</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Video Call Modal -->
+<app-video-call-modal
+  [isOpen]="showVideoModal"
+  [roomUrl]="currentRoomUrl"
+  [token]="currentToken"
+  [patientName]="currentPatientName"
+  (closed)="fermerModal()">
+</app-video-call-modal>

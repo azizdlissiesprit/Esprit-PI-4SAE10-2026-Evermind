@@ -127,6 +127,11 @@ export const routes: Routes = [
         path: 'appointments/edit/:id',
         loadComponent: () => import('./features/admin/appointments/rendezvous-form.component').then((m) => m.RendezVousFormComponent),
       },
+      {
+        path: 'appointments/list',
+        // Updated route for appointment list v3 with Google Meet
+        loadComponent: () => import('./features/admin/appointments/appointment-list/appointment-list').then((m) => m.AppointmentList),
+      },
 
       // --- ADD THIS REDIRECT ---
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },

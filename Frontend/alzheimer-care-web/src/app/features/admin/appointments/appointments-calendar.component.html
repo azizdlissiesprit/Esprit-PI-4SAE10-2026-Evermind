@@ -12,9 +12,9 @@
           <iconify-icon inline icon="solar:pen-linear" width="13"></iconify-icon>
           <span>Modifier</span>
         </button>
-        <button class="btn btn-outline-danger" type="button">
+        <button class="btn btn-outline-danger" type="button" (click)="showAppointmentsList()">
           <iconify-icon inline icon="solar:trash-bin-minimalistic-2-linear" width="13"></iconify-icon>
-          <span>Supprimer</span>
+          <span>video</span>
         </button>
         <button class="btn btn-primary" type="button" (click)="createNewRdv()">
           <iconify-icon inline icon="solar:add-circle-bold" width="14"></iconify-icon>
@@ -86,7 +86,7 @@
                   </button>
                   <button class="action-btn delete" type="button" (click)="deleteEvent(rdv.id!); $event.stopPropagation()">
                     <iconify-icon inline icon="solar:trash-bin-minimalistic-2-linear" width="11"></iconify-icon>
-                    <span>Supprimer</span>
+                    <span>video</span>
                   </button>
                 </div>
               </div>

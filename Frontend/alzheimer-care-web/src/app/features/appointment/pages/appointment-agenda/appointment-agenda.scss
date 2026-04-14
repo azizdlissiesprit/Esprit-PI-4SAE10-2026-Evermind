@@ -353,28 +353,33 @@
 
 /* Cartes RDV */
 .rdv-card {
-  border-radius: 6px;
-  padding: 8px 10px;
-  font-size: 11px;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 12px;
   cursor: pointer;
-  border-left: 4px solid;
+  border-left: 5px solid;
   overflow: hidden;
   flex-shrink: 0;
   transition: all 0.3s ease;
   position: relative;
   background: #ffffff;
-  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.08);
-  border: 1px solid #f1f5f9;
+  box-shadow: 0 4px 8px rgba(15, 23, 42, 0.12);
+  border: 2px solid #e2e8f0;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
 }
 
 .rdv-card:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
   z-index: 2;
 }
 
-.rdv-card:hover .rdv-actions {
-  display: flex;
+.rdv-actions {
+  display: flex !important;
+  margin-top: auto;
+  padding-top: 8px;
 }
 
 /* Couleurs par type */
@@ -421,68 +426,90 @@
 }
 
 .rdv-name {
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 4px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 10px;
+  color: #1e293b;
 }
 
 .rdv-type {
-  font-size: 9px;
-  color: #697386;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-top: 1px;
+  font-size: 12px;
+  margin-bottom: 4px;
+  opacity: 0.9;
+  font-weight: 600;
 }
 
 .rdv-note {
-  font-size: 8px;
-  color: #697386;
+  font-size: 11px;
+  color: #475569;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.rdv-actions {
-  display: none;
-  gap: 4px;
-  margin-top: 4px;
-  flex-wrap: nowrap;
+  font-weight: 500;
 }
 
 .action-btn {
-  padding: 2px 5px;
-  border-radius: 4px;
-  font-size: 9px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
   cursor: pointer;
-  border: 1px solid;
+  border: 2px solid;
   white-space: nowrap;
-  font-weight: 500;
+  font-weight: 700;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  min-width: 80px;
+  justify-content: center;
+}
+
+.action-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
 .action-btn.modify {
-  background: #ffffff;
-  border-color: #d1d5db;
-  color: #374151;
+  background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+  border-color: #2563eb;
+  color: #1e40af;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .action-btn.modify:hover {
-  background: #f3f4f6;
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  border-color: #1d4ed8;
+  color: #1e3a8a;
+}
+
+.action-btn.video {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  border-color: #1e40af;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.action-btn.video:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+  border-color: #1e3a8a;
+  color: #ffffff;
 }
 
 .action-btn.delete {
-  background: #ffffff;
-  border-color: #fecaca;
-  color: #dc2626;
+  background: linear-gradient(135deg, #ffffff 0%, #fee2e2 100%);
+  border-color: #dc2626;
+  color: #b91c1c;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .action-btn.delete:hover {
-  background: #fef2f2;
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  border-color: #b91c1c;
+  color: #991b1b;
 }
 
 /* Panneau droit */
@@ -967,6 +994,250 @@
 .form-group textarea.ng-invalid.ng-touched:focus {
   border-color: #dc2626;
   box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.btn-video {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-video:hover:not(:disabled) {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btn-video:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Top video button styling */
+.top-actions .btn-video {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+}
+
+.top-actions .btn-video:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+}
+
+/* Video Appointments Modal */
+.video-appointments-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  position: relative;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  max-width: 800px;
+  width: 90%;
+  max-height: 80vh;
+  overflow: hidden;
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  border-bottom: 1px solid #e5e7eb;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.close-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.modal-body {
+  padding: 24px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.appointments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.appointment-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  background: white;
+  transition: all 0.3s ease;
+}
+
+.appointment-item:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 8px 16px rgba(59, 130, 246, 0.1);
+  transform: translateY(-2px);
+}
+
+.appointment-info {
+  flex: 1;
+}
+
+.patient-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 8px;
+}
+
+.appointment-details {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.appointment-details .type {
+  background: #3b82f6;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.appointment-details .date {
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.appointment-details .status {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.appointment-details .status.status-confirme {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.appointment-details .status.status-en_attente {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.appointment-details .status.status-annule {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.notes {
+  color: #64748b;
+  font-size: 14px;
+  font-style: italic;
+}
+
+.video-action-btn {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.2);
+  white-space: nowrap;
+}
+
+.video-action-btn:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(59, 130, 246, 0.3);
+}
+
+.video-action-btn i {
+  font-size: 16px;
 }
 
 .modal-ft {
