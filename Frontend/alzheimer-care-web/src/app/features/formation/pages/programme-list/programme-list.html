@@ -1,0 +1,66 @@
+<div class="page-container">
+  <header class="top-header">
+    <div class="breadcrumbs">Formation &gt; <span>Programmes</span></div>
+    <button class="btn-primary" (click)="openAdd()">
+      <i class="fa-solid fa-plus"></i> Nouveau programme
+    </button>
+  </header>
+
+  <section class="card-section">
+    <h2 class="section-title">Programmes de formation</h2>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Titre</th>
+            <th>Thème</th>
+            <th>Date création</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of items">
+            <td>{{ p.id }}</td>
+            <td>{{ p.titre }}</td>
+            <td>{{ p.theme }}</td>
+            <td>{{ p.dateCreation | date:'shortDate' }}</td>
+            <td>
+              <button class="btn-icon" (click)="openEdit(p)" title="Modifier"><i class="fa-solid fa-pen"></i></button>
+              <button class="btn-icon danger" (click)="delete(p.id!)" title="Supprimer"><i class="fa-solid fa-trash"></i></button>
+            </td>
+          </tr>
+          <tr *ngIf="loading">
+            <td colspan="5" class="empty">Chargement des programmes...</td>
+          </tr>
+          <tr *ngIf="!loading && items.length === 0">
+            <td colspan="5" class="empty">Aucun programme.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="modal" *ngIf="showForm">
+    <div class="modal-content">
+      <h3>{{ editing ? 'Modifier' : 'Nouveau' }} programme</h3>
+      <div class="form-group">
+        <label>Titre *</label>
+        <input [(ngModel)]="model.titre" type="text" placeholder="Ex: Qu'est-ce que l'Alzheimer ?" spellcheck="false" />
+      </div>
+      <div class="form-group">
+        <label>Thème *</label>
+        <input [(ngModel)]="model.theme" type="text" placeholder="Ex: Alzheimer, Santé cognitive..." spellcheck="false" />
+      </div>
+      <div class="form-group">
+        <label>Introduction (description affichée aux apprenants)</label>
+        <textarea [(ngModel)]="model.description" rows="4" placeholder="Texte d'introduction du programme de formation..." spellcheck="false"></textarea>
+      </div>
+      <p *ngIf="errorMessage" class="error-msg">{{ errorMessage }}</p>
+      <div class="modal-actions">
+        <button class="btn-secondary" (click)="cancel()">Annuler</button>
+        <button class="btn-primary" (click)="save()">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+</div>

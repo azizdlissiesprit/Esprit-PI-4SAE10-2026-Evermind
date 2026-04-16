@@ -1,0 +1,118 @@
+<div class="certificat-page">
+  <app-formation-stepper [currentStep]="5"></app-formation-stepper>
+  <div class="cert-bg"></div>
+
+  <!-- Loading state -->
+  <div class="loading-state" *ngIf="loading">
+    <i class="fa-solid fa-spinner fa-spin"></i>
+    <p>Chargement du certificat...</p>
+  </div>
+
+  <!-- Certificate with backend data -->
+  <div class="cert-content" *ngIf="!loading && (certificate || passed)" #certCard>
+    <div class="cert-inner">
+      <div class="shine"></div>
+
+      <div class="badge-wrapper" #badgeEl>
+        <div class="badge">
+          <i class="fa-solid fa-award"></i>
+        </div>
+      </div>
+
+      <h1>Certificat de réussite</h1>
+      <div class="cert-line"></div>
+
+      <p class="cert-text">Ceci certifie que</p>
+      <p class="user-name" *ngIf="certificate">Utilisateur #{{ certificate.userId }}</p>
+      <p class="user-name" *ngIf="!certificate">L'apprenant</p>
+
+      <p class="cert-text">a réussi le module</p>
+      <h2 class="module-name">{{ certificate?.moduleTitle || moduleTitle }}</h2>
+
+      <p class="cert-text programme-text" *ngIf="certificate?.programmeTitle">
+        Programme : {{ certificate?.programmeTitle }}
+      </p>
+
+      <p class="score-badge" *ngIf="certificate">
+        <i class="fa-solid fa-star"></i>
+        {{ certificate.score }} / {{ certificate.total }}
+        ({{ certificate.percentage }}%)
+      </p>
+      <p class="score-badge" *ngIf="!certificate">
+        <i class="fa-solid fa-star"></i>
+        {{ score }} / {{ total }}
+        ({{ score / total * 100 | number:'1.0-0' }}%)
+      </p>
+
+      <p class="date-text" *ngIf="certificate">
+        <i class="fa-regular fa-calendar"></i>
+        Délivré le {{ certificate.issuedAt | date:'longDate' }}
+      </p>
+      <p class="date-text" *ngIf="!certificate">{{ today | date:'longDate' }}</p>
+
+      <!-- Certificate Code -->
+      <div class="cert-code-section" *ngIf="certificate">
+        <div class="cert-code-label">Code du certificat</div>
+        <div class="cert-code">{{ certificate.certificateCode }}</div>
+      </div>
+
+      <!-- Digital Signature -->
+      <div class="signature-section" *ngIf="certificate">
+        <div class="signature-label">
+          <i class="fa-solid fa-fingerprint"></i> Signature numérique
+        </div>
+        <div class="signature-value" (click)="toggleSignature()">
+          {{ signatureExpanded ? certificate.digitalSignature : truncatedSignature }}
+          <i class="fa-solid" [class.fa-expand]="!signatureExpanded" [class.fa-compress]="signatureExpanded"></i>
+        </div>
+      </div>
+
+      <!-- Status badge -->
+      <div class="status-badge issued" *ngIf="certificate?.status === 'ISSUED'">
+        <i class="fa-solid fa-circle-check"></i> Certificat vérifié
+      </div>
+      <div class="status-badge revoked" *ngIf="certificate?.status === 'REVOKED'">
+        <i class="fa-solid fa-circle-xmark"></i> Certificat révoqué
+      </div>
+
+      <!-- Verification URL -->
+      <div class="verify-section" *ngIf="certificate">
+        <div class="verify-label">Lien de vérification publique</div>
+        <div class="verify-url-row">
+          <span class="verify-url">{{ verifyUrl }}</span>
+          <button class="btn-copy" (click)="copyVerifyUrl()" [class.copied]="copied">
+            <i class="fa-solid" [class.fa-copy]="!copied" [class.fa-check]="copied"></i>
+            {{ copied ? 'Copié !' : 'Copier' }}
+          </button>
+        </div>
+      </div>
+
+      <div class="cert-actions">
+        <button type="button" class="btn-save" (click)="enregistrerCertificat()">
+          <i class="fa-solid fa-download"></i> Enregistrer / Imprimer
+        </button>
+        <a *ngIf="certificate" [routerLink]="['/verify-certificate', certificate.certificateCode]" class="btn-verify">
+          <i class="fa-solid fa-shield-halved"></i> Vérifier ce certificat
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Not found -->
+  <div class="no-cert" *ngIf="!loading && notFound">
+    <i class="fa-solid fa-circle-exclamation"></i>
+    <p>Certificat introuvable. Vérifiez le code et réessayez.</p>
+    <a routerLink="/app/user-interface" class="btn-back">Retour aux formations</a>
+  </div>
+
+  <!-- Not passed -->
+  <div class="no-cert" *ngIf="!loading && !passed && !certificate && !notFound">
+    <i class="fa-solid fa-lock"></i>
+    <p>Ce certificat n'est disponible qu'après avoir réussi le quiz.</p>
+    <a routerLink="/app/user-interface" class="btn-back">Retour aux formations</a>
+  </div>
+
+  <a routerLink="/app/user-interface" class="home-link">
+    <i class="fa-solid fa-house"></i> Accueil formations
+  </a>
+</div>

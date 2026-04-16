@@ -1,0 +1,235 @@
+<p>alert-detail works!</p>
+<div class="page-container">
+    
+    <!-- HEADER -->
+    <header class="top-header">
+        <div class="breadcrumbs">
+            Dashboard &gt; <a routerLink="/app/alerts">Alerts</a> &gt; <span>Alert ID #{{ alertId || '9204' }}</span>
+        </div>
+        
+        <div class="header-actions">
+            <div class="monitoring-pill">
+                Monitoring: Eleanor Stewart <i class="fa-solid fa-chevron-down"></i>
+            </div>
+            <div class="icon-btn">
+                <i class="fa-regular fa-bell"></i>
+            </div>
+            <div class="care-team-avatars">
+                <img src="https://i.pravatar.cc/150?img=5" alt="Doc">
+                <img src="https://i.pravatar.cc/150?img=11" alt="Nurse">
+                <span class="care-team-label">Care team online</span>
+            </div>
+            <img src="https://i.pravatar.cc/150?img=68" class="user-profile" alt="User">
+        </div>
+    </header>
+
+    <!-- ALERT BANNER -->
+    <div class="alert-banner">
+        <div class="banner-left">
+            <span class="alert-badge">Active Alert</span>
+            <span class="banner-text">Type: Fall detected in living room &bull; Duration: 00:04:12</span>
+        </div>
+        <div class="banner-right">
+            Auto-escalating to Emergency Services in <span class="countdown">01:48</span> if not acknowledged.
+        </div>
+    </div>
+
+    <!-- MAIN GRID -->
+    <div class="dashboard-grid">
+
+        <!-- LEFT PANEL: PATIENT CONTEXT -->
+        <div class="panel panel-left">
+            <div class="panel-header">
+                <h2 class="panel-title">Patient context</h2>
+                <span class="panel-meta">ID #{{ alertId || '9204' }}</span>
+            </div>
+
+            <div class="patient-profile">
+                <img src="https://i.pravatar.cc/150?img=10" class="patient-avatar-lg" alt="Eleanor">
+                <div class="patient-info">
+                    <h3>Eleanor Stewart</h3>
+                    <p>Age 78 &bull; Blood type O+ &bull; Room 204</p>
+                </div>
+            </div>
+
+            <div class="location-card">
+                <div class="loc-text">
+                    <h4>Current location</h4>
+                    <p>Living room &bull; Home sensor network</p>
+                </div>
+                <div class="loc-map-placeholder"></div>
+            </div>
+
+            <h4 class="vitals-title">Live vitals</h4>
+            <div class="vitals-grid">
+                <div class="vital-item">
+                    <span class="vital-label">Heart rate</span>
+                    <div class="vital-value">110 <span class="trend-badge">Rising</span></div>
+                    <span class="vital-unit">bpm</span>
+                </div>
+                <div class="vital-item">
+                    <span class="vital-label">O₂ saturation</span>
+                    <div class="vital-value">96% <span class="trend-badge">Stable</span></div>
+                    <span class="vital-unit"></span>
+                </div>
+                <div class="vital-item">
+                    <span class="vital-label">Device battery</span>
+                    <div class="vital-value">Watch <span class="trend-badge">Low</span></div>
+                    <span class="vital-unit">12%</span>
+                </div>
+                <div class="vital-item">
+                    <span class="vital-label">Fall severity index</span>
+                    <div class="vital-value">0.82 <span class="trend-badge">High impact</span></div>
+                </div>
+            </div>
+
+            <h4 class="vitals-title">Care team</h4>
+            <div class="care-team-list">
+                <div class="care-member">
+                    <img src="https://i.pravatar.cc/150?img=5" class="care-avatar" alt="Dr">
+                    <div class="care-details">
+                        <h5>Dr. Sarah Smith</h5>
+                        <p>Neurologist</p>
+                    </div>
+                    <div class="status-dot dot-green"></div>
+                </div>
+                <div class="care-member">
+                    <img src="https://i.pravatar.cc/150?img=12" class="care-avatar" alt="Nurse">
+                    <div class="care-details">
+                        <h5>Nurse Joy Carter</h5>
+                        <p>Primary caregiver</p>
+                    </div>
+                    <div class="status-dot dot-green"></div>
+                </div>
+                <div class="care-member">
+                    <img src="https://i.pravatar.cc/150?img=24" class="care-avatar" alt="Daughter">
+                    <div class="care-details">
+                        <h5>Daughter Alice</h5>
+                        <p>Family contact</p>
+                    </div>
+                    <div class="status-dot dot-grey"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CENTER PANEL: EVENT EVIDENCE -->
+        <div class="panel panel-center">
+            <div class="panel-header">
+                <h2 class="panel-title">Event evidence</h2>
+                <span class="panel-meta">Camera 2 &bull; Wearable band</span>
+            </div>
+
+            <div class="evidence-tabs-row">
+                <div class="evidence-tabs">
+                    <div class="tab active">Replay event</div>
+                    <div class="tab">Live feed</div>
+                </div>
+                <span class="evidence-meta">Fall detected at 08:42:03 &bull; HR spike at 08:42:10</span>
+            </div>
+
+            <div class="video-container">
+                <!-- Placeholder for video content -->
+                <div class="timeline-wrapper">
+                    <div class="timeline-labels">
+                        <span>00:00</span>
+                        <span>00:20</span>
+                    </div>
+                    <div class="timeline-track">
+                        <div class="timeline-marker marker-red"></div>
+                        <div class="timeline-marker marker-blue"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="timeline-legend">
+                <div class="legend-item"><span style="color: #EF4444;">Red marker:</span> fall impact</div>
+                <div class="legend-item"><span style="color: #4E80EE;">Blue marker:</span> accelerometer + HR spike</div>
+            </div>
+
+            <div class="action-buttons-grid">
+                <button class="btn-emergency">Call 911 / Emergency services</button>
+                <div class="action-note">Long-press or confirm to avoid accidental emergency calls.</div>
+                <button class="btn-primary-contact">Call primary contact (Alice)</button>
+                <button class="btn-outline">Broadcast voice message</button>
+            </div>
+
+            <div class="sync-box">
+                <div class="sync-label">Sensor synchronization</div>
+                <div class="sync-bar-bg">
+                    <div class="sync-fill"></div>
+                </div>
+                <div class="sync-desc">Video timestamp aligned with accelerometer spike and heart rate increase.</div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL: HISTORY & RESOLUTION -->
+        <div class="panel panel-right">
+            <div class="panel-header">
+                <h2 class="panel-title">Incident history & resolution</h2>
+            </div>
+
+            <div class="history-list">
+                <div class="history-item active">
+                    <div class="hist-time">08:00 &bull; Wandering - Garden exit</div>
+                    <div class="hist-desc">Resolved by Nurse Joy &bull; Active for 13 min</div>
+                </div>
+                <div class="history-item">
+                    <div class="hist-time">Yesterday &bull; Missed medication reminder</div>
+                    <div class="hist-desc">Marked as mild &bull; Resolved in 08 min</div>
+                </div>
+                <div class="history-item">
+                    <div class="hist-time">Last week &bull; Night-time bed exit</div>
+                    <div class="hist-desc">Reviewed and logged as false alarm</div>
+                </div>
+            </div>
+
+            <div class="take-charge-box">
+                <p class="tc-text">Resolution is locked until a clinician takes charge of this alert.</p>
+                <button class="btn-take-charge">Take charge</button>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Classification</label>
+                <select class="custom-select">
+                    <option>Real emergency</option>
+                    <option>False Alarm</option>
+                    <option>Test</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Observation</label>
+                <div class="chips-container">
+                    <div class="chip">Patient conscious</div>
+                    <div class="chip">Bleeding observed</div>
+                    <div class="chip">Confused / disoriented</div>
+                    <div class="chip">Complains of pain</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Action taken</label>
+                <div class="chips-container">
+                    <div class="chip">Called family</div>
+                    <div class="chip">Assisted to chair</div>
+                    <div class="chip">Called ambulance</div>
+                    <div class="chip">Updated care plan</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Conclusion / notes</label>
+                <textarea class="notes-area" rows="3" placeholder="Add clinical notes and handover instructions..."></textarea>
+            </div>
+
+            <div class="ml-toggle-row">
+                <div class="toggle-switch"></div>
+                <span class="toggle-label">Flag as false positive for system improvement</span>
+            </div>
+
+            <button class="btn-resolve">Mark as resolved & archive</button>
+            <div class="resolve-hint">Button becomes active once mandatory fields are completed.</div>
+        </div>
+
+    </div>
+</div>

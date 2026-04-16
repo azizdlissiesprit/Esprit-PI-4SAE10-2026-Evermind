@@ -1,0 +1,49 @@
+<div class="programme-learner">
+  <app-formation-stepper [currentStep]="2"></app-formation-stepper>
+  <a routerLink="/app/user-interface" class="back-link">
+    <i class="fa-solid fa-arrow-left"></i> Retour aux formations
+  </a>
+
+  <div class="programme-header" *ngIf="programme">
+    <h1>{{ programme.titre }}</h1>
+    <span class="theme-badge">{{ programme.theme }}</span>
+    <div class="intro-block" *ngIf="programme.description">
+      <h3>Introduction</h3>
+      <p>{{ programme.description }}</p>
+    </div>
+  </div>
+
+  <div class="modules-list" *ngIf="!loading && modules.length">
+    <h2><i class="fa-solid fa-list-check"></i> Parcours en {{ modules.length }} étapes</h2>
+    <div *ngFor="let m of modules; let i = index" class="module-item" #modItem>
+      <div class="mod-icon">
+        <i [class]="getTypeIcon(m.type)"></i>
+      </div>
+      <div class="mod-info">
+        <span class="step-badge">Étape {{ i + 1 }}</span>
+        <h3>{{ m.titre }}</h3>
+        <span class="mod-meta">{{ m.type }} · {{ m.dureeEstimee || 0 }} min</span>
+      </div>
+      <a [routerLink]="['/app/user-interface/programme', programmeId, 'module', m.id]" class="mod-btn">
+        Voir <i class="fa-solid fa-play"></i>
+      </a>
+      <a
+        *ngIf="m.id"
+        [routerLink]="['/app/user-interface/quiz', m.id]"
+        class="quiz-btn"
+        title="Passer le quiz"
+      >
+        <i class="fa-solid fa-clipboard-question"></i> Quiz
+      </a>
+    </div>
+  </div>
+
+  <div class="empty" *ngIf="!loading && modules.length === 0">
+    <i class="fa-solid fa-folder-open"></i>
+    <p>Aucun module dans ce programme.</p>
+  </div>
+
+  <div class="loader" *ngIf="loading">
+    <div class="loader-ring"></div>
+  </div>
+</div>

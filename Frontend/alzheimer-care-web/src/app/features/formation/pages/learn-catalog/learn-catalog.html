@@ -1,0 +1,36 @@
+<div class="learn-page">
+  <app-formation-stepper [currentStep]="1"></app-formation-stepper>
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <h1 class="catalog-title">Mes Formations</h1>
+    <p class="hero-sub">Choisis un programme, regarde les vidéos, passe le quiz et obtiens ton certificat.</p>
+  </div>
+
+  <div class="catalog-grid" *ngIf="!loading && programmes.length > 0">
+    <a
+      *ngFor="let p of programmes; let i = index"
+      [routerLink]="['/app/user-interface/programme', p.id ?? i + 1]"
+      class="programme-card"
+      #card
+    >
+      <div class="card-glow"></div>
+      <div class="card-icon">
+        <i class="fa-solid fa-graduation-cap"></i>
+      </div>
+      <h3>{{ p.titre || 'Programme' }}</h3>
+      <p class="theme">{{ p.theme || 'Formation' }}</p>
+      <p class="desc" *ngIf="p.description">{{ p.description }}</p>
+      <span class="card-cta">Commencer <i class="fa-solid fa-arrow-right"></i></span>
+    </a>
+  </div>
+
+  <div class="empty-state" *ngIf="!loading && programmes.length === 0">
+    <i class="fa-solid fa-book-open"></i>
+    <p>Aucun programme disponible.</p>
+  </div>
+
+  <div class="loader" *ngIf="loading">
+    <div class="loader-ring"></div>
+    <p>Chargement...</p>
+  </div>
+</div>

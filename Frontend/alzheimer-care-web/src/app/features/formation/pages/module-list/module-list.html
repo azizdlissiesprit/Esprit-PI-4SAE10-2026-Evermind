@@ -1,0 +1,86 @@
+<div class="page-container">
+  <header class="top-header">
+    <div class="breadcrumbs">Formation &gt; <span>Modules</span></div>
+    <button class="btn-primary" (click)="openAdd()">
+      <i class="fa-solid fa-plus"></i> Nouveau module
+    </button>
+  </header>
+
+  <section class="card-section">
+    <h2 class="section-title">Modules (vidéos, PDF, articles)</h2>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Titre</th>
+            <th>Type</th>
+            <th>Durée (min)</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let m of items">
+            <td>{{ m.id }}</td>
+            <td>{{ m.titre }}</td>
+            <td>{{ m.type }}</td>
+            <td>{{ m.dureeEstimee ?? '-' }}</td>
+            <td>
+              <button class="btn-icon" (click)="openEdit(m)" title="Modifier"><i class="fa-solid fa-pen"></i></button>
+              <button class="btn-icon danger" (click)="delete(m.id!)" title="Supprimer"><i class="fa-solid fa-trash"></i></button>
+            </td>
+          </tr>
+          <tr *ngIf="items.length === 0">
+            <td colspan="5" class="empty">Aucun module.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="modal" *ngIf="showForm">
+    <div class="modal-content">
+      <h3>{{ editing ? 'Modifier' : 'Nouveau' }} module</h3>
+      <div class="form-group" *ngIf="!editing">
+        <label>Programme *</label>
+        <select [(ngModel)]="model.programmeId" required>
+          <option [ngValue]="0">-- Sélectionner un programme --</option>
+          <option *ngFor="let p of programmes" [ngValue]="p.id">{{ p.titre }}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Titre du module *</label>
+        <input [(ngModel)]="model.titre" type="text" placeholder="Ex: Introduction à l'Alzheimer" spellcheck="false" />
+      </div>
+      <div class="form-group">
+        <label>Type</label>
+        <select [(ngModel)]="model.type">
+          <option value="Video">Vidéo</option>
+          <option value="Article">Article</option>
+          <option value="PDF">PDF</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Durée estimée (minutes)</label>
+        <input [(ngModel)]="model.dureeEstimee" type="number" min="0" placeholder="10" />
+      </div>
+      <div class="form-group">
+        <label>Introduction (texte affiché aux apprenants)</label>
+        <textarea [(ngModel)]="model.introduction" rows="3" placeholder="Texte d'introduction du module..." spellcheck="false"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Conseils de formation (tips)</label>
+        <textarea [(ngModel)]="model.conseils" rows="3" placeholder="Conseils et astuces pour les apprenants..." spellcheck="false"></textarea>
+      </div>
+      <div class="form-group">
+        <label>URL vidéo (YouTube, Vimeo ou lien MP4)</label>
+        <input [(ngModel)]="model.urlVideo" type="url" placeholder="https://www.youtube.com/watch?v=..." spellcheck="false" />
+      </div>
+      <p *ngIf="errorMessage" class="error-msg">{{ errorMessage }}</p>
+      <div class="modal-actions">
+        <button class="btn-secondary" (click)="cancel()">Annuler</button>
+        <button class="btn-primary" (click)="save()">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+</div>

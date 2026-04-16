@@ -1,0 +1,180 @@
+<div class="page-container">
+  <header class="top-header">
+    <div class="breadcrumbs">
+      <button class="btn-back" (click)="goBack()">
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+      Formation &gt; Quiz &gt; <span>{{ quiz?.titre ?? 'Builder' }}</span>
+    </div>
+    <div class="header-actions">
+      <button class="btn-ai" (click)="openAiModal()">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> Générer avec IA
+      </button>
+      <button class="btn-primary" (click)="openAdd()">
+        <i class="fa-solid fa-plus"></i> Nouvelle question
+      </button>
+    </div>
+  </header>
+
+  <section class="quiz-info" *ngIf="quiz">
+    <h2>{{ quiz.titre }}</h2>
+    <span class="badge">Seuil de réussite : {{ quiz.seuilReussite ?? 70 }}%</span>
+    <span class="badge count">{{ questions.length }} question{{ questions.length !== 1 ? 's' : '' }}</span>
+  </section>
+
+  <div class="loader" *ngIf="loading">
+    <div class="loader-ring"></div>
+  </div>
+
+  <section class="questions-list" *ngIf="!loading">
+    <div class="question-card" *ngFor="let q of questions; let i = index">
+      <div class="q-header">
+        <span class="q-number">Q{{ i + 1 }}</span>
+        <span class="q-type-badge" [class.qcu]="q.type==='QCU'" [class.qcm]="q.type==='QCM'"
+          [class.tf]="q.type==='TRUE_FALSE'">
+          {{ getTypeBadge(q.type) }}
+        </span>
+        <div class="q-actions">
+          <button class="btn-icon" (click)="openEdit(q)" title="Modifier"><i class="fa-solid fa-pen"></i></button>
+          <button class="btn-icon danger" (click)="deleteQuestion(q.id!)" title="Supprimer"><i
+              class="fa-solid fa-trash"></i></button>
+        </div>
+      </div>
+      <p class="q-text">{{ q.questionText }}</p>
+      <div class="q-options">
+        <div class="q-option" *ngFor="let opt of parseOptions(q); let j = index"
+          [class.correct]="parseCorrect(q).includes(j)">
+          <span class="opt-marker">{{ parseCorrect(q).includes(j) ? '✓' : '○' }}</span>
+          {{ opt }}
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="questions.length === 0">
+      <i class="fa-solid fa-clipboard-question"></i>
+      <p>Aucune question dans ce quiz. Cliquez sur "Nouvelle question" ou "Générer avec IA" pour commencer.</p>
+    </div>
+  </section>
+
+  <!-- Add / Edit Question Modal -->
+  <div class="modal" *ngIf="showForm">
+    <div class="modal-content">
+      <h3>{{ editingId ? 'Modifier la question' : 'Nouvelle question' }}</h3>
+
+      <div class="form-group">
+        <label>Type de question *</label>
+        <select [(ngModel)]="form.type" (ngModelChange)="onTypeChange()">
+          <option value="QCU">Choix unique (QCU)</option>
+          <option value="QCM">Choix multiples (QCM)</option>
+          <option value="TRUE_FALSE">Vrai / Faux</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Question *</label>
+        <textarea [(ngModel)]="form.questionText" placeholder="Texte de la question" rows="3"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Options <span class="hint" *ngIf="form.type==='QCU'">(sélectionnez 1 bonne réponse)</span><span
+            class="hint" *ngIf="form.type==='QCM'">(sélectionnez les bonnes réponses)</span></label>
+        <div class="option-row" *ngFor="let opt of form.optionsList; let i = index; trackBy: trackByIndex">
+          <button class="opt-toggle" [class.active]="isCorrect(i)" (click)="toggleCorrect(i)"
+            [title]="isCorrect(i) ? 'Bonne réponse' : 'Marquer comme bonne réponse'">
+            <i [class]="isCorrect(i) ? 'fa-solid fa-circle-check' : 'fa-regular fa-circle'"></i>
+          </button>
+          <input [(ngModel)]="form.optionsList[i]" [placeholder]="'Option ' + (i+1)"
+            [disabled]="form.type === 'TRUE_FALSE'" />
+          <button class="btn-remove-opt" (click)="removeOption(i)"
+            *ngIf="form.type !== 'TRUE_FALSE' && form.optionsList.length > 2">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <button class="btn-add-option" (click)="addOption()" *ngIf="form.type !== 'TRUE_FALSE'">
+          <i class="fa-solid fa-plus"></i> Ajouter une option
+        </button>
+      </div>
+
+      <div class="form-group">
+        <label>Ordre (position)</label>
+        <input [(ngModel)]="form.orderIndex" type="number" min="0" />
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-secondary" (click)="cancel()">Annuler</button>
+        <button class="btn-primary" (click)="save()">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Generation Modal -->
+  <div class="modal" *ngIf="showAiModal">
+    <div class="modal-content ai-modal">
+      <div class="ai-modal-header">
+        <div class="ai-icon-wrapper">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+        </div>
+        <h3>Générer des questions avec l'IA</h3>
+        <p class="ai-subtitle">Kimi K2.5 va créer automatiquement des questions basées sur le contenu du module.</p>
+      </div>
+
+      <div class="form-group">
+        <label>Sujet / Thème *</label>
+        <input [(ngModel)]="aiTopic" placeholder="Ex: Symptômes de la maladie d'Alzheimer" [disabled]="aiGenerating" />
+      </div>
+
+      <div class="form-group">
+        <label>Nombre de questions : <strong>{{ aiCount }}</strong></label>
+        <input type="range" [(ngModel)]="aiCount" min="1" max="20" step="1" [disabled]="aiGenerating"
+          class="ai-slider" />
+        <div class="slider-labels">
+          <span>1</span>
+          <span>5</span>
+          <span>10</span>
+          <span>15</span>
+          <span>20</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Types de questions</label>
+        <div class="ai-type-chips">
+          <button class="ai-chip" [class.selected]="isAiTypeSelected('QCU')" (click)="toggleAiType('QCU')"
+            [disabled]="aiGenerating">
+            <i class="fa-solid" [class.fa-check]="isAiTypeSelected('QCU')"
+              [class.fa-circle]="!isAiTypeSelected('QCU')"></i>
+            Choix unique
+          </button>
+          <button class="ai-chip" [class.selected]="isAiTypeSelected('QCM')" (click)="toggleAiType('QCM')"
+            [disabled]="aiGenerating">
+            <i class="fa-solid" [class.fa-check]="isAiTypeSelected('QCM')"
+              [class.fa-circle]="!isAiTypeSelected('QCM')"></i>
+            Choix multiples
+          </button>
+          <button class="ai-chip" [class.selected]="isAiTypeSelected('TRUE_FALSE')" (click)="toggleAiType('TRUE_FALSE')"
+            [disabled]="aiGenerating">
+            <i class="fa-solid" [class.fa-check]="isAiTypeSelected('TRUE_FALSE')"
+              [class.fa-circle]="!isAiTypeSelected('TRUE_FALSE')"></i>
+            Vrai / Faux
+          </button>
+        </div>
+      </div>
+
+      <div class="ai-error" *ngIf="aiError">
+        <i class="fa-solid fa-circle-exclamation"></i> {{ aiError }}
+      </div>
+
+      <div class="ai-generating" *ngIf="aiGenerating">
+        <div class="ai-spinner"></div>
+        <span>L'IA génère vos questions...</span>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-secondary" (click)="closeAiModal()" [disabled]="aiGenerating">Annuler</button>
+        <button class="btn-ai-generate" (click)="generateWithAi()" [disabled]="aiGenerating">
+          <i class="fa-solid fa-bolt"></i> Générer
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

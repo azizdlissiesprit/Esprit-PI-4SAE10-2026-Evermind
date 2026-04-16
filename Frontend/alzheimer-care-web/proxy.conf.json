@@ -1,0 +1,10 @@
+{
+  "/api/formation": {
+    "target": "http://localhost:9086",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api/formation": "/formation"
+    }
+  }
+}

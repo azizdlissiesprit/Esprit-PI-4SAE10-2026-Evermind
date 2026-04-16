@@ -1,0 +1,76 @@
+<div class="module-viewer">
+  <app-formation-stepper [currentStep]="3"></app-formation-stepper>
+  <a [routerLink]="['/app/user-interface/programme', programmeId]" class="back-link">
+    <i class="fa-solid fa-arrow-left"></i> Retour au programme
+  </a>
+
+  <div class="viewer-content" *ngIf="module && !loading">
+    <h1>{{ module.titre }}</h1>
+    <div class="meta">
+      <span class="type-badge">{{ module.type }}</span>
+      <span *ngIf="module.dureeEstimee">{{ module.dureeEstimee }} min</span>
+    </div>
+
+    <!-- Introduction -->
+    <div class="section-block intro-block" *ngIf="introText">
+      <h3>Introduction</h3>
+      <div class="article-content">{{ introText }}</div>
+    </div>
+
+    <!-- Formation tips -->
+    <div class="section-block tips-block" *ngIf="tipsText">
+      <h3>Conseils de formation</h3>
+      <div class="article-content">{{ tipsText }}</div>
+    </div>
+
+    <!-- Video / YouTube / Vimeo / MP4 -->
+    <div class="media-block" *ngFor="let r of ressources">
+      <div *ngIf="isVideoUrl(r.url)" class="video-wrapper">
+        <iframe
+          *ngIf="isYoutubeUrl(r.url)"
+          [src]="getYoutubeEmbed(r.url)"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+        <iframe
+          *ngIf="isVimeoUrl(r.url)"
+          [src]="getVimeoEmbed(r.url)"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+        <video *ngIf="r.url.toLowerCase().includes('.mp4')" [src]="safeUrl(r.url)" controls></video>
+      </div>
+    </div>
+
+    <!-- PDF -->
+    <div class="pdf-block" *ngFor="let r of ressources">
+      <a *ngIf="r.url && (r.typeFichier === 'pdf' || r.url.toLowerCase().endsWith('.pdf'))" [href]="r.url" target="_blank" class="pdf-link">
+        <i class="fa-solid fa-file-pdf"></i> Ouvrir le PDF
+      </a>
+    </div>
+
+    <!-- Fallback: contenu brut si pas de sections (format ancien) -->
+    <div class="article-block" *ngIf="module.contenu && !introText && !tipsText">
+      <div class="article-content">{{ module.contenu }}</div>
+    </div>
+
+    <div class="actions">
+      <a *ngIf="prevModule" [routerLink]="['/app/user-interface/programme', programmeId, 'module', prevModule.id]" class="btn-prev">
+        <i class="fa-solid fa-arrow-left"></i> Module précédent
+      </a>
+      <a [routerLink]="['/app/user-interface/programme', programmeId]" class="btn-secondary">Retour aux modules</a>
+      <a *ngIf="nextModule" [routerLink]="['/app/user-interface/programme', programmeId, 'module', nextModule.id]" class="btn-next">
+        Module suivant <i class="fa-solid fa-arrow-right"></i>
+      </a>
+      <a [routerLink]="['/app/user-interface/quiz', moduleId]" class="btn-primary" title="Passer le quiz de ce module">
+        <i class="fa-solid fa-clipboard-question"></i> Passer le quiz
+      </a>
+    </div>
+  </div>
+
+  <div class="loader" *ngIf="loading">
+    <div class="loader-ring"></div>
+  </div>
+</div>

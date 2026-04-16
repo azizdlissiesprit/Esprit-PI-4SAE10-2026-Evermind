@@ -1,0 +1,137 @@
+<div class="verify-page">
+    <div class="verify-bg"></div>
+
+    <div class="verify-container">
+        <div class="verify-header">
+            <div class="shield-icon">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <h1>Vérification de certificat</h1>
+            <p class="subtitle">Vérifiez l'authenticité d'un certificat en entrant son code unique</p>
+        </div>
+
+        <!-- Search form -->
+        <div class="search-section">
+            <div class="input-group">
+                <input type="text" [(ngModel)]="codeInput" placeholder="Ex: CERT-2026-A7F3B9E2" class="code-input"
+                    (keyup.enter)="verify()" [disabled]="state === 'loading'" />
+                <button class="btn-verify" (click)="verify()" [disabled]="state === 'loading' || !codeInput.trim()">
+                    <i class="fa-solid" [class.fa-magnifying-glass]="state !== 'loading'"
+                        [class.fa-spinner]="state === 'loading'" [class.fa-spin]="state === 'loading'"></i>
+                    {{ state === 'loading' ? 'Vérification...' : 'Vérifier' }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" *ngIf="state !== 'idle' && state !== 'loading'" (click)="reset()">
+        <div class="modal-content-wrapper" (click)="$event.stopPropagation()">
+            <button class="btn-close-modal" (click)="reset()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- VALID result -->
+            <div class="result-card valid" *ngIf="state === 'valid' && result">
+                <div class="result-icon valid">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <h2>Certificat authentique</h2>
+                <p class="result-desc">Ce certificat est valide. La signature numérique a été vérifiée avec succès.</p>
+
+                <div class="cert-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Code</span>
+                        <span class="detail-value mono">{{ result.certificateCode }}</span>
+                    </div>
+                    <div class="detail-row" *ngIf="result.quizTitle">
+                        <span class="detail-label">Quiz</span>
+                        <span class="detail-value">{{ result.quizTitle }}</span>
+                    </div>
+                    <div class="detail-row" *ngIf="result.moduleTitle">
+                        <span class="detail-label">Module</span>
+                        <span class="detail-value">{{ result.moduleTitle }}</span>
+                    </div>
+                    <div class="detail-row" *ngIf="result.programmeTitle">
+                        <span class="detail-label">Programme</span>
+                        <span class="detail-value">{{ result.programmeTitle }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Score</span>
+                        <span class="detail-value">{{ result.score }} / {{ result.total }} ({{ result.percentage
+                            }}%)</span>
+                    </div>
+                    <div class="detail-row" *ngIf="result.issuedAt">
+                        <span class="detail-label">Délivré le</span>
+                        <span class="detail-value">{{ result.issuedAt }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Signature</span>
+                        <span class="detail-value">
+                            <i class="fa-solid fa-circle-check sig-ok"></i>
+                            Signature vérifiée (HMAC-SHA256)
+                        </span>
+                    </div>
+                </div>
+
+                <button class="btn-reset" (click)="reset()">
+                    <i class="fa-solid fa-rotate-left"></i> Vérifier un autre certificat
+                </button>
+            </div>
+
+            <!-- REVOKED result -->
+            <div class="result-card revoked" *ngIf="state === 'revoked' && result">
+                <div class="result-icon revoked">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <h2>Certificat révoqué</h2>
+                <p class="result-desc">Ce certificat a été révoqué et n'est plus valide.</p>
+
+                <div class="cert-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Code</span>
+                        <span class="detail-value mono">{{ result.certificateCode }}</span>
+                    </div>
+                    <div class="detail-row" *ngIf="result.quizTitle">
+                        <span class="detail-label">Quiz</span>
+                        <span class="detail-value">{{ result.quizTitle }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Statut</span>
+                        <span class="detail-value status-revoked"><i class="fa-solid fa-ban"></i> RÉVOQUÉ</span>
+                    </div>
+                </div>
+
+                <button class="btn-reset" (click)="reset()">
+                    <i class="fa-solid fa-rotate-left"></i> Vérifier un autre certificat
+                </button>
+            </div>
+
+            <!-- NOT FOUND result -->
+            <div class="result-card invalid" *ngIf="state === 'not_found'">
+                <div class="result-icon invalid">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </div>
+                <h2>Certificat introuvable</h2>
+                <p class="result-desc">Aucun certificat correspondant à ce code n'a été trouvé. Vérifiez le code et
+                    réessayez.</p>
+
+                <button class="btn-reset" (click)="reset()">
+                    <i class="fa-solid fa-rotate-left"></i> Réessayer
+                </button>
+            </div>
+
+            <!-- Error -->
+            <div class="result-card invalid" *ngIf="state === 'error'">
+                <div class="result-icon invalid">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </div>
+                <h2>Erreur de vérification</h2>
+                <p class="result-desc">Une erreur s'est produite lors de la vérification. Veuillez réessayer.</p>
+
+                <button class="btn-reset" (click)="reset()">
+                    <i class="fa-solid fa-rotate-left"></i> Réessayer
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

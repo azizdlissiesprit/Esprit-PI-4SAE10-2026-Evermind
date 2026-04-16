@@ -1,0 +1,129 @@
+<div class="quiz-page">
+  <app-formation-stepper [currentStep]="4"></app-formation-stepper>
+  <div class="quiz-bg"></div>
+
+  <!-- Confetti (visible when passed) -->
+  <div class="confetti-container" *ngIf="showResult && passed">
+    <div *ngFor="let c of [1,2,3,4,5,6,7,8,9,10]" class="confetti" [style.left.%]="c*10"
+      [style.background]="c % 3 === 0 ? '#f59e0b' : (c % 3 === 1 ? '#6366f1' : '#10b981')"></div>
+  </div>
+
+  <div class="quiz-selector-wrap" *ngIf="!loading && !showResult && quizzes.length > 1">
+    <div class="quiz-selector-card">
+      <div class="selector-head">
+        <div class="selector-title">
+          <i class="fa-solid fa-layer-group"></i>
+          <span>Choisir un quiz du module</span>
+        </div>
+        <span class="selector-count">{{ quizzes.length }} quiz</span>
+      </div>
+
+      <div class="selector-control">
+        <i class="fa-solid fa-clipboard-question selector-icon"></i>
+        <select id="quizSelector" [value]="quiz?.id ?? ''" (change)="selectQuizById($any($event.target).value)">
+          <option *ngFor="let q of quizzes" [value]="q.id">{{ q.titre }}</option>
+        </select>
+        <i class="fa-solid fa-chevron-down selector-chevron"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-container" *ngIf="!loading && !showResult && questions.length > 0">
+    <div class="quiz-card">
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="(currentIndex / questions.length) * 100"></div>
+      </div>
+      <div class="progress-header">
+        <span class="progress-text">Question {{ currentIndex + 1 }} / {{ questions.length }}</span>
+        <span class="type-badge" [class.qcu]="currentType==='QCU'" [class.qcm]="currentType==='QCM'"
+          [class.tf]="currentType==='TRUE_FALSE'">
+          {{ currentType === 'QCU' ? 'Choix unique' : (currentType === 'QCM' ? 'Choix multiples' : 'Vrai / Faux') }}
+        </span>
+      </div>
+
+      <h2 class="q-title">{{ currentQuestion?.questionText }}</h2>
+
+      <!-- QCM hint -->
+      <p class="qcm-hint" *ngIf="currentType === 'QCM'">
+        <i class="fa-solid fa-circle-info"></i> Plusieurs réponses possibles
+      </p>
+
+      <div class="options">
+        <button *ngFor="let opt of currentOptions; let i = index" class="option-btn" [class.selected]="isSelected(i)"
+          [class.qcm-selected]="currentType === 'QCM' && isSelected(i)" [disabled]="answerConfirmed"
+          (click)="selectAnswer(i)">
+          <span class="opt-marker" *ngIf="currentType !== 'QCM'">
+            <i [class]="isSelected(i) ? 'fa-solid fa-circle-dot' : 'fa-regular fa-circle'"></i>
+          </span>
+          <span class="opt-marker" *ngIf="currentType === 'QCM'">
+            <i [class]="isSelected(i) ? 'fa-solid fa-square-check' : 'fa-regular fa-square'"></i>
+          </span>
+          <span class="opt-letter">{{ getOptionLetter(i) }}</span>
+          {{ opt }}
+        </button>
+      </div>
+
+      <!-- Confirm / Next buttons -->
+      <button *ngIf="!answerConfirmed && hasSelection" class="btn-confirm" (click)="confirmAnswer()">
+        <i class="fa-solid fa-check"></i> Confirmer
+      </button>
+
+      <button *ngIf="answerConfirmed" class="btn-next-question" (click)="nextQuestion()">
+        {{ currentIndex < questions.length - 1 ? 'Question suivante' : 'Soumettre le quiz' }} <i
+          class="fa-solid fa-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- No questions state -->
+  <div class="no-questions" *ngIf="!loading && !showResult && quizzes.length === 0">
+    <div class="no-q-card">
+      <i class="fa-solid fa-list-check"></i>
+      <h2>Aucun quiz disponible</h2>
+      <p>Ce module ne contient pas encore de quiz.</p>
+      <button class="btn-retry" (click)="goBack()">Retour aux formations</button>
+    </div>
+  </div>
+
+  <div class="no-questions" *ngIf="!loading && !showResult && quizzes.length > 0 && questions.length === 0">
+    <div class="no-q-card">
+      <i class="fa-solid fa-clipboard-question"></i>
+      <h2>Aucune question disponible</h2>
+      <p>Ce quiz n'a pas encore de questions. Choisissez un autre quiz ou revenez plus tard.</p>
+      <button class="btn-retry" (click)="goBack()">Retour aux formations</button>
+    </div>
+  </div>
+
+  <!-- Result -->
+  <div class="result-container" *ngIf="showResult">
+    <div class="result-pass" *ngIf="passed">
+      <div class="badge-icon">
+        <i class="fa-solid fa-trophy"></i>
+      </div>
+      <h1>Félicitations !</h1>
+      <p class="score-text">{{ tentativeResult?.score ?? score }} / {{ tentativeResult?.total ?? questions.length }} ·
+        {{ ((tentativeResult?.score ?? score) / (tentativeResult?.total ?? questions.length) * 100) | number:'1.0-0' }}%
+      </p>
+      <p class="pass-msg">Tu as réussi ! Tu as droit à ton badge et certificat.</p>
+      <button class="btn-cert" (click)="goToCertificate()">
+        <i class="fa-solid fa-award"></i> Voir mon certificat
+      </button>
+    </div>
+
+    <div class="result-fail" *ngIf="!passed">
+      <div class="fail-icon">
+        <i class="fa-solid fa-rotate-right"></i>
+      </div>
+      <h1>Presque !</h1>
+      <p class="score-text">{{ tentativeResult?.score ?? score }} / {{ tentativeResult?.total ?? questions.length }} ·
+        {{ ((tentativeResult?.score ?? score) / (tentativeResult?.total ?? questions.length) * 100) | number:'1.0-0' }}%
+      </p>
+      <p>Le seuil était {{ quiz?.seuilReussite ?? 70 }}%. Tu peux réessayer !</p>
+      <button class="btn-retry" (click)="goBack()">Retour aux formations</button>
+    </div>
+  </div>
+
+  <div class="loader" *ngIf="loading">
+    <div class="loader-ring"></div>
+  </div>
+</div>

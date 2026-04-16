@@ -1,0 +1,72 @@
+<div class="dashboard-container">
+  <header class="dashboard-header">
+    <h1>Administration - Statistiques Globales</h1>
+    <button class="btn-refresh" (click)="refreshStats()" [disabled]="loading">
+      <span *ngIf="!loading">🔄 Rafraîchir</span>
+      <span *ngIf="loading">⏳ Chargement...</span>
+    </button>
+  </header>
+
+  <div *ngIf="error" class="alert-error">
+    {{ error }}
+  </div>
+
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Récupération des données en cours...</p>
+  </div>
+
+  <div *ngIf="!loading && stats" class="dashboard-content">
+    
+    <!-- KPI Cards Section -->
+    <div class="kpi-grid">
+      <!-- Success Rate Card -->
+      <div class="kpi-card glassmorphism premium-shadow">
+        <div class="kpi-icon gradient-purple">📈</div>
+        <div class="kpi-details">
+          <h3>Taux de Réussite</h3>
+          <div class="kpi-value-container">
+            <span class="kpi-value">{{ stats.tauxReussiteGlobal | number:'1.0-1' }}</span>
+            <span class="kpi-unit">%</span>
+          </div>
+          <p class="kpi-subtitle">Moyenne globale des apprenants</p>
+        </div>
+      </div>
+
+      <!-- Active Users Card -->
+      <div class="kpi-card glassmorphism premium-shadow">
+        <div class="kpi-icon gradient-blue">👥</div>
+        <div class="kpi-details">
+          <h3>Utilisateurs Actifs</h3>
+          <div class="kpi-value-container">
+            <span class="kpi-value">{{ stats.utilisateursActifs30Jours }}</span>
+          </div>
+          <p class="kpi-subtitle">Au cours des 30 derniers jours</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="charts-section">
+      <div class="chart-card glassmorphism premium-shadow">
+        <h2>Top 5 Formations</h2>
+        <p class="chart-subtitle">Basé sur le nombre total d'inscriptions</p>
+        
+        <div class="custom-bar-chart">
+          <div *ngIf="stats.topFormations.length === 0" class="empty-state">
+            Aucune formation suivie pour le moment.
+          </div>
+          <div class="bar-row" *ngFor="let formation of stats.topFormations">
+            <div class="bar-label" [title]="formation.titre">{{ formation.titre }}</div>
+            <div class="bar-track">
+              <div class="bar-fill gradient-accent" [style.width]="getBarWidth(formation.nombreInscriptions)"></div>
+              <span class="bar-value">{{ formation.nombreInscriptions }}</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

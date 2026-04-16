@@ -1,0 +1,50 @@
+<nav class="navbar">
+  <div class="navbar-container">
+    <!-- Logo -->
+    <div class="navbar-logo">
+      <a routerLink="/app/dashboard">
+        <span class="logo-icon">🧠</span>
+        <span class="logo-text">EverMind</span>
+      </a>
+    </div>
+
+    <!-- Menu Button (Mobile) -->
+    <button class="menu-toggle" (click)="toggleMenu()" [class.active]="isMenuOpen">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <!-- Navigation Links -->
+    <div class="navbar-menu" [class.open]="isMenuOpen">
+      <a routerLink="/app/dashboard" routerLinkActive="active" class="nav-link">
+        Dashboard
+      </a>
+      <a routerLink="/app/formation" routerLinkActive="active" class="nav-link">
+        Formation
+      </a>
+      <a routerLink="/app/alerts" routerLinkActive="active" class="nav-link">
+        Alerts
+      </a>
+      <a routerLink="/app/messages" routerLinkActive="active" class="nav-link">
+        Messages
+      </a>
+    </div>
+
+    <!-- User Menu -->
+    <div class="user-menu" *ngIf="currentUser">
+      <div class="user-info">
+        <span class="user-avatar">{{ (currentUser.firstName || 'U')[0] }}</span>
+        <div class="user-details">
+          <span class="user-name">{{ currentUser.firstName }} {{ currentUser.lastName }}</span>
+          <span class="user-role">{{ currentUser.role }}</span>
+        </div>
+      </div>
+      <div class="dropdown-menu">
+        <a routerLink="/app/profile" class="dropdown-link">Profile</a>
+        <a routerLink="/app/settings" class="dropdown-link">Settings</a>
+        <button (click)="logout()" class="dropdown-link logout-btn">Logout</button>
+      </div>
+    </div>
+  </div>
+</nav>

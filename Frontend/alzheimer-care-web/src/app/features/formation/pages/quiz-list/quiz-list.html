@@ -1,0 +1,77 @@
+<div class="page-container">
+  <header class="top-header">
+    <div class="breadcrumbs">Formation &gt; <span>Quiz</span></div>
+    <button class="btn-primary" (click)="openAdd()">
+      <i class="fa-solid fa-plus"></i> Nouveau quiz
+    </button>
+  </header>
+
+  <section class="card-section">
+    <h2 class="section-title">Quiz et évaluations</h2>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Titre</th>
+            <th>Module</th>
+            <th>Seuil réussite (%)</th>
+            <th>Questions</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let q of items">
+            <td>{{ q.id }}</td>
+            <td>{{ q.titre }}</td>
+            <td><span class="module-badge">{{ q.moduleTitre || 'N/A' }}</span></td>
+            <td>{{ q.seuilReussite ?? 70 }}%</td>
+            <td>
+              <span class="question-count">{{ questionCounts[q.id!] }}</span>
+            </td>
+            <td class="actions-cell">
+              <button class="btn-builder" (click)="openBuilder(q.id!)" title="Gérer les questions">
+                <i class="fa-solid fa-list-check"></i> Questions
+              </button>
+              <button class="btn-icon" (click)="openEdit(q)" title="Modifier"><i class="fa-solid fa-pen"></i></button>
+              <button class="btn-icon danger" (click)="delete(q.id!)" title="Supprimer"><i
+                  class="fa-solid fa-trash"></i></button>
+            </td>
+          </tr>
+          <tr *ngIf="loading">
+            <td colspan="6" class="empty">Chargement...</td>
+          </tr>
+          <tr *ngIf="!loading && items.length === 0">
+            <td colspan="6" class="empty">Aucun quiz.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="modal" *ngIf="showForm">
+    <div class="modal-content">
+      <h3>{{ editing ? 'Modifier' : 'Nouveau' }} quiz</h3>
+      <div class="form-group" *ngIf="!editing">
+        <label>Module *</label>
+        <select [(ngModel)]="model.moduleId">
+          <option [value]="0">-- Sélectionner --</option>
+          <option *ngFor="let m of modules" [value]="m.id">{{ m.titre }}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Titre *</label>
+        <input [(ngModel)]="model.titre" type="text" placeholder="Titre du quiz" />
+      </div>
+      <div class="form-group">
+        <label>Seuil de réussite (%)</label>
+        <input [(ngModel)]="model.seuilReussite" type="number" min="0" max="100" />
+      </div>
+      <p *ngIf="errorMessage" class="error-msg">{{ errorMessage }}</p>
+      <div class="modal-actions">
+        <button class="btn-secondary" (click)="cancel()">Annuler</button>
+        <button class="btn-primary" (click)="save()">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,217 @@
+{
+  "info": {
+    "name": "Système de Prérequis - EverMind",
+    "description": "Collection de tests pour le système de prérequis des formations",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1️⃣ AJOUTER PRÉREQUIS - Formation obligatoire",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/prerequisites/add?requiredFormationId=1&dependentFormationId=2&prerequisiteType=REQUIRED&description=Cette formation nécessite de compléter les fondamentals",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "prerequisites", "add"],
+          "query": [
+            {"key": "requiredFormationId", "value": "1"},
+            {"key": "dependentFormationId", "value": "2"},
+            {"key": "prerequisiteType", "value": "REQUIRED"},
+            {"key": "description", "value": "Cette formation nécessite de compléter les fondamentals"}
+          ]
+        },
+        "description": "Ajoute un prérequis obligatoire: La formation 2 dépend de la formation 1"
+      }
+    },
+    {
+      "name": "2️⃣ AJOUTER PRÉREQUIS - Temps minimum",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/prerequisites/add?requiredFormationId=1&dependentFormationId=3&prerequisiteType=MINIMUM_TIME&minimumValue=60&description=Au minimum 1 heure sur la formation de base",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "prerequisites", "add"],
+          "query": [
+            {"key": "requiredFormationId", "value": "1"},
+            {"key": "dependentFormationId", "value": "3"},
+            {"key": "prerequisiteType", "value": "MINIMUM_TIME"},
+            {"key": "minimumValue", "value": "60"},
+            {"key": "description", "value": "Au minimum 1 heure sur la formation de base"}
+          ]
+        },
+        "description": "Ajoute un prérequis de temps: L'utilisateur doit passer 60 minutes minimum"
+      }
+    },
+    {
+      "name": "3️⃣ AJOUTER PRÉREQUIS - Score minimum",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/prerequisites/add?requiredFormationId=2&dependentFormationId=4&prerequisiteType=MINIMUM_SCORE&minimumValue=75&description=Score minimum de 75% requis",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "prerequisites", "add"],
+          "query": [
+            {"key": "requiredFormationId", "value": "2"},
+            {"key": "dependentFormationId", "value": "4"},
+            {"key": "prerequisiteType", "value": "MINIMUM_SCORE"},
+            {"key": "minimumValue", "value": "75"},
+            {"key": "description", "value": "Score minimum de 75% requis"}
+          ]
+        },
+        "description": "Ajoute un prérequis de score minimum"
+      }
+    },
+    {
+      "name": "4️⃣ VALIDER ACCÈS - Complet avec détails",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/prerequisites/validate/5/2",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "prerequisites", "validate", "5", "2"]
+        },
+        "description": "Valide si l'utilisateur 5 peut accéder à la formation 2 (retourne les détails complets)"
+      }
+    },
+    {
+      "name": "5️⃣ VÉRIFIER ACCÈS - Simple (Boolean)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/prerequisites/can-access/5/2",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "prerequisites", "can-access", "5", "2"]
+        },
+        "description": "Retourne un simple true/false pour l'accès"
+      }
+    },
+    {
+      "name": "6️⃣ RÉCUPÉRER PRÉREQUIS d'une formation",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/prerequisites/2",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "prerequisites", "2"]
+        },
+        "description": "Récupère tous les prérequis que la formation 2 a"
+      }
+    },
+    {
+      "name": "7️⃣ RÉCUPÉRER formations DÉPENDANT d'une formation",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/prerequisites/1/dependents",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "prerequisites", "1", "dependents"]
+        },
+        "description": "Récupère toutes les formations qui dépendent de la formation 1"
+      }
+    },
+    {
+      "name": "8️⃣ FORMATIONS ACCESSIBLES pour un utilisateur",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/prerequisites/accessible/5",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "prerequisites", "accessible", "5"]
+        },
+        "description": "Récupère toutes les formations accessibles pour l'utilisateur 5"
+      }
+    },
+    {
+      "name": "9️⃣ METTRE À JOUR un prérequis",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/prerequisites/1?prerequisiteType=MINIMUM_TIME&minimumValue=90&description=Au minimum 1.5 heures requises",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "prerequisites", "1"],
+          "query": [
+            {"key": "prerequisiteType", "value": "MINIMUM_TIME"},
+            {"key": "minimumValue", "value": "90"},
+            {"key": "description", "value": "Au minimum 1.5 heures requises"}
+          ]
+        },
+        "description": "Met à jour le prérequis ID 1 avec de nouveaux paramètres"
+      }
+    },
+    {
+      "name": "🔟 ACTIVER/DÉSACTIVER un prérequis",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/prerequisites/1/status?active=false",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "prerequisites", "1", "status"],
+          "query": [
+            {"key": "active", "value": "false"}
+          ]
+        },
+        "description": "Désactive le prérequis ID 1 (active peut être true ou false)"
+      }
+    },
+    {
+      "name": "1️⃣1️⃣ VÉRIFIER les cycles (dépendances circulaires)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/prerequisites/check-cycle/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "prerequisites", "check-cycle", "1"]
+        },
+        "description": "Vérifie s'il existe une dépendance circulaire pour la formation 1"
+      }
+    },
+    {
+      "name": "1️⃣2️⃣ SUPPRIMER un prérequis",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/prerequisites/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "prerequisites", "1"]
+        },
+        "description": "Supprime le prérequis ID 1"
+      }
+    }
+  ]
+}

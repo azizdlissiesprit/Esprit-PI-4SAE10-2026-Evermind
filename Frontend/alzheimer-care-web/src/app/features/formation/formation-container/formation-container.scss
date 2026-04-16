@@ -1,0 +1,45 @@
+$primary-blue: #4E80EE;
+$text-dark: #1e293b;
+$text-grey: #64748b;
+$border-color: #e2e8f0;
+
+:host { display: block; width: 100%; }
+
+.formation-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.formation-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 16px 24px 0;
+  background: #fff;
+  border-bottom: 1px solid $border-color;
+}
+
+.tab {
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: $text-grey;
+  text-decoration: none;
+  border-radius: 10px 10px 0 0;
+  transition: all 0.2s;
+
+  &:hover {
+    color: $text-dark;
+  }
+
+  &.active {
+    color: $primary-blue;
+    background: #f0f5ff;
+    border-bottom: 2px solid $primary-blue;
+  }
+}
+
+.formation-content {
+  flex: 1;
+  background: #F4F7FC;
+}

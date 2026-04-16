@@ -1,0 +1,83 @@
+<div class="profile-container">
+  <div class="profile-header">
+    <div class="profile-avatar">
+      {{ (currentUser?.firstName || 'U')[0] }}
+    </div>
+    <div class="profile-info">
+      <h1>{{ currentUser?.firstName }} {{ currentUser?.lastName }}</h1>
+      <p class="role">{{ currentUser?.role }}</p>
+      <p class="email">{{ currentUser?.email }}</p>
+    </div>
+    <button 
+      (click)="toggleEdit()" 
+      class="btn-edit"
+      [class.editing]="isEditing"
+    >
+      {{ isEditing ? 'Cancel' : 'Edit Profile' }}
+    </button>
+  </div>
+
+  <div class="profile-content" *ngIf="currentUser">
+    <div *ngIf="!isEditing" class="profile-view">
+      <div class="profile-section">
+        <h2>Account Information</h2>
+        <div class="info-item">
+          <label>First Name</label>
+          <p>{{ currentUser.firstName }}</p>
+        </div>
+        <div class="info-item">
+          <label>Last Name</label>
+          <p>{{ currentUser.lastName }}</p>
+        </div>
+        <div class="info-item">
+          <label>Email</label>
+          <p>{{ currentUser.email }}</p>
+        </div>
+        <div class="info-item">
+          <label>Role</label>
+          <p>{{ currentUser.role }}</p>
+        </div>
+      </div>
+
+      <div class="profile-section">
+        <h2>Security</h2>
+        <button class="btn-change-password">Change Password</button>
+      </div>
+    </div>
+
+    <div *ngIf="isEditing" class="profile-edit">
+      <div class="profile-section">
+        <h2>Edit Account Information</h2>
+        <div class="form-group">
+          <label>First Name</label>
+          <input 
+            type="text" 
+            [(ngModel)]="editForm.firstName"
+            class="input-field"
+          />
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input 
+            type="text" 
+            [(ngModel)]="editForm.lastName"
+            class="input-field"
+          />
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input 
+            type="email" 
+            [(ngModel)]="editForm.email"
+            class="input-field"
+            disabled
+          />
+        </div>
+        <div class="button-group">
+          <button (click)="saveProfile()" class="btn-save">Save Changes</button>
+          <button (click)="toggleEdit()" class="btn-cancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

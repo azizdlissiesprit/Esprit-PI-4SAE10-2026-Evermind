@@ -1,0 +1,426 @@
+{
+  "info": {
+    "name": "Système de Notifications Intelligentes - EverMind",
+    "description": "Collection de tests pour le système de notifications",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1️⃣ CRÉER une notification simple",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/notifications/create?userId=1&type=ENCOURAGEMENT&category=ENGAGEMENT&title=Excellent progrès !&message=Vous avez complété 50% de la formation&priority=MEDIUM",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "notifications", "create"],
+          "query": [
+            {"key": "userId", "value": "1"},
+            {"key": "type", "value": "ENCOURAGEMENT"},
+            {"key": "category", "value": "ENGAGEMENT"},
+            {"key": "title", "value": "Excellent progrès !"},
+            {"key": "message", "value": "Vous avez complété 50% de la formation"},
+            {"key": "priority", "value": "MEDIUM"}
+          ]
+        }
+      }
+    },
+    {
+      "name": "2️⃣ RÉCUPÉRER les notifications d'un utilisateur",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/notifications/user/1?page=0&size=10",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "notifications", "user", "1"],
+          "query": [
+            {"key": "page", "value": "0"},
+            {"key": "size", "value": "10"}
+          ]
+        }
+      }
+    },
+    {
+      "name": "3️⃣ RÉCUPÉRER les notifications non lues",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/notifications/unread/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "notifications", "unread", "1"]
+        }
+      }
+    },
+    {
+      "name": "4️⃣ COMPTER les notifications non lues",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/notifications/unread-count/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "notifications", "unread-count", "1"]
+        }
+      }
+    },
+    {
+      "name": "5️⃣ MARQUER une notification comme lue",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/notifications/1/read",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "notifications", "1", "read"]
+        }
+      }
+    },
+    {
+      "name": "6️⃣ MARQUER TOUT comme lue",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/notifications/1/read-all",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "notifications", "1", "read-all"]
+        }
+      }
+    },
+    {
+      "name": "7️⃣ RÉCUPÉRER les notifications prioritaires",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/notifications/priority/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "notifications", "priority", "1"]
+        }
+      }
+    },
+    {
+      "name": "8️⃣ GÉNÉRER reminder d'inactivité",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/notifications/reminder-inactivity?userId=1&formationId=1&inactionMinutes=300",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "notifications", "reminder-inactivity"],
+          "query": [
+            {"key": "userId", "value": "1"},
+            {"key": "formationId", "value": "1"},
+            {"key": "inactionMinutes", "value": "300"}
+          ]
+        }
+      }
+    },
+    {
+      "name": "9️⃣ GÉNÉRER message d'encouragement",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/notifications/encouragement?userId=1&completionPercentage=70&formationTitle=Alzheimer Basics",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "notifications", "encouragement"],
+          "query": [
+            {"key": "userId", "value": "1"},
+            {"key": "completionPercentage", "value": "70"},
+            {"key": "formationTitle", "value": "Alzheimer Basics"}
+          ]
+        }
+      }
+    },
+    {
+      "name": "🔟 NOTIFIER prérequis satisfait",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/notifications/prerequisite-ready?userId=1&prerequisiteTitle=Alzheimer Basics&nextFormationId=2",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "notifications", "prerequisite-ready"],
+          "query": [
+            {"key": "userId", "value": "1"},
+            {"key": "prerequisiteTitle", "value": "Alzheimer Basics"},
+            {"key": "nextFormationId", "value": "2"}
+          ]
+        }
+      }
+    },
+    {
+      "name": "1️⃣1️⃣ NOTIFIER jalon atteint",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/notifications/milestone?userId=1&milestoneTitle=100 heures d'apprentissage&badge=5",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "notifications", "milestone"],
+          "query": [
+            {"key": "userId", "value": "1"},
+            {"key": "milestoneTitle", "value": "100 heures d'apprentissage"},
+            {"key": "badge", "value": "5"}
+          ]
+        }
+      }
+    },
+    {
+      "name": "1️⃣2️⃣ NOTIFIER limite approchante",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/notifications/approaching-limit?userId=1&limitType=Temps&percentage=20",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "notifications", "approaching-limit"],
+          "query": [
+            {"key": "userId", "value": "1"},
+            {"key": "limitType", "value": "Temps"},
+            {"key": "percentage", "value": "20"}
+          ]
+        }
+      }
+    },
+    {
+      "name": "1️⃣3️⃣ NOTIFIER nouveau contenu",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/notifications/new-content?userId=1&contentTitle=Prévention des chutes&contentType=Vidéo",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "notifications", "new-content"],
+          "query": [
+            {"key": "userId", "value": "1"},
+            {"key": "contentTitle", "value": "Prévention des chutes"},
+            {"key": "contentType", "value": "Vidéo"}
+          ]
+        }
+      }
+    },
+    {
+      "name": "1️⃣4️⃣ NOTIFIER quiz disponible",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/notifications/quiz-available?userId=1&quizTitle=Quiz Alzheimer&quizId=3&formationId=1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "notifications", "quiz-available"],
+          "query": [
+            {"key": "userId", "value": "1"},
+            {"key": "quizTitle", "value": "Quiz Alzheimer"},
+            {"key": "quizId", "value": "3"},
+            {"key": "formationId", "value": "1"}
+          ]
+        }
+      }
+    },
+    {
+      "name": "1️⃣5️⃣ NOTIFIER certificat prêt",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/notifications/certificate-ready?userId=1&certificateId=7&certificateName=Certification Alzheimer",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "notifications", "certificate-ready"],
+          "query": [
+            {"key": "userId", "value": "1"},
+            {"key": "certificateId", "value": "7"},
+            {"key": "certificateName", "value": "Certification Alzheimer"}
+          ]
+        }
+      }
+    },
+    {
+      "name": "1️⃣6️⃣ GÉNÉRER notification comportementale",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/notifications/behavior-based/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "notifications", "behavior-based", "1"]
+        }
+      }
+    },
+    {
+      "name": "1️⃣7️⃣ RÉCUPÉRER statistiques",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/notifications/stats/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "notifications", "stats", "1"]
+        }
+      }
+    },
+    {
+      "name": "1️⃣8️⃣ RÉCUPÉRER taux engagement",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/notifications/engagement-rate/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "notifications", "engagement-rate", "1"]
+        }
+      }
+    },
+    {
+      "name": "1️⃣9️⃣ CRÉER préférences par défaut",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/notifications/preferences/create/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "notifications", "preferences", "create", "1"]
+        }
+      }
+    },
+    {
+      "name": "2️⃣0️⃣ RÉCUPÉRER préférences",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/notifications/preferences/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "notifications", "preferences", "1"]
+        }
+      }
+    },
+    {
+      "name": "2️⃣1️⃣ METTRE À JOUR préférences",
+      "request": {
+        "method": "PUT",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"remindersEnabled\": true,\n  \"reminderFrequencyHours\": 24,\n  \"maxNotificationsPerDay\": 10,\n  \"quietHourStart\": 22,\n  \"quietHourEnd\": 7,\n  \"preferredLanguage\": \"fr\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:9086/formation/notifications/preferences/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "notifications", "preferences", "1"]
+        }
+      }
+    },
+    {
+      "name": "2️⃣2️⃣ ACTIVER/DÉSACTIVER notifications",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/notifications/preferences/1/toggle?enabled=false",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "notifications", "preferences", "1", "toggle"],
+          "query": [
+            {"key": "enabled", "value": "false"}
+          ]
+        }
+      }
+    },
+    {
+      "name": "2️⃣3️⃣ CHANGER fréquence reminders",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/notifications/preferences/1/reminder-frequency?frequencyHours=48",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "notifications", "preferences", "1", "reminder-frequency"],
+          "query": [
+            {"key": "frequencyHours", "value": "48"}
+          ]
+        }
+      }
+    },
+    {
+      "name": "2️⃣4️⃣ CHANGER heures silencieuses",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/notifications/preferences/1/quiet-hours?startHour=21&endHour=8",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "notifications", "preferences", "1", "quiet-hours"],
+          "query": [
+            {"key": "startHour", "value": "21"},
+            {"key": "endHour", "value": "8"}
+          ]
+        }
+      }
+    },
+    {
+      "name": "2️⃣5️⃣ NETTOYER notifications expirées",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:9086/formation/notifications/cleanup",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "9086",
+          "path": ["formation", "notifications", "cleanup"]
+        }
+      }
+    }
+  ]
+}

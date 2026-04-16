@@ -1,0 +1,321 @@
+{
+  "info": {
+    "_postman_id": "12345678-1234-1234-1234-123456789012",
+    "name": "EverMind Authentication API",
+    "description": "Collection complète pour tester les endpoints d'authentification et d'autorisation",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "12345678"
+  },
+  "item": [
+    {
+      "name": "🔐 Auth Endpoints",
+      "item": [
+        {
+          "name": "1. Sign Up (Public)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Dupont\",\n  \"prenom\": \"Jean\",\n  \"email\": \"jean.dupont@example.com\",\n  \"motDePasse\": \"SecurePassword123!\",\n  \"confirmMotDePasse\": \"SecurePassword123!\",\n  \"role\": \"AIDANT\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:9086/auth/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9086",
+              "path": [
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Endpoint pour l'inscription d'un nouvel utilisateur\n\nRôles autorisés: PUBLIC (pas besoin de token)\n\nRetour:\n- 201 Created: Utilisateur créé avec succès\n- 400 Bad Request: Validation échouée (email existant, mots de passe non identiques, etc)"
+          },
+          "response": []
+        },
+        {
+          "name": "2. Login (Public)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"jean.dupont@example.com\",\n  \"motDePasse\": \"SecurePassword123!\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:9086/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9086",
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Endpoint pour la connexion\n\nRôles autorisés: PUBLIC\n\nRetour:\n- 200 OK: JWT token + informations utilisateur\n- 401 Unauthorized: Email/mot de passe incorrect"
+          },
+          "response": []
+        },
+        {
+          "name": "3. Check Authentication (Public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:9086/auth/check",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9086",
+              "path": [
+                "auth",
+                "check"
+              ]
+            },
+            "description": "Vérifier si la session est authentifiée\n\nRôles autorisés: PUBLIC"
+          },
+          "response": []
+        },
+        {
+          "name": "4. Get Current User (Protected)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:9086/auth/me",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9086",
+              "path": [
+                "auth",
+                "me"
+              ]
+            },
+            "description": "Récupérer les informations de l'utilisateur actuellement connecté\n\nRôles autorisés: AIDANT, ADMIN\n\nHeader requis:\n- Authorization: Bearer <JWT_TOKEN>"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "👨‍💼 Admin Endpoints",
+      "item": [
+        {
+          "name": "1. Admin Dashboard (ADMIN only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_jwt_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:9086/admin/dashboard",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9086",
+              "path": [
+                "admin",
+                "dashboard"
+              ]
+            },
+            "description": "Accéder au dashboard admin\n\nRôles autorisés: ADMIN (uniquement)\n\nRetour:\n- 200 OK: Message de bienvenue\n- 403 Forbidden: Rôle insuffisant"
+          },
+          "response": []
+        },
+        {
+          "name": "2. Get User Info (ADMIN only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_jwt_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:9086/admin/users/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9086",
+              "path": [
+                "admin",
+                "users",
+                "1"
+              ]
+            },
+            "description": "Récupérer les informations d'un utilisateur\n\nRôles autorisés: ADMIN (uniquement)\n\nRemplacer 1 par l'ID de l'utilisateur"
+          },
+          "response": []
+        },
+        {
+          "name": "3. Deactivate User (ADMIN only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_jwt_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:9086/admin/users/2/deactivate",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9086",
+              "path": [
+                "admin",
+                "users",
+                "2",
+                "deactivate"
+              ]
+            },
+            "description": "Désactiver un utilisateur\n\nRôles autorisés: ADMIN (uniquement)\n\nRemplacer 2 par l'ID de l'utilisateur"
+          },
+          "response": []
+        },
+        {
+          "name": "4. Activate User (ADMIN only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_jwt_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:9086/admin/users/2/activate",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9086",
+              "path": [
+                "admin",
+                "users",
+                "2",
+                "activate"
+              ]
+            },
+            "description": "Activer un utilisateur désactivé\n\nRôles autorisés: ADMIN (uniquement)\n\nRemplacer 2 par l'ID de l'utilisateur"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📚 Formation Endpoints (Protected)",
+      "item": [
+        {
+          "name": "GET - List Formations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:9086/formation/programmes",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9086",
+              "path": [
+                "formation",
+                "programmes"
+              ]
+            },
+            "description": "Récupérer la liste des formations\n\nRôles autorisés: AIDANT, ADMIN"
+          },
+          "response": []
+        },
+        {
+          "name": "POST - Create Formation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_jwt_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Formation Alzheimer\",\n  \"description\": \"Une formation complète sur la maladie d'Alzheimer\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:9086/formation/programmes",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "9086",
+              "path": [
+                "formation",
+                "programmes"
+              ]
+            },
+            "description": "Créer une nouvelle formation\n\nRôles autorisés: ADMIN (uniquement)"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "jwt_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "admin_jwt_token",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
