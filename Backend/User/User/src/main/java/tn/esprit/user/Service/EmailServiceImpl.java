@@ -24,7 +24,7 @@ public class EmailServiceImpl implements IEmailService {
 
         helper.setFrom(fromEmail);
         helper.setTo(to);
-        helper.setSubject("Account Verification - Alzheimer Care");
+        helper.setSubject("Account Verification - Alzheimer Care.");
 
         String verifyUrl = "http://localhost:4200/auth/verify-email?code=" + code;
 
