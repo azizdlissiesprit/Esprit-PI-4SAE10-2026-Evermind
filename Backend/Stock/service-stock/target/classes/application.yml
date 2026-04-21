@@ -1,5 +1,5 @@
 server:
-  port: 8085
+  port: 8095
 
 spring:
   application:
@@ -10,7 +10,7 @@ spring:
       max-file-size: 5MB
       max-request-size: 10MB
   datasource:
-    url: jdbc:postgresql://localhost:5432/alzheimer_stock
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/alzheimer_stock}
     username: postgres
     password: 123
     driver-class-name: org.postgresql.Driver
@@ -29,34 +29,32 @@ spring:
 
 springdoc:
   api-docs:
-    path: /api/v3/api-docs
-  swagger-ui:
-    path: /api/swagger-ui.html
-    tags-sorter: alpha
-    operations-sorter: method
-
-info:
-  app:
-    name: Service Stock - Gestion de Stock
-    description: Microservice de gestion de stock (Catégories, Produits, Commandes, Panier)
-    version: 1.0.0
+    path: /stock/v3/api-docs
 
 management:
   endpoints:
     web:
       exposure:
-        include: health,info
-  info:
-    env:
-      enabled: true
+        include: "*"
+  prometheus:
+    metrics:
+      export:
+        enabled: true
 
 app:
   upload:
     dir: uploads
+  mail:
+    admin-email: admin@pharmacare.tn
+  ai:
+    api-key: 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
+    api-url: https://openrouter.ai/api/v1/chat/completions
+    model: qwen/qwen3.6-plus:free
+    enabled: true
 
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka}
   instance:
     prefer-ip-address: true

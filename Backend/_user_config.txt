@@ -1,0 +1,13 @@
+d:\Documents\myProjects\Evermind\EverMind\Backend\User\User\pom.xml
+d:\Documents\myProjects\Evermind\EverMind\Backend\User\User\.idea\compiler.xml
+d:\Documents\myProjects\Evermind\EverMind\Backend\User\User\.idea\encodings.xml
+d:\Documents\myProjects\Evermind\EverMind\Backend\User\User\.idea\jarRepositories.xml
+d:\Documents\myProjects\Evermind\EverMind\Backend\User\User\.idea\misc.xml
+d:\Documents\myProjects\Evermind\EverMind\Backend\User\User\.idea\vcs.xml
+d:\Documents\myProjects\Evermind\EverMind\Backend\User\User\.idea\workspace.xml
+d:\Documents\myProjects\Evermind\EverMind\Backend\User\User\.mvn\wrapper\maven-wrapper.properties
+d:\Documents\myProjects\Evermind\EverMind\Backend\User\User\src\main\resources\application.properties
+d:\Documents\myProjects\Evermind\EverMind\Backend\User\User\target\classes\application.properties
+d:\Documents\myProjects\Evermind\EverMind\Backend\User\User\target\surefire-reports\TEST-tn.esprit.user.Controller.UserControllerTest.xml
+d:\Documents\myProjects\Evermind\EverMind\Backend\User\User\target\surefire-reports\TEST-tn.esprit.user.Service.UserServiceImplTest.xml
+d:\Documents\myProjects\Evermind\EverMind\Backend\User\User\target\surefire-reports\TEST-tn.esprit.user.UserApplicationTests.xml

@@ -73,4 +73,10 @@ public class ProduitControleur {
     public ResponseEntity<ProduitDTO> supprimerImage(@PathVariable Long id) {
         return ResponseEntity.ok(produitService.supprimerImage(id));
     }
+
+    @GetMapping("/{id}/cross-sell")
+    @Operation(summary = "Obtenir les produits fréquemment achetés ensemble", description = "Retourne les produits co-achetés dans les mêmes commandes (cross-sell)")
+    public ResponseEntity<List<ProduitDTO>> obtenirCrossSell(@PathVariable Long id) {
+        return ResponseEntity.ok(produitService.obtenirProduitsCrossSell(id));
+    }
 }

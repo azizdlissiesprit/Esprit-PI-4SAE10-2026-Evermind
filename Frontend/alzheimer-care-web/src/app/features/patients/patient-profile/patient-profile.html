@@ -1,0 +1,219 @@
+<div class="page-container" *ngIf="!isLoading && patient; else loadingState">
+    
+    <!-- HEADER -->
+    <header class="top-header">
+        <div class="breadcrumbs">
+            <button class="back-btn" (click)="goBack()">
+                <i class="fa-solid fa-arrow-left"></i> Back to Patient List
+            </button>
+            <span class="divider">/</span>
+            <span>Patient #{{ patient.id }}</span>
+        </div>
+        
+        <div class="header-actions">
+            <!-- Dynamic Status Badge at Header -->
+            <div class="status-indicator">
+                Facility: Room {{ patient.roomNumber }}
+            </div>
+            
+            <button class="btn btn-blue" routerLink="/app/patients/{{ patient.id }}/tracking">
+                <i class="fa-solid fa-heart-pulse"></i> Live Tracking
+            </button>
+        </div>
+    </header>
+
+    <!-- ALERT BANNER -->
+    <div class="alert-banner">
+        <div class="banner-left">
+            <span class="alert-badge">MEDICAL CHART</span>
+            <span class="banner-text">
+                <i class="fa-solid fa-notes-medical"></i>
+                <strong>EverMind Electronic Health Record</strong>
+            </span>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD -->
+    <div class="dashboard-grid">
+
+        <!-- LEFT PANEL: PATIENT CONTEXT -->
+        <div class="panel panel-left">
+            <div class="panel-header">
+                <h2 class="panel-title">Demographics & Profile</h2>
+            </div>
+
+            <div class="patient-profile">
+                <!-- Using patient ID for consistent avatar -->
+                <img [src]="getPatientImage(patient.id)" class="patient-avatar-lg" alt="Patient">
+
+                <div class="patient-info">
+                    <h3>{{ patient.firstName }} {{ patient.lastName }}</h3>
+                    <p>Age: {{ getAge(patient.dateOfBirth) }} &bull; Gender: {{ patient.gender }}</p>
+                </div>
+            </div>
+
+            <div class="location-card">
+                <div class="loc-text">
+                    <h4>Vital Identity</h4>
+                    <p>DOB: {{ patient.dateOfBirth | date:'mediumDate' }}</p>
+                    <p *ngIf="patient.wearableDeviceId">Device: {{ patient.wearableDeviceId }}</p>
+                </div>
+                <div class="loc-icon">
+                    <i class="fa-solid fa-id-card-clip"></i>
+                </div>
+            </div>
+
+            <div class="quick-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Blood Type</span>
+                    <span class="stat-val blood-type">{{ patient.bloodType || 'Unknown' }}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">System Record ID</span>
+                    <span class="stat-val">#{{ patient.id }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CENTER PANEL: MEDICAL INFORMATION -->
+        <div class="panel panel-center">
+            <div class="panel-header">
+                <h2 class="panel-title">Clinical Context</h2>
+                <span class="panel-meta">Base medical parameters</span>
+            </div>
+
+            <!-- Resolution Report Style for Diagnosis -->
+            <div class="resolution-report" style="border-left-color: var(--primary-color);">
+                <div class="report-header">
+                    <h3><i class="fa-solid fa-stethoscope"></i> Primary Medical Diagnosis</h3>
+                </div>
+                <div class="report-row">
+                    <div class="report-item notes-box" style="width: 100%;">
+                        <span>{{ patient.medicalDiagnosis || 'No medical diagnosis currently recorded in the system.' }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Environmental Context Style for Allergies -->
+            <div class="event-details-section">
+                <h4 class="section-subtitle"><i class="fa-solid fa-triangle-exclamation" style="color: #ef4444; margin-right: 8px;"></i> Known Allergies & Contraindications</h4>
+                <div class="context-box error-tint">
+                    <div class="message-box">
+                        {{ patient.allergies || 'No known allergies reported.' }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Regular Text Box for Chronic Medications -->
+            <div class="event-details-section">
+                <h4 class="section-subtitle"><i class="fa-solid fa-capsules" style="color: #3b82f6; margin-right: 8px;"></i> Chronic Medications</h4>
+                <div class="message-box">
+                    {{ patient.chronicMedications || 'No chronic medications currently tracked.' }}
+                </div>
+            </div>
+            
+            <!-- Emergency Contacts -->
+            <div class="event-details-section">
+               <h4 class="section-subtitle"><i class="fa-solid fa-phone-volume" style="margin-right: 8px;"></i> Emergency Contact Information</h4>
+               
+               <div class="contact-card" *ngIf="patient.emergencyContactName; else noEmergencyContact">
+                   <div class="contact-icon"><i class="fa-solid fa-user-shield"></i></div>
+                   <div class="contact-info">
+                       <h4 style="margin: 0; font-size: 1.1rem; color: #1e293b;">{{ patient.emergencyContactName }}</h4>
+                       <p style="margin: 4px 0 0 0; color: #64748b; font-size: 0.9rem;">Relation: {{ patient.emergencyContactRelation || 'Primary Contact' }}</p>
+                       <p style="margin: 4px 0 0 0; font-weight: 500; font-family: monospace; font-size: 1.05rem;">
+                           <i class="fa-solid fa-phone" style="font-size: 0.8rem; margin-right: 6px;"></i>{{ patient.emergencyContactPhone || 'No Phone Number' }}
+                       </p>
+                   </div>
+               </div>
+               
+               <ng-template #noEmergencyContact>
+                   <div class="message-box" style="text-align: center; color: #94a3b8; font-style: italic;">
+                       No emergency contact designated.
+                   </div>
+               </ng-template>
+            </div>
+
+            <!-- PHYSICIAN REPORTS -->
+            <div class="event-details-section" *ngIf="medicalReports.length > 0">
+                <h4 class="section-subtitle">
+                    <i class="fa-solid fa-file-medical" style="color: #059669; margin-right: 8px;"></i> 
+                    Physician Reports ({{ medicalReports.length }})
+                </h4>
+                
+                <div *ngFor="let report of medicalReports" 
+                     style="background: #f8fafb; border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 12px; overflow: hidden;">
+                    
+                    <!-- Report Header (clickable) -->
+                    <div (click)="toggleReport(report.id)" 
+                         style="display: flex; align-items: center; gap: 12px; padding: 14px 18px; cursor: pointer; transition: background 0.2s;"
+                         [style.background]="expandedReportId === report.id ? '#ecfdf5' : 'transparent'">
+                        <div style="width: 36px; height: 36px; border-radius: 10px; background: #d1fae5; color: #059669; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <i class="fa-solid fa-stethoscope"></i>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600; font-size: 14px; color: #1e293b;">{{ report.doctorName }}</div>
+                            <div style="font-size: 12px; color: #64748b;">{{ report.reportDate | date:'medium' }} · Stage: {{ report.diseaseStage || 'Not specified' }}</div>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 600; color: #059669; padding: 4px 12px; background: #d1fae5; border-radius: 20px;">
+                            {{ report.primaryDiagnosis ? (report.primaryDiagnosis.length > 30 ? report.primaryDiagnosis.substring(0, 30) + '...' : report.primaryDiagnosis) : 'View Report' }}
+                        </div>
+                        <i class="fa-solid" [ngClass]="expandedReportId === report.id ? 'fa-chevron-up' : 'fa-chevron-down'" style="color: #94a3b8;"></i>
+                    </div>
+                    
+                    <!-- Report Body (expandable) -->
+                    <div *ngIf="expandedReportId === report.id" style="padding: 0 18px 18px; border-top: 1px solid #e2e8f0;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px;">
+                            <div *ngIf="report.primaryDiagnosis" style="grid-column: 1/-1;">
+                                <div style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Primary Diagnosis</div>
+                                <div style="font-size: 13px; color: #1e293b; background: white; padding: 10px 14px; border-radius: 8px; border: 1px solid #e2e8f0;">{{ report.primaryDiagnosis }}</div>
+                            </div>
+                            <div *ngIf="report.cognitiveAssessment">
+                                <div style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Cognitive Assessment</div>
+                                <div style="font-size: 13px; color: #1e293b; background: white; padding: 10px 14px; border-radius: 8px; border: 1px solid #e2e8f0;">{{ report.cognitiveAssessment }}</div>
+                            </div>
+                            <div *ngIf="report.functionalStatus">
+                                <div style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Functional Status</div>
+                                <div style="font-size: 13px; color: #1e293b; background: white; padding: 10px 14px; border-radius: 8px; border: 1px solid #e2e8f0;">{{ report.functionalStatus }}</div>
+                            </div>
+                            <div *ngIf="report.behavioralObservations" style="grid-column: 1/-1;">
+                                <div style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Behavioral Observations</div>
+                                <div style="font-size: 13px; color: #1e293b; background: white; padding: 10px 14px; border-radius: 8px; border: 1px solid #e2e8f0;">{{ report.behavioralObservations }}</div>
+                            </div>
+                            <div *ngIf="report.medicationReview">
+                                <div style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Medication Review</div>
+                                <div style="font-size: 13px; color: #1e293b; background: white; padding: 10px 14px; border-radius: 8px; border: 1px solid #e2e8f0;">{{ report.medicationReview }}</div>
+                            </div>
+                            <div *ngIf="report.treatmentPlan">
+                                <div style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Treatment Plan</div>
+                                <div style="font-size: 13px; color: #1e293b; background: white; padding: 10px 14px; border-radius: 8px; border: 1px solid #e2e8f0;">{{ report.treatmentPlan }}</div>
+                            </div>
+                            <div *ngIf="report.additionalNotes" style="grid-column: 1/-1;">
+                                <div style="font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Additional Notes</div>
+                                <div style="font-size: 13px; color: #1e293b; background: white; padding: 10px 14px; border-radius: 8px; border: 1px solid #e2e8f0; font-style: italic;">{{ report.additionalNotes }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<ng-template #loadingState>
+    <div class="loading-container" *ngIf="isLoading">
+        <div class="spinner"></div>
+        <p>Loading patient records...</p>
+    </div>
+    
+    <div class="error-container" *ngIf="error">
+       <div class="message-box" style="text-align: center; background: #fee2e2; color: #991b1b; padding: 30px;">
+           <i class="fa-solid fa-circle-exclamation" style="font-size: 2rem; margin-bottom: 12px;"></i>
+           <h3>Access Denied / Not Found</h3>
+           <p>{{ error }}</p>
+           <button class="btn btn-secondary" style="margin-top: 20px;" (click)="goBack()">Return to Patient List</button>
+       </div>
+    </div>
+</ng-template>

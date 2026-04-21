@@ -49,7 +49,12 @@ export class LoginComponent {
       next: (response) => {
         console.log('Login Success:', response);
         this.isLoading = false; // <--- STOP LOADING
-        this.router.navigate(['/app/dashboard']); // Navigate to dashboard
+        
+        if (response.role === 'ADMIN') {
+          this.router.navigate(['/admin/dashboard']);
+        } else {
+          this.router.navigate(['/app/dashboard']);
+        }
       },
       error: (err) => {
         console.error('Login Failed:', err); // Log the exact error

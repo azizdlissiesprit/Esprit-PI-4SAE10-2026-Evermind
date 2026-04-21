@@ -30,11 +30,22 @@ export enum StatutAlerte {
   IGNOREE = 'IGNOREE'
 }
 
-// Intervention Results
-export enum ResultatIntervention {
-  RESOLUE = 'RESOLUE',
-  EN_ATTENTE = 'EN_ATTENTE',
-  ESCALADE_MEDICALE = 'ESCALADE_MEDICALE'
+// Intervention Status
+export enum InterventionStatus {
+  EN_ROUTE = 'EN_ROUTE',
+  OFFERING_HELP = 'OFFERING_HELP',
+  IN_PERSON_ASSISTANCE = 'IN_PERSON_ASSISTANCE',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED'
+}
+
+// Intervention Outcomes
+export enum InterventionOutcome {
+  FALSE_ALARM = 'FALSE_ALARM',
+  ASSISTANCE_GIVEN = 'ASSISTANCE_GIVEN',
+  EMERGENCY_SERVICES = 'EMERGENCY_SERVICES',
+  MEDICATION_GIVEN = 'MEDICATION_GIVEN',
+  CONSULTATION_SCHEDULED = 'CONSULTATION_SCHEDULED'
 }
 
 // Sensor (Capteur) Types & Status

@@ -5,15 +5,18 @@
     --bg-main: #F1F5F9;       /* Slate 100 */
     --bg-card: #FFFFFF;       /* White */
     --bg-sidebar: #FFFFFF;
+    --bg-inset: #F8FAFC;      /* Light Grey for input backgrounds / hovered rows */
     
     --text-primary: #0F172A;  /* Slate 900 */
     --text-secondary: #64748B; /* Slate 500 */
+    --text-muted: #94A3B8;    /* Slate 400 */
     
     --accent-color: #4E80EE;  /* Clinical Blue */
     --accent-hover: #3b6bcc;
     --accent-light: #EEF2FF;
     
     --border-color: #E2E8F0;
+    --border-hover: #CBD5E1;
     --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1);
     
     --transition-speed: 0.3s;
@@ -24,15 +27,18 @@
     --bg-main: #0F172A;       /* Very Dark Blue */
     --bg-card: #1E293B;       /* Dark Blue/Grey */
     --bg-sidebar: #1E293B;
+    --bg-inset: #141f33;      /* Darker background for nested elements */
     
     --text-primary: #F8FAFC;  /* White/Grey */
     --text-secondary: #94A3B8;
+    --text-muted: #64748b;
     
     --accent-color: #60A5FA;  /* Lighter Blue for Dark Mode */
     --accent-hover: #3B82F6;
     --accent-light: rgba(96, 165, 250, 0.15);
     
     --border-color: #334155;
+    --border-hover: #475569;
     --shadow-sm: 0 4px 6px -1px rgb(0 0 0 / 0.5);
 }
 

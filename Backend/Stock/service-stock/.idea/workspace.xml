@@ -5,12 +5,137 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c470a72e-55cc-4146-ad0b-3702a34ef7ef" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/angular.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/app.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/app.config.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/app.routes.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/composants/analyse-stock/analyse-stock.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/composants/categorie/formulaire-categorie/formulaire-categorie.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/composants/categorie/liste-categories/liste-categories.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/composants/commande/detail-commande/detail-commande.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/composants/commande/liste-commandes/liste-commandes.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/composants/frontoffice/accueil/accueil.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/composants/frontoffice/catalogue/catalogue.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/composants/frontoffice/categorie-produits/categorie-produits.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/composants/frontoffice/commander/commander.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/composants/frontoffice/confirmation-commande/confirmation-commande.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/composants/frontoffice/detail-produit/detail-produit.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/composants/frontoffice/panier/panier.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/composants/layouts/layout-backoffice/layout-backoffice.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/composants/layouts/layout-frontoffice/layout-frontoffice.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/composants/partage/navbar/navbar.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/composants/partage/sidebar/sidebar.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/composants/produit/formulaire-produit/formulaire-produit.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/composants/produit/liste-produits/liste-produits.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/composants/tableau-de-bord/tableau-de-bord.component.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/modeles/analyse-stock.model.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/modeles/categorie.model.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/modeles/commande.model.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/modeles/panier.model.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/modeles/produit.model.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/modeles/tableau-de-bord.model.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/services/analyse-stock.service.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/services/categorie.service.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/services/commande.service.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/services/panier.service.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/services/produit.service.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/services/tableau-de-bord.service.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/services/theme.service.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/app/services/traduction.service.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/environments/environment.prod.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/environments/environment.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/favicon.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/main.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/src/styles.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/tsconfig.app.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-app/tsconfig.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/angular.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/angular.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/app.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/app.config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/app.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/app.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/app.routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/app.routes.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/app.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/app.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/components/sidebar/sidebar.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/components/sidebar/sidebar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/components/sidebar/sidebar.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/components/sidebar/sidebar.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/components/sidebar/sidebar.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/components/sidebar/sidebar.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/guards/admin-guard.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/guards/admin-guard.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/layouts/main-layout/main-layout.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/layouts/main-layout/main-layout.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/models/alert.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/models/alert.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/models/auth.models.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/models/auth.models.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/models/enums.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/models/enums.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/models/produit.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/models/produit.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/services/admin-alert.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/services/admin-alert.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/services/admin-user.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/services/admin-user.service.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/services/alert.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/services/alert.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/services/analyse-stock.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/services/analyse-stock.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/services/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/services/auth.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/services/autonomy.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/services/autonomy.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/services/categorie.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/services/categorie.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/services/cognitive.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/services/cognitive.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/services/commande.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/services/commande.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/services/panier.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/services/panier.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/services/patient.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/services/patient.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/services/produit.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/services/produit.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/services/tableau-de-bord.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/core/services/tableau-de-bord.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/admin/alerts-admin/alert-add/alert-add.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/admin/alerts-admin/alert-add/alert-add.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/admin/alerts-admin/alerts-admin.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/admin/alerts-admin/alerts-admin.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/admin/assessments/autonomy-dashboard/autonomy-dashboard.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/admin/assessments/autonomy-dashboard/autonomy-dashboard.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/admin/assessments/cognitive-dashboard/cognitive-dashboard.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/admin/assessments/cognitive-dashboard/cognitive-dashboard.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/admin/components/admin-sidebar/admin-sidebar.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/admin/components/admin-sidebar/admin-sidebar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/admin/components/admin-sidebar/admin-sidebar.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/admin/components/admin-sidebar/admin-sidebar.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/admin/components/admin-sidebar/admin-sidebar.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/admin/components/admin-sidebar/admin-sidebar.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/admin/layouts/admin-layout/admin-layout.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/admin/layouts/admin-layout/admin-layout.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/admin/stock-admin/analyse-stock/analyse-stock.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/admin/stock-admin/analyse-stock/analyse-stock.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/admin/stock-admin/categorie/liste-categories/liste-categories.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/admin/stock-admin/categorie/liste-categories/liste-categories.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/admin/stock-admin/commande/detail-commande/detail-commande.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/admin/stock-admin/commande/detail-commande/detail-commande.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/admin/stock-admin/commande/liste-commandes/liste-commandes.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/admin/stock-admin/commande/liste-commandes/liste-commandes.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/admin/stock-admin/produit/liste-produits/liste-produits.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/admin/stock-admin/produit/liste-produits/liste-produits.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/admin/stock-admin/tableau-de-bord/tableau-de-bord.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/admin/stock-admin/tableau-de-bord/tableau-de-bord.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/admin/users/users.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/admin/users/users.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/alerts/pages/alert-detail/alert-detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/alerts/pages/alert-detail/alert-detail.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/alerts/pages/alert-detail/alert-detail.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/alerts/pages/alert-detail/alert-detail.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/alerts/pages/alert-detail/alert-detail.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/alerts/pages/alert-detail/alert-detail.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/alerts/pages/alert-list/alert-list.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/alerts/pages/alert-list/alert-list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/alerts/pages/alert-list/alert-list.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/alerts/pages/alert-list/alert-list.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/alerts/pages/alert-list/alert-list.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/alerts/pages/alert-list/alert-list.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/alerts/pages/alert-prediction/alert-prediction.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/alerts/pages/alert-prediction/alert-prediction.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/assesements/patient-assessments.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/assesements/patient-assessments.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/auth/pages/login/login.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/auth/pages/login/login.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/auth/pages/login/login.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/auth/pages/login/login.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/auth/pages/register/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/auth/pages/register/register.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/auth/pages/register/register.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/auth/pages/register/register.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/auth/pages/register/register.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/auth/pages/register/register.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/communication/pages/messages/messages.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/communication/pages/messages/messages.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/communication/pages/messages/messages.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/communication/pages/messages/messages.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/communication/pages/messages/messages.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/communication/pages/messages/messages.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/dashboard/pages/caregiver-dashboard/caregiver-dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/dashboard/pages/caregiver-dashboard/caregiver-dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/dashboard/pages/caregiver-dashboard/caregiver-dashboard.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/dashboard/pages/caregiver-dashboard/caregiver-dashboard.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/dashboard/pages/caregiver-dashboard/caregiver-dashboard.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/dashboard/pages/caregiver-dashboard/caregiver-dashboard.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/patients/patient-list/patient-list.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/patients/patient-list/patient-list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/patients/patient-list/patient-list.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/patients/patient-list/patient-list.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/patients/patient-list/patient-list.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/patients/patient-list/patient-list.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/profile/components/caregiver-profile/caregiver-profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/profile/components/caregiver-profile/caregiver-profile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/profile/components/caregiver-profile/caregiver-profile.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/profile/components/caregiver-profile/caregiver-profile.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/profile/components/caregiver-profile/caregiver-profile.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/profile/components/caregiver-profile/caregiver-profile.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/profile/components/doctor-profile/doctor-profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/profile/components/doctor-profile/doctor-profile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/profile/components/doctor-profile/doctor-profile.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/profile/components/doctor-profile/doctor-profile.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/profile/components/doctor-profile/doctor-profile.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/profile/components/doctor-profile/doctor-profile.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/profile/components/relative-profile/relative-profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/profile/components/relative-profile/relative-profile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/profile/components/relative-profile/relative-profile.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/profile/components/relative-profile/relative-profile.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/profile/components/relative-profile/relative-profile.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/profile/components/relative-profile/relative-profile.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/profile/profile-container/profile-container.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/profile/profile-container/profile-container.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/stock-front/catalogue/catalogue.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/stock-front/catalogue/catalogue.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/stock-front/categorie-produits/categorie-produits.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/stock-front/categorie-produits/categorie-produits.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/stock-front/commander/commander.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/stock-front/commander/commander.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/stock-front/confirmation-commande/confirmation-commande.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/stock-front/confirmation-commande/confirmation-commande.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/stock-front/detail-produit/detail-produit.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/stock-front/detail-produit/detail-produit.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/stock-front/panier/panier.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/app/features/stock-front/panier/panier.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/stock-styles.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/stock-styles.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/styles.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Frontend/alzheimer-care-web/src/styles.scss" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,25 +153,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "Spring Boot.ServiceStockApplication.executor": "Run",
-    "git-widget-placeholder": "latest-stable-added-dashboard-assesements",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "D:/Documents/myProjects/Evermind/EverMind/Backend/Stock/service-stock",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;Spring Boot.ServiceStockApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;added-stock@latest-release&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Documents/myProjects/Evermind/EverMind/Backend/Stock/service-stock&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="ServiceStockApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="service-stock" />
@@ -74,6 +199,8 @@
       <updated>1772672922170</updated>
       <workItem from="1772672923320" duration="398000" />
       <workItem from="1772673554706" duration="3275000" />
+      <workItem from="1772710673282" duration="1820000" />
+      <workItem from="1775471868144" duration="59000" />
     </task>
     <servers />
   </component>

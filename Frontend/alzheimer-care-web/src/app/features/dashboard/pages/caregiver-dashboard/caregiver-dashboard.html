@@ -1,192 +1,340 @@
-<div class="dashboard-container">
-  
-  <!-- Header -->
-  <header class="dashboard-header">
-      <div class="header-left">
-          <h2>Good morning, {{ userName }}.</h2>
-          <p>You are monitoring 12 patients today. System status: All systems operational.</p>
-          <div class="role-meta">Role: <span>Primary caregiver</span> <span class="divider">|</span> Shift: <span>08:00 - 16:00</span></div>
-      </div>
+<div class="dashboard-shell" [class.is-medecin]="isMedecin">
 
-      <div class="header-right">
-          <div class="privacy-toggle">
-              <div class="toggle-knob"></div>
-              Privacy mode
-          </div>
-          <div class="status-pill">
-              <div class="dot"></div> Updated: 2m ago
-          </div>
-          <button class="icon-btn">
-              <i class="fa-regular fa-bell"></i>
-          </button>
-          
-          <!-- Profile / Logout -->
-          <div class="profile-section" (click)="logout()" title="Click to Logout">
-            <img src="https://i.pravatar.cc/150?img=5" alt="Profile" class="user-avatar">
-            <span class="logout-text">Logout</span>
-          </div>
-      </div>
-  </header>
-
-  <!-- Grid -->
-  <div class="dashboard-grid">
-      
-      <!-- Column 1: Navigation & Actions -->
-      <div class="left-column">
-          <div class="card nav-card">
-              <div class="card-header">
-                  <h3 class="card-title">Navigation</h3>
-                  <span class="card-meta">Quick access</span>
-              </div>
-              <ul class="nav-list">
-                  <li class="nav-item-card active"><i class="fa-solid fa-house"></i> Home overview</li>
-                  <li class="nav-item-card"><i class="fa-solid fa-users"></i> Patient list</li>
-                  <li class="nav-item-card"><i class="fa-solid fa-heart-pulse"></i> Live monitoring</li>
-                  <li class="nav-item-card"><i class="fa-regular fa-file-lines"></i> Reports</li>
-              </ul>
-          </div>
-
-          <div class="card">
-              <div class="card-header">
-                  <h3 class="card-title">Quick actions</h3>
-              </div>
-              <div class="quick-actions">
-                  <button class="action-btn btn-blue">
-                      <i class="fa-solid fa-plus"></i> Add vitals log
-                  </button>
-                  <button class="action-btn btn-blue-light">
-                      <i class="fa-solid fa-circle-exclamation"></i> Report incident
-                  </button>
-                  <button class="action-btn btn-dark">
-                      <i class="fa-solid fa-expand"></i> Scan medication
-                  </button>
-              </div>
-          </div>
-
-          <div class="card emergency-card">
-              <h4>Emergency override</h4>
-              <p>Global SOS will call emergency services immediately.</p>
-              <button class="sos-btn">Global SOS</button>
-              <div style="clear: both;"></div>
-          </div>
-      </div>
-
-      <!-- Column 2: Daily Briefing (Center) -->
-      <div class="center-column">
-          <div class="card">
-              <div class="card-header">
-                  <h3 class="card-title">Daily briefing</h3>
-                  <span class="card-meta">High priority</span>
-              </div>
-
-              <div class="patient-spotlight">
-                  <img src="https://i.pravatar.cc/150?img=10" alt="Eleanor" class="patient-lg">
-                  <div class="patient-details">
-                      <h3>Eleanor Stewart</h3>
-                      <p>Sleeping &bull; Room 204 &bull; Fall risk: High</p>
-                  </div>
-                  <div class="focus-pill">Focus patient</div>
-              </div>
-
-              <div class="stats-row">
-                  <div class="stat-box">
-                      <div class="stat-label">Heart rate</div>
-                      <div class="stat-val">72 <small>bpm</small></div>
-                  </div>
-                  <div class="stat-box">
-                      <div class="stat-label">Battery</div>
-                      <div class="stat-val">86%</div>
-                  </div>
-                  <div class="stat-box">
-                      <div class="stat-label">Sleep score</div>
-                      <div class="stat-val">82</div>
-                  </div>
-              </div>
-          </div>
-
-          <div class="card">
-              <div class="card-header">
-                  <h3 class="card-title">Care plan timeline</h3>
-                  <span class="card-meta">Today</span>
-              </div>
-
-                            <div class="checklist">
-                  <!-- Dynamic Loop -->
-                  <div 
-                    class="checklist-item" 
-                    *ngFor="let task of carePlanTasks" 
-                    (click)="toggleTask(task)"
-                    [class.is-completed]="task.status === 'DONE'">
-                      
-                      <!-- Checkbox -->
-                      <div class="checkbox" [class.checked]="task.status === 'DONE'">
-                          <i class="fa-solid fa-check" *ngIf="task.status === 'DONE'"></i>
-                      </div>
-
-                      <!-- Content -->
-                      <div class="checklist-content">
-                          <div class="task-time">
-                              {{ task.time }} <span class="bullet">&bull;</span> {{ task.category }}
-                          </div>
-                          <div class="task-desc">
-                              <span class="p-name">{{ task.patientName }}</span> <span class="bullet">&bull;</span> {{ task.description }}
-                          </div>
-                      </div>
-
-                      <!-- Badge -->
-                      <div class="badge" [ngClass]="getBadgeClass(task.status)">
-                          {{ task.status | titlecase }}
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
-
-      <!-- Column 3: Care Team (Right) -->
-      <div class="right-column">
-          <div class="card">
-              <div class="card-header">
-                  <h3 class="card-title">Updates</h3>
-                  <span class="card-meta">Handover</span>
-              </div>
-              
-              <div class="handover-note">
-                  "John had trouble sleeping at 3 AM. Check mood during rounds."
-                  <div class="note-author">- Night Nurse</div>
-              </div>
-
-              <div class="section-label">Recent activity</div>
-
-              <div class="activity-feed">
-                  <div class="activity-item">
-                      <div class="activity-dot dot-blue"></div>
-                      <div class="activity-text">
-                          08:15 &bull; <span>Door sensor</span> triggered.
-                          <span class="activity-sub">Garden wing.</span>
-                      </div>
-                  </div>
-                  <div class="activity-item">
-                      <div class="activity-dot dot-green"></div>
-                      <div class="activity-text">
-                          07:45 &bull; <span>Vitals sync</span> complete.
-                          <span class="activity-sub">10 patients.</span>
-                      </div>
-                  </div>
-              </div>
-          </div>
-
-          <div class="team-online-card">
-              <div class="team-text">
-                  <h4>Team online</h4>
-                  <p>Active now</p>
-              </div>
-              <div class="avatars-group">
-                  <img src="https://i.pravatar.cc/150?img=33" alt="Team 1">
-                  <img src="https://i.pravatar.cc/150?img=47" alt="Team 2">
-                  <img src="https://i.pravatar.cc/150?img=12" alt="Team 3">
-              </div>
-          </div>
-      </div>
-
+  <!-- ===== LOADING STATE ===== -->
+  <div class="loading-overlay" *ngIf="isLoading">
+    <div class="loader-container">
+      <div class="pulse-ring"></div>
+      <div class="pulse-ring delay-1"></div>
+      <div class="pulse-ring delay-2"></div>
+      <i class="fa-solid fa-brain loader-icon"></i>
+    </div>
+    <p class="loader-text">Loading your dashboard&hellip;</p>
   </div>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <div class="dashboard-content" *ngIf="!isLoading">
+
+    <!-- ===== HERO HEADER ===== -->
+    <section class="hero-header">
+      <div class="hero-text">
+        <p class="hero-greeting">{{ greeting }},</p>
+        <h1 class="hero-name">{{ userName }}</h1>
+        <div class="hero-meta">
+          <span class="role-chip" [class.medecin-chip]="isMedecin">
+            <i class="fa-solid" [ngClass]="isMedecin ? 'fa-user-doctor' : 'fa-hand-holding-medical'"></i>
+            {{ roleLabel }}
+          </span>
+          <span class="date-chip">
+            <i class="fa-regular fa-calendar"></i>
+            {{ currentDate | date:'EEEE, MMMM d, y' }}
+          </span>
+        </div>
+      </div>
+      <div class="hero-actions">
+        <button class="nav-pill" routerLink="/app/patients"><i class="fa-solid fa-users"></i> Patients</button>
+        <button class="nav-pill" routerLink="/app/alerts"><i class="fa-solid fa-bell"></i> Alerts</button>
+        <button class="nav-pill" routerLink="/app/messages"><i class="fa-solid fa-comments"></i> Messages</button>
+        <button class="nav-pill" routerLink="/app/assesements"><i class="fa-solid fa-clipboard-check"></i> Assessments</button>
+      </div>
+    </section>
+
+    <!-- ===== ERROR BANNER ===== -->
+    <div class="error-banner" *ngIf="loadError">
+      <i class="fa-solid fa-circle-info"></i>
+      {{ loadError }}
+    </div>
+
+    <!-- ===== KPI CARDS ===== -->
+    <section class="kpi-grid">
+      <div class="kpi-card kpi-patients" (click)="navigateTo('/app/patients')">
+        <div class="kpi-icon-wrap"><i class="fa-solid fa-hospital-user"></i></div>
+        <div class="kpi-body">
+          <span class="kpi-value">{{ totalPatients }}</span>
+          <span class="kpi-label">{{ isMedecin ? 'Registered Patients' : 'Assigned Patients' }}</span>
+        </div>
+        <i class="fa-solid fa-arrow-right kpi-arrow"></i>
+      </div>
+
+      <div class="kpi-card kpi-alerts" (click)="navigateTo('/app/alerts')">
+        <div class="kpi-icon-wrap"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <div class="kpi-body">
+          <span class="kpi-value">{{ activeAlerts }}</span>
+          <span class="kpi-label">Active Alerts</span>
+        </div>
+        <span class="kpi-badge critical" *ngIf="criticalAlerts > 0">{{ criticalAlerts }} critical</span>
+      </div>
+
+      <div class="kpi-card kpi-interventions">
+        <div class="kpi-icon-wrap"><i class="fa-solid fa-person-running"></i></div>
+        <div class="kpi-body">
+          <span class="kpi-value">{{ pendingInterventions }}</span>
+          <span class="kpi-label">Active Interventions</span>
+        </div>
+        <span class="kpi-badge success" *ngIf="completedInterventions > 0">{{ completedInterventions }} done</span>
+      </div>
+
+      <div class="kpi-card kpi-assessments" (click)="navigateTo('/app/assesements')">
+        <div class="kpi-icon-wrap"><i class="fa-solid fa-brain"></i></div>
+        <div class="kpi-body">
+          <span class="kpi-value">{{ recentAssessments }}</span>
+          <span class="kpi-label">Total Assessments</span>
+        </div>
+        <i class="fa-solid fa-arrow-right kpi-arrow"></i>
+      </div>
+    </section>
+
+    <!-- ===== MAIN GRID ===== -->
+    <div class="main-grid">
+
+      <!-- LEFT COLUMN -->
+      <div class="col-main">
+
+        <!-- ===== PATIENTS TABLE ===== -->
+        <div class="dash-card patients-card">
+          <div class="card-head">
+            <h2><i class="fa-solid fa-bed-pulse"></i> Patient Overview</h2>
+            <button class="see-all-btn" routerLink="/app/patients">See all <i class="fa-solid fa-chevron-right"></i></button>
+          </div>
+          <div class="patients-table-wrap" *ngIf="patients.length > 0">
+            <table class="patients-table">
+              <thead>
+                <tr>
+                  <th>Patient</th>
+                  <th>Room</th>
+                  <th>Diagnosis</th>
+                  <th>Gender</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let p of patients.slice(0, 6)">
+                  <td class="patient-cell">
+                    <div class="patient-avatar-sm">{{ (p.firstName || '?')[0] }}{{ (p.lastName || '?')[0] }}</div>
+                    <div>
+                      <span class="p-name">{{ p.firstName }} {{ p.lastName }}</span>
+                      <span class="p-dob">DOB: {{ p.dateOfBirth | date:'mediumDate' }}</span>
+                    </div>
+                  </td>
+                  <td><span class="room-badge">{{ p.roomNumber || '—' }}</span></td>
+                  <td><span class="diag-text">{{ p.medicalDiagnosis || '—' }}</span></td>
+                  <td>{{ p.gender || '—' }}</td>
+                  <td>
+                    <button class="action-link" (click)="navigateTo('/app/patients/' + p.id + '/profile')">
+                      <i class="fa-solid fa-eye"></i> View
+                    </button>
+                    <button class="action-link tracking" *ngIf="isAidant" (click)="navigateTo('/app/patients/' + p.id + '/tracking')">
+                      <i class="fa-solid fa-location-dot"></i> Track
+                    </button>
+                    <button class="action-link report" *ngIf="isMedecin" (click)="navigateTo('/app/patients/' + p.id + '/medical-report')">
+                      <i class="fa-solid fa-file-medical"></i> Report
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="empty-state" *ngIf="patients.length === 0">
+            <i class="fa-solid fa-user-slash"></i>
+            <p>No patients {{ isAidant ? 'assigned to you' : 'registered' }} yet.</p>
+          </div>
+        </div>
+
+        <!-- ===== ALERT BREAKDOWN (SEVERITY BAR) ===== -->
+        <div class="dash-card alert-breakdown-card">
+          <div class="card-head">
+            <h2><i class="fa-solid fa-chart-bar"></i> Alert Severity Distribution</h2>
+            <span class="card-subtitle">{{ alerts.length }} total alerts</span>
+          </div>
+          <div class="severity-bars" *ngIf="alerts.length > 0">
+            <div class="severity-row">
+              <span class="sev-label critical-label">Critical</span>
+              <div class="bar-track">
+                <div class="bar-fill critical-fill" [style.width.%]="getAlertSeverityPercent('CRITIQUE')"></div>
+              </div>
+              <span class="sev-count">{{ alertsBySeverity.CRITIQUE }}</span>
+            </div>
+            <div class="severity-row">
+              <span class="sev-label high-label">High</span>
+              <div class="bar-track">
+                <div class="bar-fill high-fill" [style.width.%]="getAlertSeverityPercent('HAUTE')"></div>
+              </div>
+              <span class="sev-count">{{ alertsBySeverity.HAUTE }}</span>
+            </div>
+            <div class="severity-row">
+              <span class="sev-label medium-label">Medium</span>
+              <div class="bar-track">
+                <div class="bar-fill medium-fill" [style.width.%]="getAlertSeverityPercent('MOYENNE')"></div>
+              </div>
+              <span class="sev-count">{{ alertsBySeverity.MOYENNE }}</span>
+            </div>
+            <div class="severity-row">
+              <span class="sev-label low-label">Low</span>
+              <div class="bar-track">
+                <div class="bar-fill low-fill" [style.width.%]="getAlertSeverityPercent('BASSE')"></div>
+              </div>
+              <span class="sev-count">{{ alertsBySeverity.BASSE }}</span>
+            </div>
+          </div>
+          <div class="empty-state small" *ngIf="alerts.length === 0">
+            <i class="fa-solid fa-shield-check"></i>
+            <p>No alerts recorded yet.</p>
+          </div>
+        </div>
+
+        <!-- ===== MEDECIN: ASSESSMENT INSIGHTS ===== -->
+        <div class="dash-card assessment-card" *ngIf="isMedecin && assessments.length > 0">
+          <div class="card-head">
+            <h2><i class="fa-solid fa-brain"></i> Cognitive Assessment Insights</h2>
+          </div>
+          <div class="assessment-stats-grid">
+            <div class="ass-stat">
+              <span class="ass-stat-val">{{ averageMmse }}</span>
+              <span class="ass-stat-label">Avg MMSE Score</span>
+              <div class="ass-stat-bar">
+                <div class="ass-bar-fill mmse-fill" [style.width.%]="(averageMmse / 30) * 100"></div>
+              </div>
+              <span class="ass-stat-range">Scale 0–30</span>
+            </div>
+            <div class="ass-stat">
+              <span class="ass-stat-val">{{ averageMoca }}</span>
+              <span class="ass-stat-label">Avg MoCA Score</span>
+              <div class="ass-stat-bar">
+                <div class="ass-bar-fill moca-fill" [style.width.%]="(averageMoca / 30) * 100"></div>
+              </div>
+              <span class="ass-stat-range">Scale 0–30</span>
+            </div>
+            <div class="ass-stat trend-stat">
+              <div class="trend-grid">
+                <div class="trend-item">
+                  <i class="fa-solid fa-arrow-trend-up" style="color: #10b981"></i>
+                  <span>{{ assessmentTrend.up }}</span>
+                  <small>Improving</small>
+                </div>
+                <div class="trend-item">
+                  <i class="fa-solid fa-minus" style="color: #f59e0b"></i>
+                  <span>{{ assessmentTrend.stable }}</span>
+                  <small>Stable</small>
+                </div>
+                <div class="trend-item">
+                  <i class="fa-solid fa-arrow-trend-down" style="color: #ef4444"></i>
+                  <span>{{ assessmentTrend.down }}</span>
+                  <small>Declining</small>
+                </div>
+              </div>
+              <span class="ass-stat-label">Patient Trends</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN (SIDEBAR) -->
+      <div class="col-side">
+
+        <!-- ===== ALERT TYPES BREAKDOWN ===== -->
+        <div class="dash-card compact">
+          <div class="card-head">
+            <h2><i class="fa-solid fa-tags"></i> Alerts by Type</h2>
+          </div>
+          <div class="type-list" *ngIf="alertsByType.length > 0">
+            <div class="type-item" *ngFor="let at of alertsByType">
+              <div class="type-icon" [style.color]="at.color" [style.background]="at.color + '18'">
+                <i class="fa-solid" [ngClass]="at.icon"></i>
+              </div>
+              <span class="type-name">{{ at.type }}</span>
+              <span class="type-count" [style.color]="at.color">{{ at.count }}</span>
+            </div>
+          </div>
+          <div class="empty-state mini" *ngIf="alertsByType.length === 0">
+            <p>No alert type data.</p>
+          </div>
+        </div>
+
+        <!-- ===== INTERVENTION OUTCOMES ===== -->
+        <div class="dash-card compact" *ngIf="interventionOutcomes.length > 0">
+          <div class="card-head">
+            <h2><i class="fa-solid fa-clipboard-list"></i> Intervention Outcomes</h2>
+          </div>
+          <div class="outcome-list">
+            <div class="outcome-item" *ngFor="let oc of interventionOutcomes">
+              <div class="outcome-dot" [style.background]="oc.color"></div>
+              <span class="outcome-name">{{ oc.outcome }}</span>
+              <span class="outcome-count">{{ oc.count }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== ACTIVITY FEED ===== -->
+        <div class="dash-card compact">
+          <div class="card-head">
+            <h2><i class="fa-solid fa-clock-rotate-left"></i> Recent Activity</h2>
+          </div>
+          <div class="feed-list" *ngIf="activityFeed.length > 0">
+            <div class="feed-item" *ngFor="let item of activityFeed">
+              <div class="feed-dot" [style.background]="item.color"></div>
+              <div class="feed-body">
+                <p class="feed-text">{{ item.text }}</p>
+                <span class="feed-time">{{ item.time }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="empty-state mini" *ngIf="activityFeed.length === 0">
+            <p>No recent activity.</p>
+          </div>
+        </div>
+
+        <!-- ===== MEDECIN: ESCALATED INTERVENTIONS ===== -->
+        <div class="dash-card compact escalation-card" *ngIf="isMedecin && escalatedInterventions.length > 0">
+          <div class="card-head">
+            <h2><i class="fa-solid fa-arrow-up-right-dots"></i> Escalated to You</h2>
+            <span class="esc-badge">{{ escalatedInterventions.length }}</span>
+          </div>
+          <div class="escalation-list">
+            <div class="esc-item" *ngFor="let esc of escalatedInterventions.slice(0, 4)">
+              <div class="esc-status" [ngClass]="{
+                'esc-active': esc.status !== 'COMPLETED' && esc.status !== 'CANCELLED',
+                'esc-done': esc.status === 'COMPLETED'
+              }">{{ formatStatus(esc.status) }}</div>
+              <p class="esc-note">{{ esc.notes || 'No notes' }}</p>
+              <span class="esc-time">{{ formatRelativeTime(esc.startedAt) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== QUICK LINKS ===== -->
+        <div class="dash-card compact quick-links-card">
+          <div class="card-head">
+            <h2><i class="fa-solid fa-link"></i> Quick Links</h2>
+          </div>
+          <div class="link-grid">
+            <button class="q-link" routerLink="/app/patients">
+              <i class="fa-solid fa-users"></i>
+              <span>Patients</span>
+            </button>
+            <button class="q-link" routerLink="/app/alerts">
+              <i class="fa-solid fa-bell"></i>
+              <span>Alerts</span>
+            </button>
+            <button class="q-link" routerLink="/app/messages">
+              <i class="fa-solid fa-message"></i>
+              <span>Messages</span>
+            </button>
+            <button class="q-link" routerLink="/app/store">
+              <i class="fa-solid fa-store"></i>
+              <span>Store</span>
+            </button>
+            <button class="q-link" routerLink="/app/assesements">
+              <i class="fa-solid fa-clipboard-check"></i>
+              <span>Assessments</span>
+            </button>
+            <button class="q-link" routerLink="/app/profile">
+              <i class="fa-solid fa-user-gear"></i>
+              <span>Profile</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /main-grid -->
+
+  </div><!-- /dashboard-content -->
 </div>

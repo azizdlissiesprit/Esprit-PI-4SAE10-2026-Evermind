@@ -2407,3 +2407,13 @@ html[data-theme="dark"] .theme-toggle:hover {
   border-color: #fdd663;
   color: #fdd663;
 }
+
+
+/* ==================== GLOBAL STOCK DESIGN TOKENS ==================== */
+:root {
+  --stock-accent: var(--accent-color, #4E80EE);
+  --stock-accent-hover: var(--accent-hover, #3b6bcc);
+  --stock-secondary: #00897b;
+  --stock-secondary-hover: #00695c;
+}
+

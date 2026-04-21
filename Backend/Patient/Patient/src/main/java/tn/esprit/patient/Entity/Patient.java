@@ -67,6 +67,18 @@ public class Patient {
     // Links to the Guardian User (ID from User Service)
     private Long guardianUserId;
 
+    // Links to the Caregiver User (ID from User Service)
+    @Column(name = "responsable")
+    private Long responsable;
+
+    /** 
+     * Individual geofence center coordinates. 
+     * Used by the simulation and tracking frontend.
+     */
+    private Double baseLatitude;
+    private Double baseLongitude;
+    private Integer geofenceRadius; // in meters
+
     // --- Helper Method for Frontend ---
     public int getAge() {
         if (this.dateOfBirth == null) return 0;

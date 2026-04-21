@@ -9,6 +9,7 @@ public class InterventionResponse {
     private Long id;
     private String notes;
     private String outcome;
+    private String status;
     private String duration;
 
     // Enriched Data (Fetched from other Services)

@@ -61,6 +61,15 @@
           <label class="label">Confirm Password</label>
           <input type="password" class="input-field" formControlName="confirmPassword" placeholder="••••••••••" />
         </div>
+
+        <div class="form-group">
+          <label class="label">Role</label>
+          <select class="input-field" formControlName="userType">
+            <option value="AIDANT">Caregiver</option>
+            <option value="MEDECIN">Doctor</option>
+            <option value="RESPONSABLE">Manager</option>
+          </select>
+        </div>
         <div *ngIf="errorMessage" style="color: #dc2626; background-color: #fee2e2; padding: 10px; border-radius: 6px; margin-bottom: 15px; font-size: 14px; text-align: center;">
           {{ errorMessage }}
         </div>

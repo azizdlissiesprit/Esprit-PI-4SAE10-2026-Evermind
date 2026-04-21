@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.intervention.Entity.Intervention;
 import tn.esprit.intervention.Entity.InterventionOutcome;
+import tn.esprit.intervention.Entity.InterventionStatus;
 import tn.esprit.intervention.Service.IInterventionService;
 
 import java.util.List;
@@ -12,7 +13,6 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/intervention")
-@CrossOrigin(origins = "*") // Allow Angular access
 public class InterventionController {
 
     @Autowired
@@ -44,14 +44,31 @@ public class InterventionController {
 
     // --- 2. Functional Methods (Workflow) ---
 
+    @PutMapping("/update-status/{id}")
+    public Intervention updateStatus(
+            @PathVariable("id") Long id,
+            @RequestParam("status") InterventionStatus status
+    ) {
+        return interventionService.updateInterventionStatus(id, status);
+    }
+
     // Called when Caregiver clicks "Mark Resolved" and submits the form
-    @PatchMapping("/finish-intervention/{id}")
+    @PutMapping("/finish-intervention/{id}")
     public Intervention finishIntervention(
             @PathVariable("id") Long id,
             @RequestParam("outcome") InterventionOutcome outcome,
             @RequestParam("notes") String notes
     ) {
         return interventionService.finishIntervention(id, outcome, notes);
+    }
+
+    @PostMapping("/escalate-intervention/{id}")
+    public Intervention escalateIntervention(
+            @PathVariable("id") Long id,
+            @RequestParam("toUserId") Long toUserId,
+            @RequestParam("notes") String notes
+    ) {
+        return interventionService.escalateIntervention(id, toUserId, notes);
     }
 
     // --- 3. Search / History ---
@@ -64,5 +81,10 @@ public class InterventionController {
     @GetMapping("/history/patient/{patient-id}")
     public List<Intervention> getHistoryByPatient(@PathVariable("patient-id") Long patientId) {
         return interventionService.getInterventionsByPatient(patientId);
+    }
+
+    @GetMapping("/escalated/{userId}")
+    public List<Intervention> getEscalatedInterventions(@PathVariable("userId") Long userId) {
+        return interventionService.getEscalatedInterventions(userId);
     }
 }

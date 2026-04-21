@@ -1,0 +1,223 @@
+<div class="analytics-container">
+
+  <!-- Header -->
+  <header class="dashboard-header">
+    <div class="header-content d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div>
+        <h1>AI Stock Intelligence 🧠</h1>
+        <p>Prédictions en temps réel par Machine Learning — péremption, demande et anomalies.</p>
+      </div>
+      <button class="btn btn-seed" (click)="seedData()" [disabled]="seeding">
+        <i class="bi bi-database-fill-gear me-2"></i>
+        {{ seeding ? 'Seeding...' : 'Injecter Données Démo' }}
+      </button>
+    </div>
+  </header>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;"></div>
+    <p class="mt-3 text-secondary fw-semibold">Chargement des analyses...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="alert alert-danger mt-3 d-flex align-items-center gap-2">
+    <i class="bi bi-exclamation-triangle-fill"></i> {{ error }}
+  </div>
+
+  <!-- ═══════ Global KPIs ═══════ -->
+  <section class="kpi-grid" *ngIf="dashboardData">
+    <div class="kpi-card glass">
+      <div class="icon-bg red-glow"><i class="bi bi-heartbreak-fill"></i></div>
+      <div class="kpi-details">
+        <h3>Produits Expirés</h3>
+        <p class="value text-danger">{{ dashboardData.kpis.produitsExpires }}</p>
+      </div>
+    </div>
+
+    <div class="kpi-card glass">
+      <div class="icon-bg orange-glow"><i class="bi bi-exclamation-triangle-fill"></i></div>
+      <div class="kpi-details">
+        <h3>Expire &lt; 30j</h3>
+        <p class="value text-warning">{{ dashboardData.kpis.expireDans30j }}</p>
+      </div>
+    </div>
+
+    <div class="kpi-card glass">
+      <div class="icon-bg yellow-glow"><i class="bi bi-clock-history"></i></div>
+      <div class="kpi-details">
+        <h3>Expire &lt; 90j</h3>
+        <p class="value">{{ dashboardData.kpis.expireDans90j }}</p>
+      </div>
+    </div>
+
+    <div class="kpi-card glass">
+      <div class="icon-bg green-glow"><i class="bi bi-currency-dollar"></i></div>
+      <div class="kpi-details">
+        <h3>Valeur à Risque</h3>
+        <p class="value">{{ dashboardData.kpis.valeurStockRisque | number:'1.2-2' }} TND</p>
+      </div>
+    </div>
+
+    <div class="kpi-card glass">
+      <div class="icon-bg blue-glow"><i class="bi bi-arrow-repeat"></i></div>
+      <div class="kpi-details">
+        <h3>Taux Rotation 90j</h3>
+        <p class="value">{{ dashboardData.kpis.tauxRotation90j }}</p>
+      </div>
+    </div>
+
+    <div class="kpi-card glass">
+      <div class="icon-bg purple-glow"><i class="bi bi-graph-up-arrow"></i></div>
+      <div class="kpi-details">
+        <h3>Anomalies Détectées</h3>
+        <p class="value">{{ dashboardData.kpis.anomaliesDetectees }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ Charts Grid ═══════ -->
+  <div class="charts-grid">
+
+    <!-- Demand Forecast Chart -->
+    <div class="chart-card glass span-2">
+      <div class="card-header">
+        <h2><i class="bi bi-bar-chart-line-fill me-2"></i>Prévision de Demande (30 Jours)</h2>
+        <span class="badge ml-badge">Régression Linéaire ML</span>
+      </div>
+      <div class="chart-wrapper">
+        <canvas baseChart
+          [data]="demandChartData"
+          [options]="demandChartOptions"
+          [type]="demandChartType">
+        </canvas>
+      </div>
+    </div>
+
+    <!-- Expiration Doughnut Chart -->
+    <div class="chart-card glass">
+      <div class="card-header">
+        <h2><i class="bi bi-pie-chart-fill me-2"></i>Risques Péremption</h2>
+        <span class="badge rule-badge">Velocity-Based</span>
+      </div>
+      <div class="chart-wrapper donut-chart">
+        <canvas baseChart
+          [data]="expChartData"
+          [options]="expChartOptions"
+          [type]="expChartType">
+        </canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ Réapprovisionnement Alerts ═══════ -->
+  <section class="reappro-section glass" *ngIf="alertesReappro.length > 0">
+    <div class="card-header">
+      <h2><i class="bi bi-box-seam-fill me-2"></i>Alertes Réapprovisionnement</h2>
+      <span class="badge rule-badge">Stock &lt; 14j</span>
+    </div>
+    <div class="table-container">
+      <table class="modern-table">
+        <thead>
+          <tr>
+            <th>Produit</th>
+            <th>Stock</th>
+            <th>Ventes/Jour</th>
+            <th>Jours de Stock</th>
+            <th>Urgence</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let alerte of alertesReappro">
+            <td class="fw-semibold">{{ alerte.nom }}</td>
+            <td>{{ alerte.stock }}</td>
+            <td>{{ alerte.ventesParJour }}</td>
+            <td>{{ alerte.joursDeStock }} j</td>
+            <td>
+              <span class="urgence-badge" [ngClass]="getUrgenceClass(alerte.urgence)">
+                {{ alerte.urgence === 'critique' ? '🔴 Critique' : '🟡 Attention' }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════ Anomalies de Ventes ═══════ -->
+  <section class="anomalies-section glass" *ngIf="anomalies.length > 0">
+    <div class="card-header">
+      <h2><i class="bi bi-lightning-charge-fill me-2"></i>Anomalies de Ventes Détectées</h2>
+      <span class="badge ml-badge">Isolation Forest ML</span>
+    </div>
+    <div class="table-container">
+      <table class="modern-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Articles Vendus</th>
+            <th>Montant</th>
+            <th>Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let anomaly of anomalies">
+            <td>{{ anomaly.date }}</td>
+            <td>{{ anomaly.articles }}</td>
+            <td>{{ anomaly.montant | number:'1.2-2' }} TND</td>
+            <td><span class="anomaly-badge">⚠️ Activité Inhabituelle</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════ Expiration Details Table ═══════ -->
+  <section class="expiration-section glass" *ngIf="expirationProduits.length > 0">
+    <div class="card-header">
+      <h2><i class="bi bi-calendar-x-fill me-2"></i>Détail Péremption par Produit</h2>
+      <span class="badge rule-badge">{{ expirationProduits.length }} produits analysés</span>
+    </div>
+    <div class="table-container">
+      <table class="modern-table">
+        <thead>
+          <tr>
+            <th>Produit</th>
+            <th>Catégorie</th>
+            <th>Stock</th>
+            <th>Ventes/j</th>
+            <th>Jours Restants</th>
+            <th>Score Risque</th>
+            <th>Statut</th>
+            <th>Recommandation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let prod of expirationProduits">
+            <td class="fw-semibold">{{ prod.nom }}</td>
+            <td><span class="cat-badge">{{ prod.categorie }}</span></td>
+            <td>{{ prod.stock }}</td>
+            <td>{{ prod.ventesParJour }}</td>
+            <td>{{ prod.joursAvantExpiration !== null ? prod.joursAvantExpiration + 'j' : '—' }}</td>
+            <td>
+              <div class="risk-bar">
+                <div class="risk-fill" [style.width.%]="prod.risqueScore"
+                     [ngClass]="{'bg-success': prod.risqueScore < 30, 'bg-warning': prod.risqueScore >= 30 && prod.risqueScore < 60, 'bg-danger': prod.risqueScore >= 60}">
+                </div>
+                <span class="risk-label">{{ prod.risqueScore }}%</span>
+              </div>
+            </td>
+            <td><span class="status-pill" [ngClass]="getStatutClass(prod.statut)">{{ prod.statut }}</span></td>
+            <td class="text-secondary" style="font-size: 0.85rem;">{{ prod.recommandation }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Method attribution -->
+  <footer class="method-footer" *ngIf="dashboardData">
+    <p><i class="bi bi-cpu-fill me-1"></i> {{ dashboardData.methode }} · Généré le {{ dashboardData.genereLe | date:'medium' }}</p>
+  </footer>
+
+</div>

@@ -1,0 +1,11 @@
+D:\Documents\myProjects\Evermind\EverMind\Backend\Chatbot\Chatbot\src\main\java\tn\esprit\chatbot\ChatbotApplication.java
+D:\Documents\myProjects\Evermind\EverMind\Backend\Chatbot\Chatbot\src\main\java\tn\esprit\chatbot\Config\CorsConfig.java
+D:\Documents\myProjects\Evermind\EverMind\Backend\Chatbot\Chatbot\src\main\java\tn\esprit\chatbot\Config\DatabaseConfig.java
+D:\Documents\myProjects\Evermind\EverMind\Backend\Chatbot\Chatbot\src\main\java\tn\esprit\chatbot\Controller\ChatbotController.java
+D:\Documents\myProjects\Evermind\EverMind\Backend\Chatbot\Chatbot\src\main\java\tn\esprit\chatbot\DTO\ChatbotRequest.java
+D:\Documents\myProjects\Evermind\EverMind\Backend\Chatbot\Chatbot\src\main\java\tn\esprit\chatbot\DTO\ChatbotResponse.java
+D:\Documents\myProjects\Evermind\EverMind\Backend\Chatbot\Chatbot\src\main\java\tn\esprit\chatbot\Entity\ChatbotInteraction.java
+D:\Documents\myProjects\Evermind\EverMind\Backend\Chatbot\Chatbot\src\main\java\tn\esprit\chatbot\Repository\ChatbotInteractionRepository.java
+D:\Documents\myProjects\Evermind\EverMind\Backend\Chatbot\Chatbot\src\main\java\tn\esprit\chatbot\Service\ChatbotService.java
+D:\Documents\myProjects\Evermind\EverMind\Backend\Chatbot\Chatbot\src\main\java\tn\esprit\chatbot\Service\DatabaseSchemaService.java
+D:\Documents\myProjects\Evermind\EverMind\Backend\Chatbot\Chatbot\src\main\java\tn\esprit\chatbot\Service\GeminiService.java

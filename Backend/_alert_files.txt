@@ -1,0 +1,15 @@
+d:\Documents\myProjects\Evermind\EverMind\Backend\Alert\Alert\src\main\java\tn\esprit\alert\AlertApplication.java
+d:\Documents\myProjects\Evermind\EverMind\Backend\Alert\Alert\src\main\java\tn\esprit\alert\Controller\AlertController.java
+d:\Documents\myProjects\Evermind\EverMind\Backend\Alert\Alert\src\main\java\tn\esprit\alert\Entity\Alert.java
+d:\Documents\myProjects\Evermind\EverMind\Backend\Alert\Alert\src\main\java\tn\esprit\alert\Entity\Severite.java
+d:\Documents\myProjects\Evermind\EverMind\Backend\Alert\Alert\src\main\java\tn\esprit\alert\Entity\StatutAlerte.java
+d:\Documents\myProjects\Evermind\EverMind\Backend\Alert\Alert\src\main\java\tn\esprit\alert\Entity\TypeAlerte.java
+d:\Documents\myProjects\Evermind\EverMind\Backend\Alert\Alert\src\main\java\tn\esprit\alert\Repository\AlertRepository.java
+d:\Documents\myProjects\Evermind\EverMind\Backend\Alert\Alert\src\main\java\tn\esprit\alert\Service\AlertServiceImpl.java
+d:\Documents\myProjects\Evermind\EverMind\Backend\Alert\Alert\src\main\java\tn\esprit\alert\Service\GoogleGeminiService.java
+d:\Documents\myProjects\Evermind\EverMind\Backend\Alert\Alert\src\main\java\tn\esprit\alert\Service\IAlertService.java
+d:\Documents\myProjects\Evermind\EverMind\Backend\Alert\Alert\src\main\java\tn\esprit\alert\Service\PatientClient.java
+d:\Documents\myProjects\Evermind\EverMind\Backend\Alert\Alert\src\main\java\tn\esprit\alert\Service\PredictiveAnalysisService.java
+d:\Documents\myProjects\Evermind\EverMind\Backend\Alert\Alert\src\test\java\tn\esprit\alert\AlertApplicationTests.java
+d:\Documents\myProjects\Evermind\EverMind\Backend\Alert\Alert\src\test\java\tn\esprit\alert\Controller\AlertControllerTest.java
+d:\Documents\myProjects\Evermind\EverMind\Backend\Alert\Alert\src\test\java\tn\esprit\alert\Service\AlertServiceImplTest.java

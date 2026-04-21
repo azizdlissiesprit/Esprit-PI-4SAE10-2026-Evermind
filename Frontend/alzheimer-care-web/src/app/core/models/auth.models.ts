@@ -18,4 +18,5 @@ export interface AuthenticationResponse {
   lastName: string;
   email: string;
   role: string;
+  userId?: number;
 }

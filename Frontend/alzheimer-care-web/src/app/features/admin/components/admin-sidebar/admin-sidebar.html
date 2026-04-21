@@ -1,15 +1,11 @@
-
 <aside class="sidebar" [class.collapsed]="isCollapsed">
-    
     <!-- Brand Header -->
     <div class="brand">
         <div class="logo-icon">
             <i class="fa-solid fa-shield-heart"></i>
         </div>
-        <!-- Hide title when collapsed -->
         <h2 *ngIf="!isCollapsed" class="brand-text">EVERMIND<span class="dot">.</span></h2>
         
-        <!-- Collapse Toggle Button -->
         <button class="toggle-btn" (click)="toggleSidebar()">
             <i class="fa-solid" [class.fa-chevron-left]="!isCollapsed" [class.fa-chevron-right]="isCollapsed"></i>
         </button>
@@ -24,16 +20,38 @@
                     <span class="link-text">{{ item.label }}</span>
                 </a>
             </li>
+
+            <!-- Stock Group -->
+            <li class="nav-group" [class.expanded]="stockGroupExpanded" [class.collapsed-sidebar]="isCollapsed">
+                <a class="nav-link group-header" (click)="toggleStockGroup()" [title]="isCollapsed ? 'Stock & Shop' : ''" [class.active-group]="stockGroupExpanded">
+                    <div class="icon-wrapper" style="color: var(--stock-accent, #C4956A)"><i class="fa-solid fa-store"></i></div>
+                    <span class="link-text" style="font-weight: 600;">Stock & Shop</span>
+                    <i class="fa-solid fa-chevron-down toggle-icon" *ngIf="!isCollapsed" [class.rotated]="stockGroupExpanded"></i>
+                </a>
+                
+                <div class="sub-menu-container" [style.maxHeight]="stockGroupExpanded && !isCollapsed ? '500px' : '0'">
+                    <ul class="sub-menu">
+                        <li *ngFor="let stockItem of stockItems">
+                            <a [routerLink]="stockItem.route" routerLinkActive="active" class="nav-link sub-link" [title]="isCollapsed ? stockItem.label : ''">
+                                <div class="icon-wrapper"><i [class]="stockItem.icon"></i></div>
+                                <span class="link-text d-flex justify-content-between align-items-center w-100">
+                                    {{ stockItem.label }}
+                                    <span *ngIf="stockItem.hasBadge && unreadEmailsCount > 0" class="badge bg-danger rounded-pill">{{ unreadEmailsCount }}</span>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
         </ul>
     </nav>
 
     <!-- User Profile Footer -->
     <div class="user-profile">
-        <img src="https://i.pravatar.cc/150?img=15" alt="Admin">
+        <img src="https://ui-avatars.com/api/?background=random&color=fff&name=U" alt="Admin">
         <div class="user-info">
             <h4>Administrator</h4>
             <p>System Admin</p>
         </div>
     </div>
-
 </aside>

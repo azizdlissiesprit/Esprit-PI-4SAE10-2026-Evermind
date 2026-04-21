@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.agenda.controller.RendezVousControllerTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 14.18 s -- in com.agenda.controller.RendezVousControllerTest

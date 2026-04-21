@@ -2,21 +2,30 @@ package tn.esprit.user.Service;
 
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import tn.esprit.user.Config.JwtUtils;
 import tn.esprit.user.DTO.AuthenticationResponse;
+import tn.esprit.user.DTO.ForgotPasswordRequest;
+import tn.esprit.user.DTO.LoginEventDTO;
 import tn.esprit.user.DTO.LoginRequest;
 import tn.esprit.user.DTO.RegisterRequest;
+import tn.esprit.user.DTO.ResetPasswordRequest;
 import tn.esprit.user.Entity.User;
 import tn.esprit.user.Repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationServiceImpl implements IAuthenticationService {
 
     private final UserRepository repository;
@@ -24,6 +33,7 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
     private final JwtUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
     private final IEmailService emailService;
+    private final LoginEventPublisher loginEventPublisher;
 
     @Override
     public AuthenticationResponse register(RegisterRequest request) {
@@ -38,8 +48,8 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
                 .passwordHash(passwordEncoder.encode(request.getPassword()))
                 .phoneNumber(request.getPhoneNumber())
                 .userType(request.getUserType())
-                .active(false) // <--- CHANGED: User cannot login yet
-                .verificationCode(verificationCode) // <--- SAVE THE CODE
+                .active(false) // User cannot login yet
+                .verificationCode(verificationCode) // Save the code
                 .build();
 
         repository.save(user);
@@ -49,13 +59,12 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
             emailService.sendVerificationEmail(user.getEmail(), user.getFirstName(), verificationCode);
         } catch (MessagingException e) {
             e.printStackTrace();
-            // Optional: You might want to delete the user if email fails so they can try again
             throw new RuntimeException("Failed to send verification email");
         }
 
         // 4. Return response WITHOUT token (User must verify first)
         return AuthenticationResponse.builder()
-                .token(null) // <--- CHANGED: No token provided yet
+                .token(null)
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .email(user.getEmail())
@@ -65,15 +74,52 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
 
     @Override
     public AuthenticationResponse authenticate(LoginRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
-        );
+        // 1) Find user first (so we can check active status)
+        var user = repository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials"));
 
-        var user = repository.findByEmail(request.getEmail()).orElseThrow();
+        // 2) Block login if banned
+        if (Boolean.TRUE.equals(user.getBanned())) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Your account has been suspended. Please contact support or an administrator."
+            );
+        }
 
-        // --- FIX IS HERE ---
-        // Pass the String email, not the object
-        var jwtToken = jwtUtils.generateToken(user.getEmail());
+        // 3) Block login if not verified/active
+        // (active=false means the user must verify via /auth/verify?code=...)
+        if (user.getActive() == null || !user.getActive()) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Account not verified. Please check your email and verify your account."
+            );
+        }
+
+        // 4) Authenticate password (wrong password -> 401)
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+            );
+        } catch (AuthenticationException ex) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
+        }
+
+        // 5) Generate token
+        var jwtToken = jwtUtils.generateToken(user);
+
+        // Publish login event to RabbitMQ
+        try {
+            LoginEventDTO loginEvent = LoginEventDTO.builder()
+                    .userId(user.getUserId())
+                    .email(user.getEmail())
+                    .role(user.getUserType().name())
+                    .loginTime(LocalDateTime.now())
+                    .build();
+            loginEventPublisher.publish(loginEvent);
+        } catch (Exception e) {
+            // Don't let RabbitMQ failures break the login flow
+            log.error("Failed to publish login event to RabbitMQ: {}", e.getMessage());
+        }
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)
@@ -85,25 +131,60 @@ public class AuthenticationServiceImpl implements IAuthenticationService {
     }
 
     public boolean verifyUser(String verificationCode) {
-        // 1. Find the user by the verification code
-        // Note: You must have findByVerificationCode in UserRepository
         var userOptional = repository.findByVerificationCode(verificationCode);
 
         if (userOptional.isPresent()) {
             var user = userOptional.get();
 
-            // 2. Activate the account
+            // Activate the account
             user.setActive(true);
 
-            // 3. Remove the verification code (so it can't be used again)
+            // Remove the verification code
             user.setVerificationCode(null);
 
-            // 4. Save the changes
             repository.save(user);
-
-            return true; // Verification successful
+            return true;
         }
 
-        return false; // Verification failed (code not found)
+        return false;
+    }
+
+    @Override
+    public void forgotPassword(ForgotPasswordRequest request) {
+        var user = repository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        // Generate reset token
+        String resetToken = UUID.randomUUID().toString();
+        user.setResetToken(resetToken);
+        user.setResetTokenExpiry(LocalDateTime.now().plusHours(1)); // Token valid for 1 hour
+
+        repository.save(user);
+
+        // Send reset password email
+        try {
+            emailService.sendPasswordResetEmail(user.getEmail(), user.getFirstName(), resetToken);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to send password reset email");
+        }
+    }
+
+    @Override
+    public void resetPassword(ResetPasswordRequest request) {
+        var user = repository.findByResetToken(request.getToken())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid or expired reset token"));
+
+        // Check if token is expired
+        if (user.getResetTokenExpiry().isBefore(LocalDateTime.now())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Reset token has expired");
+        }
+
+        // Update password
+        user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
+        user.setResetToken(null);
+        user.setResetTokenExpiry(null);
+
+        repository.save(user);
     }
 }

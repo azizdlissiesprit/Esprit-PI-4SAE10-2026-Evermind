@@ -16,16 +16,16 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Alzheimer - Service Stock API")
+                        .title("EverMind - Service Stock API")
                         .version("1.0.0")
-                        .description("API REST pour la gestion de stock du projet de Détection de la Maladie d'Alzheimer. "
-                                + "Ce microservice gère les catégories, les produits et le tableau de bord.")
+                        .description("API REST pour la gestion de stock du projet EverMind. "
+                                + "Ce microservice gère les catégories, les produits, les commandes, le panier et le tableau de bord.")
                         .contact(new Contact()
-                                .name("Équipe Alzheimer Detection")
-                                .email("contact@alzheimer-detection.com")))
+                                .name("Équipe EverMind")
+                                .email("contact@evermind.tn")))
                 .servers(List.of(
-                        new Server().url("http://localhost:8081").description("Service Stock (direct)"),
-                        new Server().url("http://localhost:8080/api/stock").description("Via API Gateway")
+                        new Server().url("http://localhost:8095").description("Service Stock (direct)"),
+                        new Server().url("http://localhost:8090").description("Via API Gateway")
                 ));
     }
 }

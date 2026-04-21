@@ -24,12 +24,12 @@ public class PatientController {
     }
 
     @PutMapping("/{id}")
-    public Patient update(@PathVariable Long id, @RequestBody Patient patient) {
+    public Patient update(@PathVariable("id") Long id, @RequestBody Patient patient) {
         return service.update(id, patient);
     }
 
     @GetMapping("/{id}")
-    public Patient getById(@PathVariable Long id) {
+    public Patient getById(@PathVariable("id") Long id) {
         return service.getById(id);
     }
 
@@ -39,7 +39,12 @@ public class PatientController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable("id") Long id) {
         service.delete(id);
+    }
+
+    @GetMapping("/responsable/{responsableId}")
+    public List<Patient> getPatientsByResponsable(@PathVariable("responsableId") Long responsableId) {
+        return service.getPatientsByResponsable(responsableId);
     }
 }

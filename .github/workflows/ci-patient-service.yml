@@ -1,0 +1,40 @@
+name: CI - Patient Service
+
+on:
+  push:
+    paths:
+      - 'Backend/Patient/Patient/**'
+  pull_request:
+    paths:
+      - 'Backend/Patient/Patient/**'
+
+jobs:
+  build-test-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build and test with Maven
+        run: mvn clean package -DskipTests
+        working-directory: Backend/Patient/Patient
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: Backend/Patient/Patient
+          push: true
+          tags: azizesp/evermind-patient-service:latest

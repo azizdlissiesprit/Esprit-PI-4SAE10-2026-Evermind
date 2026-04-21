@@ -5,12 +5,12 @@
 
 // Variables
 $primary: #3b99fc;
-$text-main: #1e1e1e;
+$text-main: var(--text-primary);
 $input-bg: #f8fbfd;
 $border-radius: 32px;
 
 .page-wrapper {
-  background-color: #6c85e6;
+  background-color: var(--text-secondary);
   min-height: 100vh;
   width: 100%;
   display: flex;
@@ -24,7 +24,7 @@ $border-radius: 32px;
   width: 100%;
   max-width: 1200px; // Fixed the hardcoded 1440px
   min-height: 700px;
-  background-color: white;
+  background-color: var(--bg-card);
   border-radius: $border-radius;
   display: flex;
   overflow: hidden;
@@ -116,7 +116,7 @@ $border-radius: 32px;
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  border: 1px solid #e0e0e0;
+  border: 1px solid  var(--border-color);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -170,7 +170,7 @@ $border-radius: 32px;
 
   &:focus {
     border-color: $primary;
-    background-color: white;
+    background-color: var(--bg-card);
   }
 }
 

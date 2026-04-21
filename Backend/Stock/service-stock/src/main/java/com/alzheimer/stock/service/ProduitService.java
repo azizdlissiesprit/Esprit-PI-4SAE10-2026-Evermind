@@ -22,4 +22,6 @@ public interface ProduitService {
     ProduitDTO uploaderImage(Long id, MultipartFile fichier);
 
     ProduitDTO supprimerImage(Long id);
+
+    List<ProduitDTO> obtenirProduitsCrossSell(Long produitId);
 }

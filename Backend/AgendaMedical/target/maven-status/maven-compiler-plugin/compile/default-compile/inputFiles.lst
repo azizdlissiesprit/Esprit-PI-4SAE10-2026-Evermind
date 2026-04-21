@@ -1,0 +1,14 @@
+D:\Documents\myProjects\Evermind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\AgendaMedicalApplication.java
+D:\Documents\myProjects\Evermind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\config\GoogleCalendarConfig.java
+D:\Documents\myProjects\Evermind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\controller\GoogleCalendarController.java
+D:\Documents\myProjects\Evermind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\controller\RendezVousController.java
+D:\Documents\myProjects\Evermind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\controller\VideoController.java
+D:\Documents\myProjects\Evermind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\dto\RendezVousDTO.java
+D:\Documents\myProjects\Evermind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\dto\RendezVousStats.java
+D:\Documents\myProjects\Evermind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\dto\VideoRoomRequest.java
+D:\Documents\myProjects\Evermind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\dto\VideoRoomResponse.java
+D:\Documents\myProjects\Evermind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\entity\RendezVous.java
+D:\Documents\myProjects\Evermind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\repository\RendezVousRepository.java
+D:\Documents\myProjects\Evermind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\service\DailyCoService.java
+D:\Documents\myProjects\Evermind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\service\GoogleCalendarService.java
+D:\Documents\myProjects\Evermind\EverMind\Backend\AgendaMedical\src\main\java\com\agenda\service\RendezVousService.java

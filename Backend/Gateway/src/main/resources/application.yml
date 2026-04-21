@@ -10,6 +10,7 @@ spring:
         webflux:
           # ✅ CORS under correct prefix
           globalcors:
+            add-to-simple-url-handler-mapping: true
             cors-configurations:
               '[/**]':
                 allowedOrigins:
@@ -31,7 +32,7 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka}
   instance:
     prefer-ip-address: true
 
@@ -48,3 +49,37 @@ logging:
   level:
     org.springframework.cloud.gateway: DEBUG
     reactor.netty.http.client: DEBUG
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    disable-swagger-default-url: true
+    urlsPrimaryName: Alert Service
+    urls:
+      - name: Alert Service
+        url: /alert/v3/api-docs
+      - name: Agenda Medical Service
+        url: /agenda/v3/api-docs
+      - name: Autonomy Service
+        url: /autonomy/v3/api-docs
+      - name: Cognitive Assessment Service
+        url: /cognitive/v3/api-docs
+      - name: Conversation Service
+        url: /conversation/v3/api-docs
+      - name: Intervention Service
+        url: /intervention/v3/api-docs
+      - name: Patient Service
+        url: /patient/v3/api-docs
+      - name: Product Service
+        url: /product/v3/api-docs
+      - name: Profile Service
+        url: /profile/v3/api-docs
+      - name: Sensor Simulator
+        url: /simulation/v3/api-docs
+      - name: Stock Service
+        url: /stock/v3/api-docs
+      - name: User Service
+        url: /user/v3/api-docs
+      - name: Chatbot Service
+        url: /chatbot/v3/api-docs

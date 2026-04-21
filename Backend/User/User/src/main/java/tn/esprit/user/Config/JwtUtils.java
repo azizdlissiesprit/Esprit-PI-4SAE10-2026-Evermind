@@ -7,10 +7,12 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import tn.esprit.user.Entity.User;
 
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -26,6 +28,15 @@ public class JwtUtils {
 
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
+    }
+
+    public Long extractUserId(String token) {
+        Number userId = extractClaim(token, claims -> claims.get("userId", Number.class));
+        return userId == null ? null : userId.longValue();
+    }
+
+    public String extractUserType(String token) {
+        return extractClaim(token, claims -> claims.get("userType", String.class));
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -53,6 +64,14 @@ public class JwtUtils {
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
         return createToken(claims, username);
+    }
+
+    public String generateToken(User user) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", user.getUserId());
+        claims.put("userType", user.getUserType().name());
+        claims.put("roles", List.of(user.getUserType().name()));
+        return createToken(claims, user.getEmail());
     }
 
     private String createToken(Map<String, Object> claims, String subject) {

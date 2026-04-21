@@ -4,18 +4,18 @@
     <header class="page-header">
         <div class="header-left">
             <h1>Professional caregiver profile</h1>
-            <p>Review shift capacity, credentials, and safety information.</p>
+            <p>Review contact information and account details.</p>
         </div>
         <div class="header-right">
             <div class="status-pill">
-                <div class="dot"></div> Current status: On duty
+                <div class="dot" [style.background]="userData?.active ? 'var(--success-green)' : 'var(--text-grey)'"></div> 
+                Current status: {{ userData?.active ? 'Active Account' : 'Inactive Account' }}
             </div>
             <button class="icon-btn">
                 <i class="fa-regular fa-bell"></i>
             </button>
             <div class="user-avatar-sm-wrapper">
-                <!-- Fallback to initials if no image -->
-                <div class="avatar-placeholder">{{ userData?.firstName?.charAt(0) }}{{ userData?.lastName?.charAt(0) }}</div>
+                <div class="avatar-placeholder">{{ userData?.firstName?.charAt(0) || '' }}{{ userData?.lastName?.charAt(0) || '?' }}</div>
             </div>
         </div>
     </header>
@@ -26,20 +26,19 @@
         <!-- LEFT: Profile Card -->
         <div class="card card-padding profile-card">
             <div class="avatar-wrapper">
-                <img src="https://i.pravatar.cc/150?img=10" alt="Avatar" class="avatar-lg">
-                <div class="verified-badge"><i class="fa-solid fa-check"></i> Verified</div>
+                <img src="https://ui-avatars.com/api/?background=random&color=fff&name={{userData?.firstName}}+{{userData?.lastName}}" alt="Avatar" class="avatar-lg">
+                <div class="verified-badge" *ngIf="userData?.active"><i class="fa-solid fa-check"></i> Verified</div>
             </div>
             
             <div class="profile-header-group">
-                <h2 class="profile-name">{{ userData?.firstName }} {{ userData?.lastName }}</h2>
-                <p class="profile-role">{{ userData?.role || 'Caregiver' }}</p>
+                <h2 class="profile-name">{{ userData?.firstName || 'Unknown' }} {{ userData?.lastName || 'User' }}</h2>
+                <p class="profile-role">{{ userData?.userType || userData?.role || 'Caregiver' }}</p>
                 
                 <div class="status-row">
-                    <span class="badge badge-green">On duty</span>
-                    <span class="badge badge-grey">Break compliant</span>
+                    <span class="badge" [ngClass]="userData?.active ? 'badge-green' : 'badge-grey'">
+                        {{ userData?.active ? 'Active Member' : 'Inactive' }}
+                    </span>
                 </div>
-
-                <a href="#" class="affiliation-link">Affiliated with: Sunrise Senior Care Services</a>
             </div>
 
             <div class="info-group">
@@ -47,31 +46,11 @@
                 
                 <div class="info-item">
                     <div class="sub-label">Work phone</div>
-                    <div class="sub-value">{{ userData?.phone || 'Not provided' }}</div>
+                    <div class="sub-value">{{ userData?.phoneNumber || 'Not provided' }}</div>
                 </div>
                 <div class="info-item">
                     <div class="sub-label">Secure email</div>
-                    <div class="sub-value">{{ userData?.email }}</div>
-                </div>
-            </div>
-
-            <div class="info-group">
-                <h4 class="info-label">Emergency contact (Safety)</h4>
-                <div class="info-item">
-                    <div class="sub-label">Name</div>
-                    <div class="sub-value">Husband - Daniel Jenkins</div>
-                </div>
-                <div class="info-item">
-                    <div class="sub-label">Phone</div>
-                    <div class="sub-value">***-***-9934</div>
-                </div>
-            </div>
-
-            <div class="info-group mb-0">
-                <h4 class="info-label">Languages</h4>
-                <div class="info-item">
-                    <div class="sub-label">Spoken languages</div>
-                    <div class="sub-value">English (Native), Spanish (Fluent)</div>
+                    <div class="sub-value">{{ userData?.email || 'Not provided' }}</div>
                 </div>
             </div>
         </div>
@@ -80,96 +59,40 @@
         <div class="card card-padding workspace-panel">
             <div class="workspace-header">
                 <div class="workspace-title">
-                    <h2>Professional workspace</h2>
-                    <p>Credentials, preferences, and performance</p>
+                    <h2>Account Details</h2>
+                    <p>Registration and activity information</p>
                 </div>
                 <button class="btn-edit"><i class="fa-solid fa-pen"></i> Edit profile</button>
             </div>
 
             <div class="split-grid">
-                <!-- Certifications -->
+                <!-- System Info -->
                 <div class="section-box">
                     <div class="box-header">
-                        <h3 class="box-title">Certifications</h3>
-                        <span class="pill-grey">Verified</span>
+                        <h3 class="box-title">System Information</h3>
+                        <span class="pill-grey">Account</span>
                     </div>
 
-                    <div class="cert-item" *ngFor="let cert of certifications">
+                    <div class="cert-item">
                         <div class="cert-info">
-                            <h4>{{ cert.title }}</h4>
-                            <p>{{ cert.expiry }}</p>
+                            <h4>Member Since</h4>
+                            <p>{{ userData?.createdAt ? (userData.createdAt | date:'longDate') : 'Unknown' }}</p>
                         </div>
-                        <button class="btn-pdf">View PDF</button>
                     </div>
-                </div>
-
-                <!-- Shift Preferences -->
-                <div class="section-box">
-                    <div class="box-header">
-                        <h3 class="box-title">Shift preferences</h3>
-                        <span class="pill-grey">Scheduling</span>
+                    
+                    <div class="cert-item">
+                        <div class="cert-info">
+                            <h4>Last Login</h4>
+                            <p>{{ userData?.lastLogin ? (userData.lastLogin | date:'medium') : 'Never logged in' }}</p>
+                        </div>
                     </div>
 
-                    <div class="days-row">
-                        <div class="day-box day-green">M</div>
-                        <div class="day-box day-green">T</div>
-                        <div class="day-box day-green">W</div>
-                        <div class="day-box day-green">T</div>
-                        <div class="day-box day-red">F</div>
-                        <div class="day-box day-grey">S</div>
-                        <div class="day-box day-grey">S</div>
+                    <div class="cert-item" style="border-top: 1px solid #eee; margin-top: 10px; padding-top: 10px;">
+                        <div class="cert-info">
+                            <h4 style="color: var(--primary-color);">Current Session Duration</h4>
+                            <p style="font-weight: 600; font-family: monospace; font-size: 1.1rem;">{{ sessionTime }}</p>
+                        </div>
                     </div>
-
-                    <div class="toggle-row">
-                        <span class="toggle-label">Accept overtime requests</span>
-                        <div class="toggle-switch active"></div>
-                    </div>
-
-                    <div class="toggle-row">
-                        <span class="toggle-label">Eligible for night shifts</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Patient History -->
-            <div class="history-section">
-                <div class="box-header">
-                    <h3 class="box-title">Patient history</h3>
-                    <span class="pill-grey">Performance</span>
-                </div>
-                
-                <div class="stats-row">
-                    <div class="stat-card" *ngFor="let stat of stats">
-                        <div class="stat-label">{{ stat.label }}</div>
-                        <div class="stat-value">{{ stat.value }}</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Wellbeing -->
-            <div class="wellbeing-section">
-                <div class="box-header">
-                    <h3 class="box-title">Well-being & access</h3>
-                    <span class="pill-grey">Private</span>
-                </div>
-
-                <div class="wellbeing-row">
-                    <div class="flex-between">
-                        <span class="burnout-label">Burnout monitor</span>
-                        <span class="score-text">Workload stress score: Low</span>
-                    </div>
-                    <div class="progress-bg">
-                        <div class="progress-fill" style="width: 35%;"></div>
-                    </div>
-                </div>
-
-                <div class="digital-id">
-                    <div class="id-text">
-                        <h4>Digital ID card</h4>
-                        <p>Scan for hospital and facility access control.</p>
-                    </div>
-                    <div class="qr-placeholder"><i class="fa-solid fa-qrcode"></i></div>
                 </div>
             </div>
 

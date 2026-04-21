@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -35,6 +36,22 @@ public class Produit {
 
     @Column(name = "image_url", length = 500)
     private String imageUrl;
+
+    @Column(name = "prix_original", precision = 10, scale = 2)
+    private BigDecimal prixOriginal;
+
+    @Column(name = "en_promo")
+    @Builder.Default
+    private Boolean enPromo = false;
+
+    @Column(name = "date_expiration")
+    private LocalDate dateExpiration;
+
+    @Column(name = "numero_lot", length = 100)
+    private String numeroLot;
+
+    @Column(name = "date_fin_promo")
+    private LocalDateTime dateFinPromo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categorie_id", nullable = false)

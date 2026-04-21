@@ -1,0 +1,10 @@
+d:\Documents\myProjects\Evermind\EverMind\Backend\Autonomy\Autonomy\src\main\java\tn\esprit\autonomy\AutonomyApplication.java
+d:\Documents\myProjects\Evermind\EverMind\Backend\Autonomy\Autonomy\src\main\java\tn\esprit\autonomy\controller\AutonomyAssessmentController.java
+d:\Documents\myProjects\Evermind\EverMind\Backend\Autonomy\Autonomy\src\main\java\tn\esprit\autonomy\controller\GlobalExceptionHandler.java
+d:\Documents\myProjects\Evermind\EverMind\Backend\Autonomy\Autonomy\src\main\java\tn\esprit\autonomy\entity\AutonomyAssessment.java
+d:\Documents\myProjects\Evermind\EverMind\Backend\Autonomy\Autonomy\src\main\java\tn\esprit\autonomy\entity\AutonomyScoresEmbeddable.java
+d:\Documents\myProjects\Evermind\EverMind\Backend\Autonomy\Autonomy\src\main\java\tn\esprit\autonomy\entity\TrendType.java
+d:\Documents\myProjects\Evermind\EverMind\Backend\Autonomy\Autonomy\src\main\java\tn\esprit\autonomy\repository\AutonomyAssessmentRepository.java
+d:\Documents\myProjects\Evermind\EverMind\Backend\Autonomy\Autonomy\src\main\java\tn\esprit\autonomy\service\AutonomyAssessmentServiceImpl.java
+d:\Documents\myProjects\Evermind\EverMind\Backend\Autonomy\Autonomy\src\main\java\tn\esprit\autonomy\service\EmailNotificationService.java
+d:\Documents\myProjects\Evermind\EverMind\Backend\Autonomy\Autonomy\src\main\java\tn\esprit\autonomy\service\IAutonomyAssessmentService.java

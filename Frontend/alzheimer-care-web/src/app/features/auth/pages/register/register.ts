@@ -28,7 +28,8 @@ export class RegisterComponent {
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', Validators.required]
+      confirmPassword: ['', Validators.required],
+      userType: ['AIDANT', Validators.required]
     });
   }
 
@@ -51,7 +52,7 @@ export class RegisterComponent {
       email: this.registerForm.value.email,
       password: this.registerForm.value.password,
       phoneNumber: '00000000',
-      userType: 'AIDANT' // TypeScript now accepts this because it matches the interface
+      userType: this.registerForm.value.userType
     };
 
     this.authService.register(request).subscribe({

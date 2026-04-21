@@ -69,10 +69,10 @@ tr:hover { background-color: var(--bg-main); }
     padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase;
     
     /* Specific Alert Colors */
-    &.badge-red { background: #FEF2F2; color: #EF4444; border: 1px solid #FECACA; }    /* CRITICAL */
-    &.badge-orange { background: #FFF7ED; color: #F59E0B; border: 1px solid #FDE68A; } /* HIGH */
-    &.badge-blue { background: #EFF6FF; color: #3B82F6; border: 1px solid #BFDBFE; }   /* MEDIUM */
-    &.badge-green { background: #F0FDF4; color: #10B981; border: 1px solid #BBF7D0; }  /* LOW */
+    &.badge-red { background: #FEF2F2; color: #EF4444; border: 1px solid  var(--border-color); }    /* CRITICAL */
+    &.badge-orange { background: #FFF7ED; color: #F59E0B; border: 1px solid  var(--border-color); } /* HIGH */
+    &.badge-blue { background: #EFF6FF; color: var(--text-secondary); border: 1px solid #BFDBFE; }   /* MEDIUM */
+    &.badge-green { background: #F0FDF4; color: var(--text-primary); border: 1px solid #BBF7D0; }  /* LOW */
 }
 
 /* --- Actions --- */
@@ -86,7 +86,7 @@ tr:hover { background-color: var(--bg-main); }
         &:hover { background-color: var(--bg-main); color: var(--accent-color); border-color: var(--accent-color); }
         
         &.delete:hover { 
-            background-color: #FEF2F2; color: #EF4444; border-color: #EF4444; 
+            background-color: #FEF2F2; color: #EF4444; border-color:  var(--border-color); 
         }
     }
 }

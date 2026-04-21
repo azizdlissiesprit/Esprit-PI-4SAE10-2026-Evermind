@@ -17,17 +17,20 @@
             </div>
             
             <div class="care-team-avatars">
-                <img src="https://i.pravatar.cc/150?img=5" alt="Doc" title="Dr. Sarah Smith">
-                <img src="https://i.pravatar.cc/150?img=11" alt="Nurse" title="Nurse Joy">
+                <img src="https://ui-avatars.com/api/?background=random&color=fff&name=U" alt="Doc" title="Dr. Sarah Smith">
+                <img src="https://ui-avatars.com/api/?background=random&color=fff&name=U" alt="Nurse" title="Nurse Joy">
                 <span class="care-team-label">2 online</span>
             </div>
         </div>
     </header>
 
     <!-- ALERT BANNER -->
-    <div class="alert-banner" [ngClass]="getSeverityBadgeClass(alert.severite)">
+    <div class="alert-banner" [ngClass]="[getSeverityBadgeClass(alert.severite), intervention?.isEscalated ? 'escalated-banner' : '']">
         <div class="banner-left">
             <span class="alert-badge">{{ alert.severite }} SEVERITY</span>
+            <span class="alert-badge code-blue-badge" *ngIf="intervention?.isEscalated" style="background: white; color: #dc2626; margin-left: 8px;">
+                <i class="fa-solid fa-triangle-exclamation fa-fade"></i> ESCALATED
+            </span>
             <span class="banner-text">
                 <i class="fa-solid fa-triangle-exclamation"></i>
                 Type: <strong>{{ alert.typeAlerte }}</strong> &bull; {{ alert.message }}
@@ -36,6 +39,28 @@
         <div class="banner-right">
             Generated: <span>{{ alert.dateCreation | date:'medium' }}</span>
         </div>
+    </div>
+
+    <!-- AI INSIGHTS BAR (NEW) -->
+    <div class="ai-insights-bar" *ngIf="alert.aiAnalysis">
+        <div class="ai-header">
+            <span class="ai-badge">
+                <i class="fa-solid fa-brain"></i> AI ANALYSIS
+            </span>
+            <div class="risk-meter">
+                Risk Score: <span [ngClass]="alert.aiRiskScore && alert.aiRiskScore > 70 ? 'critical' : 'moderate'">{{ alert.aiRiskScore }}%</span>
+            </div>
+        </div>
+        <div class="ai-body" *ngIf="!alert.aiAnalysis.includes('CLINICAL CORRELATION WARNING')">
+            {{ (alert.aiAnalysis.includes('429') || alert.aiAnalysis.includes('403')) ? 'no ai analysis is currently available' : alert.aiAnalysis }}
+        </div>
+        
+        <!-- RED FLASHING CLINICAL WARNING -->
+        <div class="ai-body clinical-warning-box" *ngIf="alert.aiAnalysis.includes('CLINICAL CORRELATION WARNING')">
+            <h4><i class="fa-solid fa-triangle-exclamation fa-beat"></i> CRITICAL MEDICAL CORRELATION DETECTED</h4>
+            <p>{{ alert.aiAnalysis.replace('🚨 CLINICAL CORRELATION WARNING: ', '') }}</p>
+        </div>
+
     </div>
 
     <!-- MAIN DASHBOARD -->
@@ -49,7 +74,8 @@
 
             <div class="patient-profile">
                 <!-- Using patient ID for consistent avatar -->
-                <img [src]="'https://i.pravatar.cc/150?u=' + alert.patientId" class="patient-avatar-lg" alt="Patient">
+                <img [src]="getPatientImage(alert.patientId)" class="patient-avatar-lg" alt="Patient">
+
                 <div class="patient-info">
                     <h3>Patient #{{ alert.patientId }}</h3>
                     <p>Monitored Profile</p>
@@ -89,31 +115,137 @@
                 <div class="alert-current-state">
                     <h4>Current Status: <span [ngClass]="alert.statut.toLowerCase()">{{ alert.statut }}</span></h4>
                     <p *ngIf="alert.statut === 'NOUVELLE'">This alert requires immediate acknowledgement.</p>
-                    <p *ngIf="alert.statut === 'EN_COURS'">An intervention is currently in progress.</p>
                     <p *ngIf="alert.statut === 'RESOLUE'">This incident has been resolved and archived.</p>
                     <p *ngIf="alert.statut === 'IGNOREE'">This incident was marked as ignored/false alarm.</p>
                 </div>
             </div>
 
-            <!-- Contextual Action Buttons -->
-            <div class="primary-actions-grid">
+            <!-- LIVE AUDIT TRAIL / ACTION FEED (NEW) -->
+            <div class="action-feed" *ngIf="intervention && intervention.logs && intervention.logs.length > 0">
+                <div class="panel-header" style="margin-bottom: 12px; padding-bottom: 8px;">
+                    <h3 style="font-size: 1rem; margin: 0; color: #334155;"><i class="fa-solid fa-terminal" style="color: #64748b; margin-right: 8px;"></i> Live Intervention Log</h3>
+                </div>
+                <div class="terminal-log-container">
+                    <div class="log-entry" *ngFor="let log of intervention.logs">
+                        <span class="log-time">[{{ log.timestamp | date:'HH:mm:ss' }}]</span>
+                        <span class="log-action" [ngClass]="log.actionType.toLowerCase()">{{ log.actionType }}</span>: 
+                        <span class="log-notes">{{ log.notes }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resolution Report (NEW) -->
+            <div class="resolution-report" *ngIf="alert.statut === 'RESOLUE' && intervention">
+                <div class="report-header">
+                    <h3><i class="fa-solid fa-clipboard-check"></i> Incident Final Report</h3>
+                    <span class="report-badge">Archived</span>
+                </div>
                 
+                <h4 class="section-subtitle" style="margin-top: 5px; margin-bottom: 12px; font-size: 12px;"><i class="fa-solid fa-stopwatch"></i> Response Metrics</h4>
+                <div class="quick-stats" style="flex-direction: row; gap: 24px; margin-bottom: 20px;">
+                    <div class="stat-item" style="border: none; padding: 0; flex: 1; background: #f8fafc; padding: 12px; border-radius: 8px;">
+                        <span class="stat-label">Time to Acknowledge</span>
+                        <span class="stat-val" style="color: #3b82f6;">{{ getDurationInMinutes(alert.dateCreation, intervention.startedAt) }}</span>
+                    </div>
+                    <div class="stat-item" style="border: none; padding: 0; flex: 1; background: #f8fafc; padding: 12px; border-radius: 8px;">
+                        <span class="stat-label">Total Duration</span>
+                        <span class="stat-val" style="color: #10b981;">{{ getDurationInMinutes(alert.dateCreation, intervention.completedAt) }}</span>
+                    </div>
+                </div>
+
+                <div class="report-row">
+                    <div class="report-item">
+                        <label>Final Outcome</label>
+                        <span>{{ intervention.outcome?.replace('_', ' ') || 'N/A' }}</span>
+                    </div>
+                    <div class="report-item notes-box">
+                        <label>Responder Notes</label>
+                        <span>{{ intervention.notes || 'No notes provided.' }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic Action Flow -->
+            <div class="primary-actions-grid" *ngIf="alert.statut !== 'RESOLUE' && alert.statut !== 'IGNOREE'">
+                
+                <!-- 1. Acknowledge (Starts Intervention) -->
                 <button class="btn btn-primary" 
                     (click)="takeCharge()" 
                     *ngIf="alert.statut === 'NOUVELLE'"
                 >
                     <i class="fa-solid fa-hand-holding-medical"></i>
-                    Acknowledge & Take Charge
+                    Acknowledge & Dispatch Help
                 </button>
 
+                <!-- 2. Communicate (Offering Help) -->
+                <button class="btn btn-info" 
+                    (click)="offerHelp()" 
+                    *ngIf="intervention && intervention.status === 'EN_ROUTE'"
+                >
+                    <i class="fa-solid fa-comment-medical"></i>
+                    Speak to Patient
+                </button>
+
+                <!-- 3. Arrive (In Person) -->
+                <button class="btn btn-primary" 
+                    (click)="assistInPerson()" 
+                    *ngIf="intervention && intervention.status === 'OFFERING_HELP'"
+                >
+                    <i class="fa-solid fa-user-nurse"></i>
+                    Confirm Arrival
+                </button>
+
+                <!-- Escalate Alert: Doctor Selection -->
+                <div *ngIf="intervention && (intervention.status === 'EN_ROUTE' || intervention.status === 'OFFERING_HELP' || intervention.status === 'IN_PERSON_ASSISTANCE') && !intervention.isEscalated">
+                    <button class="btn" style="background-color: #fef2f2; color: #dc2626; border: 1px solid #fecaca;" 
+                        (click)="escalateAlert()"
+                    >
+                        <i class="fa-solid fa-truck-medical"></i>
+                        {{ showDoctorPicker ? 'Cancel' : 'Escalate to Doctor' }}
+                    </button>
+
+                    <!-- Doctor Picker Dropdown -->
+                    <div *ngIf="showDoctorPicker" style="margin-top: 12px; padding: 16px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 12px;">
+                        <p style="margin: 0 0 8px 0; font-weight: 600; color: #dc2626; font-size: 0.85rem;">
+                            <i class="fa-solid fa-user-doctor"></i> Select a Doctor to Escalate To:
+                        </p>
+                        <div *ngIf="isLoadingDoctors" style="text-align: center; padding: 12px; color: #94a3b8;">
+                            <i class="fa-solid fa-spinner fa-spin"></i> Loading doctors...
+                        </div>
+                        <div *ngIf="!isLoadingDoctors && availableDoctors.length === 0" style="text-align: center; padding: 12px; color: #94a3b8;">
+                            No doctors available.
+                        </div>
+                        <select *ngIf="!isLoadingDoctors && availableDoctors.length > 0"
+                            [(ngModel)]="selectedDoctorId"
+                            style="width: 100%; padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; margin-bottom: 10px; background: white;">
+                            <option [ngValue]="null" disabled>-- Choose a Doctor --</option>
+                            <option *ngFor="let doc of availableDoctors" [ngValue]="doc.userId">
+                                Dr. {{ doc.firstName }} {{ doc.lastName }} ({{ doc.email }})
+                            </option>
+                        </select>
+                        <div style="display: flex; gap: 8px; margin-top: 4px;">
+                            <button class="btn btn-primary" style="flex: 1; background: #dc2626; border-color: #dc2626;" 
+                                (click)="confirmEscalation()" [disabled]="!selectedDoctorId">
+                                <i class="fa-solid fa-check"></i> Confirm Escalation
+                            </button>
+                            <button class="btn btn-outline-danger" style="flex: 1;" (click)="cancelEscalation()">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- 4. Resolve (Closed Loop) -->
                 <button class="btn btn-success" 
                     (click)="resolveAlert()" 
-                    *ngIf="alert.statut === 'EN_COURS'"
+                    *ngIf="intervention && intervention.status === 'IN_PERSON_ASSISTANCE'"
                 >
                     <i class="fa-solid fa-check-circle"></i>
-                    Mark as Resolved
+                    Finalize & Resolve
                 </button>
 
+                <!-- 5. Ignore (Anytime before resolved) -->
                 <button class="btn btn-outline-danger" 
                     (click)="ignoreAlert()" 
                     *ngIf="alert.statut === 'NOUVELLE' || alert.statut === 'EN_COURS'"
@@ -122,6 +254,17 @@
                     Ignore (False Alarm)
                 </button>
 
+            </div>
+
+
+            <!-- ENVIRONMENTAL CONTEXT (NEW) -->
+            <div class="event-details-section" *ngIf="alert.context">
+                <h4 class="section-subtitle">Environmental Context (Last 5 Readings)</h4>
+                <div class="context-box">
+                    <div class="context-reading" *ngFor="let reading of alert.context.split('|')">
+                        <span *ngIf="reading.trim()">{{ reading.trim() }}</span>
+                    </div>
+                </div>
             </div>
 
             <!-- Event Details Text -->

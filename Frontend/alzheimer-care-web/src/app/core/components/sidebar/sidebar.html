@@ -16,11 +16,23 @@
             <a [routerLink]="item.route" routerLinkActive="active" class="nav-link" [title]="isCollapsed ? item.label : ''">
                 <span class="icon-box"><i [class]="item.icon"></i></span>
                 
-                <!-- Only show text if NOT collapsed (using CSS for smooth transition) -->
+                <!-- Only show text if NOT collapsed -->
                 <span class="link-text">{{ item.label }}</span>
             </a>
         </li>
     </ul>
+
+    <!-- Theme Toggle Button -->
+    <div class="theme-toggle-wrapper">
+        <button class="theme-toggle-btn" (click)="toggleTheme()" [title]="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
+            <span class="theme-icon-track" [class.is-dark]="isDark">
+                <i class="fa-solid fa-sun sun-icon"></i>
+                <span class="toggle-thumb"></span>
+                <i class="fa-solid fa-moon moon-icon"></i>
+            </span>
+            <span class="theme-label" *ngIf="!isCollapsed">{{ isDark ? 'Dark' : 'Light' }}</span>
+        </button>
+    </div>
 
     <!-- PRO Card (Hidden when collapsed) -->
     <div class="pro-card" *ngIf="!isCollapsed">

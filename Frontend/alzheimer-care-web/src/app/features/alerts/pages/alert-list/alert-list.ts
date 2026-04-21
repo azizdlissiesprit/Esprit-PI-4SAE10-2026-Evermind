@@ -3,8 +3,13 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, RouterModule } from '@angular/router'; // <--- 1. Import Router
 import { FormsModule } from '@angular/forms';
 import { AlertService } from '../../../../core/services/alert.service';
+import { InterventionService } from '../../../../core/services/intervention.service';
 import { Alert } from '../../../../core/models/alert.model';
-import { StatutAlerte, Severite, TypeAlerte } from '../../../../core/models/enums';
+import { StatutAlerte, Severite, TypeAlerte, InterventionStatus } from '../../../../core/models/enums';
+import { NotificationService } from '../../../../core/services/notification.service';
+import { DialogService } from '../../../../core/services/dialog.service';
+import { AuthService } from '../../../../core/services/auth.service';
+
 
 @Component({
   selector: 'app-alert-list',
@@ -24,11 +29,16 @@ export class AlertListComponent implements OnInit {
   selectedStatus: string = 'ALL';
   severities = Object.values(Severite);
   statuses = Object.values(StatutAlerte);
+  isMedecin = false;
 
   constructor(
     private alertService: AlertService,
+    private interventionService: InterventionService,
+    private notificationService: NotificationService,
+    private dialogService: DialogService,
+    private authService: AuthService,
     private cd: ChangeDetectorRef,
-    private router: Router, // <--- 2. Inject Router
+    private router: Router,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
@@ -44,34 +54,59 @@ export class AlertListComponent implements OnInit {
 
   loadAlerts() {
     this.isLoading = true;
-    this.alertService.getAllAlerts().subscribe({
-        next: (data) => {
-            console.log("✅ ALERTS RECEIVED:", data); // Log full array
+    const userRole = this.authService.getUserRole();
+    const userId = this.authService.getUserId();
 
-            // 👇 Log AI specific check
-            const aiCount = data.filter(a => a.aiAnalysis).length;
-            console.log(`🤖 AI Analysis Stats: ${aiCount} out of ${data.length} alerts have AI data.`);
-            
-            // Check the first alert specifically for debugging
-            if (data.length > 0) {
-                console.log("🔍 First Alert Data:", {
-                    id: data[0].alertId,
-                    message: data[0].message,
-                    aiAnalysis: data[0].aiAnalysis,
-                    aiRiskScore: data[0].aiRiskScore
-                });
+    console.log('🔍 DEBUG loadAlerts: userRole =', JSON.stringify(userRole), ', userId =', userId);
+
+    // MEDECIN: Only see alerts escalated to them
+    if (userRole === 'MEDECIN' && userId) {
+      this.isMedecin = true;
+      this.interventionService.getEscalatedInterventions(userId).subscribe({
+        next: (interventions) => {
+          const alertIds = interventions.map(i => i.alertId);
+          if (alertIds.length === 0) {
+            this.allAlerts = [];
+            this.applyFilters();
+            this.isLoading = false;
+            this.cd.detectChanges();
+            return;
+          }
+          this.alertService.getAlertsByIds(alertIds).subscribe({
+            next: (data) => {
+              console.log('🩺 MEDECIN: Loaded escalated alerts:', data);
+              this.allAlerts = data;
+              this.applyFilters();
+              this.isLoading = false;
+              this.cd.detectChanges();
+            },
+            error: (err) => {
+              console.error('❌ Failed to load escalated alerts', err);
+              this.isLoading = false;
             }
-
+          });
+        },
+        error: (err) => {
+          console.error('❌ Failed to load escalated interventions', err);
+          this.isLoading = false;
+        }
+      });
+    } else {
+      // DEFAULT (AIDANT / ADMIN / etc.): See all alerts
+      this.alertService.getAllAlerts().subscribe({
+        next: (data) => {
+            console.log('✅ ALERTS RECEIVED:', data);
             this.allAlerts = data;
             this.applyFilters();
             this.isLoading = false;
             this.cd.detectChanges();
         },
         error: (err) => { 
-            console.error("❌ Failed to load alerts", err);
+            console.error('❌ Failed to load alerts', err);
             this.isLoading = false; 
         }
-    });
+      });
+    }
   }
 
   // ... (Keep applyFilters logic)
@@ -96,12 +131,22 @@ export class AlertListComponent implements OnInit {
    * 2. Navigate to the Details page.
    */
   acknowledge(id: number) {
-    this.alertService.takeCharge(id).subscribe({
+    const alertData = this.allAlerts.find(a => a.alertId === id);
+    if (!alertData) return;
+
+    const newIntervention = {
+      alertId: id,
+      patientId: alertData.patientId,
+      userId: 1, // Mock
+      status: InterventionStatus.EN_ROUTE
+    };
+
+    this.interventionService.startIntervention(newIntervention).subscribe({
       next: () => {
         // Navigate after successful update
         this.router.navigate(['/app/alerts', id]);
       },
-      error: (err) => console.error('Failed to acknowledge', err)
+      error: (err) => console.error('Failed to acknowledge intervention', err)
     });
   }
 
@@ -113,10 +158,16 @@ export class AlertListComponent implements OnInit {
   }
 
   resolve(id: number) {
-    if(confirm('Mark this alert as resolved?')) {
-      this.alertService.resolveAlert(id).subscribe(() => this.loadAlerts());
-    }
+    this.dialogService.confirm('Resolve Alert', 'Mark this alert as resolved?').subscribe(result => {
+      if (result.confirmed) {
+        this.alertService.resolveAlert(id).subscribe(() => {
+          this.loadAlerts();
+          this.notificationService.success('Alert marked as resolved.');
+        });
+      }
+    });
   }
+
 
   // ... (Keep UI Helpers: getSeverityClass, getBadgeClass, getIcon, getTimeAgo)
     getSeverityClass(severite: string): string {
@@ -163,4 +214,22 @@ export class AlertListComponent implements OnInit {
     if (diffHours < 24) return `${diffHours} hours ago`;
     return `${Math.floor(diffHours / 24)} days ago`;
   }
+
+  getPatientImage(patientId: number): string {
+    const elderlyImages = [
+      'https://images.unsplash.com/photo-1544144433-d50aff500b91?w=150&h=150&fit=crop',
+      'https://images.unsplash.com/photo-1551446591-142875a901a1?w=150&h=150&fit=crop',
+      'https://images.unsplash.com/photo-1509114397022-ed747cca3f65?w=150&h=150&fit=crop',
+      'https://images.unsplash.com/photo-1466112928291-0903b80a9466?w=150&h=150&fit=crop',
+      'https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?w=150&h=150&fit=crop',
+      'https://images.unsplash.com/photo-1559839734-2b71f15367ca?w=150&h=150&fit=crop',
+      'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop',
+      'https://images.unsplash.com/photo-1581579438747-1dc8d17bbce4?w=150&h=150&fit=crop'
+    ];
+    
+    // Deterministic selection based on ID
+    const index = Math.abs(Number(patientId || 0)) % elderlyImages.length;
+    return elderlyImages[index];
+  }
 }
+

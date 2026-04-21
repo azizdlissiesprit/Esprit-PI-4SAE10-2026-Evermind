@@ -10,7 +10,7 @@
     --text-dark: #1E293B;
     --text-grey: #64748B;
     --text-light: #94A3B8;
-    --border-color: #E2E8F0;
+    --border-color:  var(--border-color);
     --success-green: #10B981;
     --radius-md: 12px;
     --radius-lg: 16px;
@@ -42,10 +42,10 @@
 }
 
 .icon-btn {
-    width: 40px; height: 40px; background: white; border: 1px solid var(--border-color);
+    width: 40px; height: 40px; background: var(--bg-card); border: 1px solid var(--border-color);
     border-radius: 50%; display: flex; align-items: center; justify-content: center;
     color: var(--text-grey); cursor: pointer; transition: 0.2s;
-    &:hover { background: #f9fafb; color: var(--primary-blue); }
+    &:hover { background: var(--bg-inset); color: var(--primary-blue); }
 }
 
 .avatar-placeholder {
@@ -62,7 +62,7 @@
 
 /* --- Card Styles --- */
 .card {
-    background: white; border-radius: var(--radius-lg); border: 1px solid var(--border-color);
+    background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border-color);
     box-shadow: var(--shadow-card); padding: 32px;
 }
 
@@ -94,7 +94,7 @@
     .sub-value { font-size: 13px; color: var(--text-dark); font-weight: 500; word-break: break-all; }
 
     .visibility-control {
-        background: #F8FAFC; padding: 12px; border-radius: 8px; font-size: 12px; color: var(--text-dark); text-align: center; margin-top: 10px; font-weight: 500;
+        background: var(--bg-inset); padding: 12px; border-radius: 8px; font-size: 12px; color: var(--text-dark); text-align: center; margin-top: 10px; font-weight: 500;
     }
 }
 
@@ -104,10 +104,10 @@
     .hub-title h2 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
     .hub-title p { font-size: 13px; color: var(--text-grey); }
     .btn-edit {
-        background: white; border: 1px solid #E2E8F0; color: var(--text-dark);
+        background: var(--bg-card); border: 1px solid  var(--border-color); color: var(--text-dark);
         padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600;
         cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 8px;
-        &:hover { background: #F8FAFC; border-color: #CBD5E1; }
+        &:hover { background: var(--bg-inset); border-color: var(--text-muted); }
     }
 }
 
@@ -117,12 +117,12 @@
 }
 
 .inner-card {
-    border: 1px solid #F1F5F9; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; height: 100%;
+    border: 1px solid  var(--border-color); border-radius: 12px; padding: 24px; display: flex; flex-direction: column; height: 100%;
 }
 
 .inner-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
 .inner-title { font-size: 14px; font-weight: 700; }
-.pill-sm { background: #F1F5F9; color: var(--text-grey); padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 500; }
+.pill-sm { background: var(--bg-inset); color: var(--text-grey); padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 500; }
 .inner-desc { font-size: 12px; color: var(--text-grey); margin-bottom: 20px; line-height: 1.4; }
 
 /* Docs */
@@ -143,7 +143,7 @@
 /* Billing */
 .billing-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 .bill-label { font-size: 13px; font-weight: 600; }
-.btn-sm-grey { background: #F1F5F9; border: none; padding: 6px 12px; border-radius: 12px; font-size: 11px; color: var(--text-dark); cursor: pointer; &:hover { background: #E2E8F0; } }
+.btn-sm-grey { background: var(--bg-inset); border: none; padding: 6px 12px; border-radius: 12px; font-size: 11px; color: var(--text-dark); cursor: pointer; &:hover { background: #E2E8F0; } }
 .bill-sub { font-size: 11px; color: var(--text-light); margin-bottom: 20px; }
 .mt-10 { margin-top: 10px; }
 .progress-label { font-size: 13px; font-weight: 600; margin-bottom: 8px; display: block; }
@@ -157,7 +157,7 @@
 .toggle-label { font-size: 13px; color: var(--text-dark); }
 .toggle-switch {
     position: relative; width: 36px; height: 20px; background: #CBD5E1; border-radius: 20px; cursor: pointer; transition: 0.3s;
-    &::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; background: white; border-radius: 50%; transition: 0.3s; }
+    &::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; background: var(--bg-card); border-radius: 50%; transition: 0.3s; }
     &.active { background: var(--primary-blue); &::after { transform: translateX(16px); } }
 }
 .vacation-block { margin-top: 15px; border-top: 1px solid #F1F5F9; padding-top: 15px; }
@@ -171,6 +171,6 @@
     .guest-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
     .guest-info h4 { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
     .guest-info p { font-size: 11px; color: var(--text-light); }
-    .btn-manage { background: #F8FAFC; border: none; padding: 6px 12px; border-radius: 12px; font-size: 11px; color: var(--text-grey); cursor: pointer; &:hover { background: #E2E8F0; } }
+    .btn-manage { background: var(--bg-inset); border: none; padding: 6px 12px; border-radius: 12px; font-size: 11px; color: var(--text-grey); cursor: pointer; &:hover { background: #E2E8F0; } }
 }
 .invite-note { font-size: 11px; color: var(--text-light); margin-top: 12px; line-height: 1.4; }

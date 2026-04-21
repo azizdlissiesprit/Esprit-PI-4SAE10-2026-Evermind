@@ -1,0 +1,43 @@
+<div class="assign-container">
+  <div class="header">
+    <h1>Assign Patients to Caregivers</h1>
+    <p>Manage patient-caregiver responsibilities for the monitoring system.</p>
+  </div>
+
+  <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+  <div *ngIf="errorMessage" class="alert alert-error">{{ errorMessage }}</div>
+
+  <div class="card">
+    <div *ngIf="isLoading" class="loader">Loading data...</div>
+
+    <table *ngIf="!isLoading" class="admin-table">
+      <thead>
+        <tr>
+          <th>Patient Name</th>
+          <th>Room</th>
+          <th>Current Caregiver</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let patient of patients">
+          <td>{{ patient?.firstName }} {{ patient?.lastName }}</td>
+          <td>{{ patient?.roomNumber || 'N/A' }}</td>
+          <td>
+            <select #caregiverSelect class="assign-select" [ngModel]="patient?.responsable || ''">
+              <option value="">Unassigned</option>
+              <option *ngFor="let cg of caregivers" [value]="cg?.userId">
+                {{ cg?.firstName }} {{ cg?.lastName }}
+              </option>
+            </select>
+          </td>
+          <td>
+            <button class="btn-assign" (click)="onAssign(patient.id, caregiverSelect.value)">
+              Update Assignment
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

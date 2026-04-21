@@ -6,6 +6,8 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "interventions")
@@ -42,6 +44,9 @@ public class Intervention {
     @Enumerated(EnumType.STRING)
     private InterventionOutcome outcome;
 
+    @Enumerated(EnumType.STRING)
+    private InterventionStatus status;
+
     // --- METRICS ---
 
     @Column(nullable = false)
@@ -50,4 +55,15 @@ public class Intervention {
     private LocalDateTime completedAt; // When 'Resolve' was clicked
 
     private Long durationInSeconds; // Calculated: completedAt - startedAt
+
+    // --- NEW: ESCALATION & LOGS ---
+
+    @Column(columnDefinition = "boolean default false")
+    private Boolean isEscalated;
+
+    private Long escalatedToUserId;
+
+    @OneToMany(mappedBy = "intervention", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<InterventionLog> logs = new ArrayList<>();
 }

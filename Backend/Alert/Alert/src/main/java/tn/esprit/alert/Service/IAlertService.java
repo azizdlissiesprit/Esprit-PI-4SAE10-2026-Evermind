@@ -14,4 +14,5 @@ public interface IAlertService {
     public Alert ignoreAlert(Long alertId);
     public void removeAlert(Long alertId);
     Alert updateAlert(Long id, Alert alert);
+    public List<Alert> retrieveAlertsByIds(List<Long> ids);
 }

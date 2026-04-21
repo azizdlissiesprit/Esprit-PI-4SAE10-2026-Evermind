@@ -1,0 +1,120 @@
+<div class="seeding-container fade-in">
+  <div class="header-section">
+    <div>
+      <h1 class="page-title"><i class="fa-solid fa-database me-2"></i> Medical Data Seeding Console</h1>
+      <p class="page-subtitle">Inject realistic clinical scenarios across EverMind microservices for presentation & testing.</p>
+    </div>
+    <div class="master-controls">
+      <button class="btn btn-outline-danger me-2 shadow-sm" (click)="clearAll()" [disabled]="isGlobalLoading">
+        <i class="fa-solid fa-trash-can me-1"></i> Factory Reset (Clear All)
+      </button>
+      <button class="btn btn-primary shadow-sm pulse-btn" (click)="seedAll()" [disabled]="isGlobalLoading">
+        <i class="fa-solid fa-bolt-lightning me-1"></i> Initialize Platform (Seed All)
+      </button>
+    </div>
+  </div>
+
+  <!-- Global Progress Bar -->
+  <div class="global-progress" *ngIf="isGlobalLoading">
+    <div class="progress-bar-wrap">
+      <div class="progress-fill" [style.width.%]="overallProgress"></div>
+    </div>
+    <span class="progress-text">Orchestrating microservices... {{overallProgress | number:'1.0-0'}}%</span>
+  </div>
+
+  <div class="services-grid mt-4">
+    <!-- Loop through services -->
+    <div class="service-card" *ngFor="let s of services" @fade>
+      
+      <!-- Card Header -->
+      <div class="card-header" [style.border-top-color]="s.color">
+        <div class="header-content">
+          <div class="icon-box" [style.color]="s.color" [style.background-color]="s.color + '1a'">
+            <i [class]="s.icon"></i>
+          </div>
+          <div class="title-box">
+            <h3>{{ s.name }}</h3>
+            
+            <div class="status-badge" [ngClass]="{'seeded': statuses.get(s.key)?.seeded, 'empty': !statuses.get(s.key)?.seeded}">
+              <span *ngIf="loading.get(s.key)" class="spinner-border spinner-border-sm me-1"></span>
+              <span *ngIf="!loading.get(s.key)">
+                <i [class]="statuses.get(s.key)?.seeded ? 'fa-solid fa-circle-check me-1' : 'fa-regular fa-circle ms-1 me-1'"></i>
+                {{ statuses.get(s.key)?.seeded ? 'Data Generated' : 'No Demo Data' }}
+              </span>
+            </div>
+          </div>
+        </div>
+        <p class="description">{{ s.description }}</p>
+      </div>
+
+      <!-- Card Body - Metrics -->
+      <div class="card-body">
+        <div class="metrics-grid">
+          <div class="metric-item" *ngFor="let metric of s.metrics">
+            <span class="metric-label">{{ formatLabel(metric) }}</span>
+            <span class="metric-val" *ngIf="!loading.get(s.key)">{{ statuses.get(s.key)?.[metric] || 0 }}</span>
+            <span class="metric-val text-muted" *ngIf="loading.get(s.key)">...</span>
+          </div>
+        </div>
+        
+        <div class="timestamp text-muted small mt-2" *ngIf="statuses.get(s.key)?.lastSeededAt">
+           <i class="fa-regular fa-clock me-1"></i> Last seeded: {{ statuses.get(s.key)?.lastSeededAt | date:'medium' }}
+        </div>
+      </div>
+
+      <!-- Card Footer - Actions -->
+      <div class="card-footer">
+        <button class="btn btn-outline-danger btn-sm" 
+                [disabled]="!statuses.get(s.key)?.seeded || isGlobalLoading || loading.get(s.key)"
+                (click)="clearService(s)">
+          Clear
+        </button>
+        <button class="btn btn-outline-primary btn-sm"
+                [disabled]="statuses.get(s.key)?.seeded || isGlobalLoading || loading.get(s.key)"
+                (click)="promptSeedService(s)">
+          <i class="fa-solid fa-play me-1"></i> Generate
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- History Log Section -->
+  <div class="log-section mt-5 fade-in">
+    <h3><i class="fa-solid fa-list-check me-2"></i> Operation History</h3>
+    <div class="log-container">
+      <table class="table table-borderless table-hover mb-0">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Service</th>
+            <th>Action</th>
+            <th>Result Detail</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let log of logs">
+            <td class="text-muted"><small>{{ log.time | date:'HH:mm:ss' }}</small></td>
+            <td><span class="badge bg-light text-dark border">{{ log.service }}</span></td>
+            <td>
+              <span class="badge" 
+                    [class.bg-success]="log.action === 'SEED'"
+                    [class.bg-danger]="log.action === 'CLEAR'"
+                    [class.bg-warning]="log.action === 'ERROR'">
+                {{ log.action }}
+              </span>
+            </td>
+            <td>{{ log.detail }}</td>
+          </tr>
+          <tr *ngIf="logs.length === 0">
+            <td colspan="4" class="text-center text-muted py-4">
+              <i class="fa-solid fa-box-open fa-2x mb-2 opacity-50 d-block"></i>
+              No recent operations.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
