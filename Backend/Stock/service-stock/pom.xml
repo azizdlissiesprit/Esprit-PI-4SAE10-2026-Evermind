@@ -24,6 +24,7 @@
         <spring-cloud.version>2025.1.1</spring-cloud.version>
         <!-- OpenAPI Version compatible with modern Boot -->
         <springdoc.version>2.8.5</springdoc.version>
+        <sonar.organization>azizdlissiesprit</sonar.organization>
     </properties>
 
     <dependencies>
