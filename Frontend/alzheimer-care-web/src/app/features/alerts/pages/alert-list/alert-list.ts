@@ -4,7 +4,7 @@ import { Router, RouterModule } from '@angular/router'; // <--- 1. Import Router
 import { FormsModule } from '@angular/forms';
 import { AlertService } from '../../../../core/services/alert.service';
 import { InterventionService } from '../../../../core/services/intervention.service';
-import { Alert } from '../../../../core/models/alert.model';
+import { Alert, Intervention } from '../../../../core/models/alert.model';
 import { StatutAlerte, Severite, TypeAlerte, InterventionStatus } from '../../../../core/models/enums';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { DialogService } from '../../../../core/services/dialog.service';
@@ -63,7 +63,7 @@ export class AlertListComponent implements OnInit {
     if (userRole === 'MEDECIN' && userId) {
       this.isMedecin = true;
       this.interventionService.getEscalatedInterventions(userId).subscribe({
-        next: (interventions) => {
+        next: (interventions: Intervention[]) => {
           const alertIds = interventions.map(i => i.alertId);
           if (alertIds.length === 0) {
             this.allAlerts = [];
@@ -73,20 +73,20 @@ export class AlertListComponent implements OnInit {
             return;
           }
           this.alertService.getAlertsByIds(alertIds).subscribe({
-            next: (data) => {
+            next: (data: Alert[]) => {
               console.log('🩺 MEDECIN: Loaded escalated alerts:', data);
               this.allAlerts = data;
               this.applyFilters();
               this.isLoading = false;
               this.cd.detectChanges();
             },
-            error: (err) => {
+            error: (err: any) => {
               console.error('❌ Failed to load escalated alerts', err);
               this.isLoading = false;
             }
           });
         },
-        error: (err) => {
+        error: (err: any) => {
           console.error('❌ Failed to load escalated interventions', err);
           this.isLoading = false;
         }
@@ -94,14 +94,14 @@ export class AlertListComponent implements OnInit {
     } else {
       // DEFAULT (AIDANT / ADMIN / etc.): See all alerts
       this.alertService.getAllAlerts().subscribe({
-        next: (data) => {
+        next: (data: Alert[]) => {
             console.log('✅ ALERTS RECEIVED:', data);
             this.allAlerts = data;
             this.applyFilters();
             this.isLoading = false;
             this.cd.detectChanges();
         },
-        error: (err) => { 
+        error: (err: any) => { 
             console.error('❌ Failed to load alerts', err);
             this.isLoading = false; 
         }

@@ -141,7 +141,7 @@ export class PatientTrackingComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$),
         switchMap(() => this.trackingService.getReadingsForPatient(this.patientId).pipe(catchError(() => of([])))),
       )
-      .subscribe((data) => {
+      .subscribe((data: any[]) => {
         if (data && data.length > 0) {
           this.processReadings(data);
           this.fetchEvents(); // Also fetch events
@@ -154,14 +154,14 @@ export class PatientTrackingComponent implements OnInit, OnDestroy {
     
     // 1. Fetch Patient Details for Baseline Coordinates
     this.patientService.getById(this.patientId).subscribe({
-      next: (p) => {
+      next: (p: Patient) => {
         this.patient = p;
         this.cdr.detectChanges();
         
         // 2. ONLY AFTER PATIENT ARRIVES, Fetch Initial Readings
         this.loadReadings();
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error loading patient details', err);
         // Fallback: load anyway with defaults
         this.loadReadings();
@@ -173,13 +173,13 @@ export class PatientTrackingComponent implements OnInit, OnDestroy {
 
   private loadReadings(): void {
     this.trackingService.getReadingsForPatient(this.patientId).subscribe({
-      next: (data) => {
+      next: (data: SensorReading[]) => {
         console.log(`✅ Received ${data.length} readings from backend:`, data);
         this.processReadings(data);
         this.isLoading = false;
         this.cdr.detectChanges(); // FORCE UI UPDATE
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error loading readings', err);
         this.isLoading = false;
         this.cdr.detectChanges();
@@ -189,7 +189,7 @@ export class PatientTrackingComponent implements OnInit, OnDestroy {
 
   fetchEvents(): void {
     this.trackingService.getEventsForPatient(this.patientId).subscribe({
-      next: (evts) => {
+      next: (evts: AbnormalEvent[]) => {
         this.events = evts;
         this.cdr.detectChanges(); // FORCE UI UPDATE
       }

@@ -1,15 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, retry, tap, timeout } from 'rxjs';
 import { Panier } from '../models/panier.model';
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PanierService {
-
   private apiUrl = 'http://localhost:8090/stock/api/panier';
+  private readonly requestTimeoutMs = 10000;
   private sessionId: string;
   private panierSubject = new BehaviorSubject<Panier | null>(null);
 
@@ -29,44 +28,54 @@ export class PanierService {
 
   chargerPanier(): Observable<Panier> {
     return this.http.get<Panier>(`${this.apiUrl}/${this.sessionId}`).pipe(
-      tap(panier => this.panierSubject.next(panier))
+      timeout(this.requestTimeoutMs),
+      retry({ count: 1, delay: 250 }),
+      tap((panier) => this.panierSubject.next(panier)),
     );
   }
 
   ajouterProduit(produitId: number, quantite: number = 1): Observable<Panier> {
-    return this.http.post<Panier>(
-      `${this.apiUrl}/${this.sessionId}/produits/${produitId}?quantite=${quantite}`,
-      {}
-    ).pipe(
-      tap(panier => this.panierSubject.next(panier))
-    );
+    return this.http
+      .post<Panier>(
+        `${this.apiUrl}/${this.sessionId}/produits/${produitId}?quantite=${quantite}`,
+        {},
+      )
+      .pipe(
+        timeout(this.requestTimeoutMs),
+        tap((panier) => this.panierSubject.next(panier)),
+      );
   }
 
   modifierQuantite(produitId: number, quantite: number): Observable<Panier> {
-    return this.http.put<Panier>(
-      `${this.apiUrl}/${this.sessionId}/produits/${produitId}?quantite=${quantite}`,
-      {}
-    ).pipe(
-      tap(panier => this.panierSubject.next(panier))
-    );
+    return this.http
+      .put<Panier>(
+        `${this.apiUrl}/${this.sessionId}/produits/${produitId}?quantite=${quantite}`,
+        {},
+      )
+      .pipe(
+        timeout(this.requestTimeoutMs),
+        tap((panier) => this.panierSubject.next(panier)),
+      );
   }
 
   supprimerProduit(produitId: number): Observable<Panier> {
-    return this.http.delete<Panier>(
-      `${this.apiUrl}/${this.sessionId}/produits/${produitId}`
-    ).pipe(
-      tap(panier => this.panierSubject.next(panier))
+    return this.http.delete<Panier>(`${this.apiUrl}/${this.sessionId}/produits/${produitId}`).pipe(
+      timeout(this.requestTimeoutMs),
+      tap((panier) => this.panierSubject.next(panier)),
     );
   }
 
   viderPanier(): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${this.sessionId}`).pipe(
-      tap(() => this.panierSubject.next({
-        sessionId: this.sessionId,
-        lignes: [],
-        nombreArticles: 0,
-        montantTotal: 0
-      }))
+      timeout(this.requestTimeoutMs),
+      tap(() =>
+        this.panierSubject.next({
+          sessionId: this.sessionId,
+          lignes: [],
+          nombreArticles: 0,
+          montantTotal: 0,
+        }),
+      ),
     );
   }
 
@@ -75,7 +84,7 @@ export class PanierService {
       sessionId: this.sessionId,
       lignes: [],
       nombreArticles: 0,
-      montantTotal: 0
+      montantTotal: 0,
     });
   }
 

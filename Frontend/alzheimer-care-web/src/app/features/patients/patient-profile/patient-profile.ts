@@ -43,13 +43,13 @@ export class PatientProfileComponent implements OnInit {
   loadPatientDetails(id: number) {
     this.isLoading = true;
     this.patientService.getById(id).subscribe({
-      next: (data) => {
+      next: (data: Patient) => {
         this.patient = data;
         this.isLoading = false;
         this.loadMedicalReports(id);
         this.cdr.detectChanges();
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error fetching patient details:', err);
         this.error = 'Failed to load patient profile.';
         this.isLoading = false;
@@ -64,11 +64,11 @@ export class PatientProfileComponent implements OnInit {
 
   loadMedicalReports(patientId: number) {
     this.patientService.getMedicalReports(patientId).subscribe({
-      next: (reports) => {
+      next: (reports: MedicalReport[]) => {
         this.medicalReports = reports;
         this.cdr.detectChanges();
       },
-      error: (err) => console.warn('No medical reports found', err)
+      error: (err: any) => console.warn('No medical reports found', err)
     });
   }
 

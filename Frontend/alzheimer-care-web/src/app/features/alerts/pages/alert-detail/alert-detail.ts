@@ -79,7 +79,7 @@ export class AlertDetailComponent implements OnInit {
 
   fetchIntervention(alertId: number) {
     this.interventionService.getByAlert(alertId).subscribe({
-      next: (inv) => {
+      next: (inv: Intervention) => {
         this.intervention = inv;
         this.cd.detectChanges();
       },
@@ -98,7 +98,7 @@ export class AlertDetailComponent implements OnInit {
       };
 
       this.interventionService.startIntervention(newIntervention).subscribe({
-        next: (inv) => {
+        next: (inv: Intervention) => {
           this.intervention = inv;
           if (this.alert) {
             // Decouple from current check to avoid NG0100
@@ -120,7 +120,7 @@ export class AlertDetailComponent implements OnInit {
   offerHelp() {
     if (this.intervention) {
       this.interventionService.updateStatus(this.intervention.id, InterventionStatus.OFFERING_HELP).subscribe({
-        next: (updated) => {
+        next: (updated: Intervention) => {
           this.intervention = updated;
           this.cd.detectChanges();
           this.notificationService.info('Messaging patient: "I see you may need help. A nurse is notified."');
@@ -132,7 +132,7 @@ export class AlertDetailComponent implements OnInit {
   assistInPerson() {
     if (this.intervention) {
       this.interventionService.updateStatus(this.intervention.id, InterventionStatus.IN_PERSON_ASSISTANCE).subscribe({
-        next: (updated) => {
+        next: (updated: Intervention) => {
           this.intervention = updated;
           this.cd.detectChanges();
         }
@@ -146,7 +146,7 @@ export class AlertDetailComponent implements OnInit {
         if (result.confirmed && result.outcome && result.notes) {
           console.log("🚀 Calling finishIntervention with:", { id: this.intervention!.id, outcome: result.outcome, notes: result.notes });
           this.interventionService.finishIntervention(this.intervention!.id, result.outcome, result.notes).subscribe({
-            next: (updatedInv) => {
+            next: (updatedInv: Intervention) => {
               this.notificationService.success('Incident Resolved.');
               
               // Ensure clean transition out of the current check cycle
@@ -213,12 +213,12 @@ export class AlertDetailComponent implements OnInit {
     this.selectedDoctorId = null;
 
     this.authService.getDoctors().subscribe({
-      next: (doctors) => {
+      next: (doctors: any[]) => {
         this.availableDoctors = doctors;
         this.isLoadingDoctors = false;
         this.cd.detectChanges();
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Failed to load doctors:', err);
         this.notificationService.error('Failed to load available doctors.');
         this.isLoadingDoctors = false;
@@ -242,7 +242,7 @@ export class AlertDetailComponent implements OnInit {
       this.selectedDoctorId,
       `Escalated to ${doctorName}`
     ).subscribe({
-      next: (updated) => {
+      next: (updated: Intervention) => {
         this.intervention = updated;
         this.showDoctorPicker = false;
         this.notificationService.success(`Alert escalated to ${doctorName} successfully.`);

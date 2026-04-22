@@ -57,7 +57,7 @@ export class PatientMedicalReportComponent implements OnInit {
 
   loadPatient(id: number) {
     this.patientService.getById(id).subscribe({
-      next: (data) => {
+      next: (data: Patient) => {
         this.patient = data;
         this.isLoading = false;
         this.cdr.detectChanges();
@@ -97,7 +97,7 @@ export class PatientMedicalReportComponent implements OnInit {
         this.isSubmitting = false;
         this.router.navigate(['/app/patients']);
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Failed to submit report:', err);
         this.notificationService.error('Failed to submit medical report.');
         this.isSubmitting = false;

@@ -15,156 +15,356 @@ import { PromoCountdownComponent } from '../../../shared/components/promo-countd
   imports: [CommonModule, RouterLink, PromoCountdownComponent],
   template: `
     <div class="fo-section slide-in">
-      <div class="fo-section-container">
-
+      <div class="fo-section-container fo-view-shell">
         <!-- Breadcrumb -->
         <div class="fo-breadcrumb mb-4 d-flex align-items-center text-secondary small fw-semibold">
-          <a routerLink="/" class="text-decoration-none text-secondary hover-primary"><i class="bi bi-house-door"></i></a>
+          <a routerLink="/app/store" class="text-decoration-none text-secondary hover-primary"
+            ><i class="bi bi-house-door"></i
+          ></a>
           <i class="bi bi-chevron-right mx-2" style="font-size: 0.75rem;"></i>
           <span class="text-primary">Liste de souhaits</span>
         </div>
 
         <!-- Page title -->
-        <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
-          <div class="d-flex align-items-center gap-3">
-            <div class="icon-circle shadow-sm" style="background: rgba(220, 53, 69, 0.15); color: #dc3545; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
-              <i class="bi bi-heart-fill"></i>
+        <div class="fo-view-intro mb-4">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-3">
+              <div class="fo-fav-title-icon">
+                <i class="bi bi-heart-fill"></i>
+              </div>
+              <div>
+                <span class="fo-view-kicker mb-2"><i class="bi bi-stars"></i>Favoris</span>
+                <h1 class="fo-page-title d-flex align-items-center gap-2 mb-0">
+                  Ma Liste de Souhaits
+                </h1>
+                <p class="fo-page-subtitle ms-1 mt-1 mb-0">
+                  {{
+                    items.length > 0
+                      ? items.length + ' produit(s) sauvegarde(s)'
+                      : 'Sauvegardez vos equipements favoris pour les retrouver facilement.'
+                  }}
+                </p>
+              </div>
             </div>
             <div>
-              <h1 class="page-title d-flex align-items-center gap-2 mb-0 text-primary">Ma Liste de Souhaits</h1>
-              <p class="page-subtitle text-secondary ms-1 mt-1 mb-0 fw-semibold">
-                {{ items.length > 0
-                  ? items.length + ' produit(s) sauvegardé(s)'
-                  : 'Sauvegardez vos équipements favoris pour les retrouver facilement.' }}
-              </p>
-            </div>
-          </div>
-          <button *ngIf="items.length > 0" class="btn btn-outline-danger shadow-sm rounded-pill py-2 px-4 fw-bold" (click)="clearAll()">
-            <i class="bi bi-trash3 me-1"></i> Tout vider
-          </button>
-        </div>
-
-        <!-- Empty state -->
-        <div *ngIf="items.length === 0" class="text-center p-5 clinical-card shadow-sm mt-4 animate-fade-up" style="border-radius: 16px; background: var(--bg-card);">
-           <div class="icon-circle mx-auto mb-3" style="background: rgba(220, 53, 69, 0.05); color: rgba(220, 53, 69, 0.4); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem;">
-              <i class="bi bi-heart"></i>
-           </div>
-           <h5 class="fw-bold text-primary">Votre liste de souhaits est vide</h5>
-           <p class="text-secondary fw-semibold">Explorez notre catalogue et ajoutez des articles à votre liste.</p>
-           <a routerLink="/app/store/catalogue" class="btn btn-clinical-primary rounded-pill px-4 mt-2 shadow-sm fw-bold">
-             <i class="bi bi-grid-3x3-gap me-2"></i>Parcourir le catalogue
-           </a>
-        </div>
-
-        <!-- Product grid -->
-        <div *ngIf="items.length > 0" class="row g-4 stagger-fade-in">
-          <div *ngFor="let prod of items" class="col-xl-3 col-lg-4 col-md-6">
-            <div class="card clinical-card h-100 border-0 shadow-sm text-decoration-none d-flex flex-column position-relative" style="border-radius: 16px; overflow: hidden; background: var(--bg-card);">
-              
-              <!-- Image & Badges -->
-              <a [routerLink]="['/app/store/catalogue', prod.id]" class="position-relative text-decoration-none" style="height: 180px; background: var(--bg-inset); display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                <span *ngIf="isPromoActive(prod) && prod.remise" class="position-absolute top-0 start-0 m-3 badge bg-danger shadow-sm fs-6">-{{ prod.remise }}%</span>
-                <span *ngIf="!isPromoActive(prod) && isNouveauProduit(prod)" class="position-absolute top-0 start-0 m-3 badge bg-primary shadow-sm fs-6">Nouveau</span>
-                
-                <img *ngIf="prod.imageUrl" [src]="prod.imageUrl" [alt]="prod.nom" style="width: 100%; height: 100%; object-fit: cover;">
-                <i *ngIf="!prod.imageUrl" class="bi bi-box-seam text-secondary" style="font-size: 3.5rem; opacity: 0.5;"></i>
-              </a>
-
-              <!-- Floating Actions -->
-              <button class="btn btn-light rounded-circle shadow-sm position-absolute" style="top: 10px; right: 10px; width: 36px; height: 36px; z-index: 10; color: #dc3545;"
-                      (click)="removeItem($event, prod.id!)"
-                      title="Retirer de la liste">
-                <i class="bi bi-heart-fill"></i>
-              </button>
-              <button class="btn btn-light rounded-circle shadow-sm position-absolute" style="top: 54px; right: 10px; width: 36px; height: 36px; z-index: 10;"
-                      [ngClass]="compareService.isInCompare(prod.id!) ? 'text-primary' : 'text-secondary'"
-                      (click)="toggleCompare($event, prod)"
-                      [title]="compareService.isInCompare(prod.id!) ? 'Retirer de la comparaison' : 'Comparer'">
-                <i class="bi" [class.bi-bar-chart-steps]="!compareService.isInCompare(prod.id!)" [class.bi-bar-chart-fill]="compareService.isInCompare(prod.id!)"></i>
-              </button>
-
-              <!-- Body -->
-              <div class="card-body d-flex flex-column p-4">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                   <span class="badge rounded bg-card-surface text-primary shadow-sm border border-primary-subtle" style="font-size:0.75rem;">
-                     {{ prod.categorieNom }}
-                   </span>
-                </div>
-                <h5 class="fw-bold text-primary mb-2" style="font-size: 1.1rem; letter-spacing: -0.2px;">{{ prod.nom }}</h5>
-                <p class="text-secondary small fw-semibold mb-3 flex-grow-1" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">{{ prod.description || 'Description non disponible pour ce produit.' }}</p>
-
-                <!-- Price Row -->
-                <div class="d-flex align-items-center justify-content-between mb-2 pt-2 border-top">
-                  <div *ngIf="isPromoActive(prod) && prod.prixOriginal" class="d-flex flex-column">
-                    <span class="text-muted text-decoration-line-through small">{{ prod.prixOriginal | number:'1.2-2' }} TND</span>
-                    <span class="fw-bold text-danger font-monospace fs-5">{{ prod.prix | number:'1.2-2' }} TND</span>
-                  </div>
-                  <div *ngIf="!isPromoActive(prod) || !prod.prixOriginal" class="fw-bold text-primary font-monospace fs-5">
-                    {{ prod.prix | number:'1.2-2' }} TND
-                  </div>
-                  <span class="badge rounded" [ngClass]="prod.quantite > 0 ? 'bg-success-soft text-success border border-success' : 'bg-danger-soft text-danger border border-danger'" style="padding: 5px 10px; font-size: 0.75rem;">
-                    {{ prod.quantite > 0 ? 'En stock' : 'Rupture' }}
-                  </span>
-                </div>
-
-                <div class="mb-3" style="min-height: 24px;">
-                  <app-promo-countdown *ngIf="isPromoActive(prod) && prod.dateFinPromo"
-                    [dateFinPromo]="prod.dateFinPromo" size="card">
-                  </app-promo-countdown>
-                </div>
-
-                <button *ngIf="prod.quantite > 0" class="btn btn-clinical-primary w-100 rounded-pill py-2 shadow-sm d-flex align-items-center justify-content-center gap-2"
-                        [class.btn-success]="ajoutOk === prod.id"
-                        (click)="ajouterAuPanier($event, prod)"
-                        [disabled]="ajoutEnCours === prod.id" style="font-weight: 600;">
-                  <span *ngIf="ajoutEnCours === prod.id" class="spinner-border spinner-border-sm me-1"></span>
-                  <i *ngIf="ajoutEnCours !== prod.id && ajoutOk !== prod.id" class="bi bi-cart-plus"></i>
-                  <i *ngIf="ajoutOk === prod.id" class="bi bi-check2-circle"></i>
-                  {{ ajoutOk === prod.id ? 'Ajouté !' : 'Ajouter au panier' }}
-                </button>
-                <button *ngIf="prod.quantite === 0" class="btn btn-outline-danger w-100 rounded-pill py-2 shadow-sm d-flex align-items-center justify-content-center gap-2" disabled style="font-weight: 600; opacity:0.8;">
-                  <i class="bi bi-x-circle"></i> Rupture de stock
+              <div class="fo-view-meta">
+                <span class="fo-view-meta-item">
+                  <i class="bi bi-heart-fill"></i>{{ items.length }} article{{
+                    items.length > 1 ? 's' : ''
+                  }}
+                </span>
+                <button
+                  *ngIf="items.length > 0"
+                  class="fo-btn fo-btn-outline fo-fav-clear-btn"
+                  (click)="clearAll()"
+                >
+                  <i class="bi bi-trash3 me-1"></i>Tout vider
                 </button>
               </div>
             </div>
           </div>
         </div>
 
+        <!-- Empty state -->
+        <div *ngIf="items.length === 0" class="fo-empty-state fo-fav-empty animate-fade-up">
+          <i class="bi bi-heart"></i>
+          <h5 class="fw-bold text-primary">Votre liste de souhaits est vide</h5>
+          <p>Explorez notre catalogue et ajoutez des articles a votre liste.</p>
+          <a routerLink="/app/store/catalogue" class="fo-btn fo-btn-primary mt-2">
+            <i class="bi bi-grid-3x3-gap me-2"></i>Parcourir le catalogue
+          </a>
+        </div>
+
+        <!-- Product grid -->
+        <div *ngIf="items.length > 0" class="fo-product-grid fo-fav-grid stagger-fade-in">
+          <article *ngFor="let prod of items" class="fo-product-card fo-fav-card">
+            <!-- Image & Badges -->
+            <a
+              [routerLink]="['/app/store/catalogue', prod.id]"
+              class="fo-product-card-img fo-fav-image-link"
+            >
+              <span *ngIf="isPromoActive(prod) && prod.remise" class="fo-badge-promo"
+                >-{{ prod.remise }}%</span
+              >
+              <span *ngIf="!isPromoActive(prod) && isNouveauProduit(prod)" class="fo-fav-badge-new"
+                >Nouveau</span
+              >
+
+              <img *ngIf="prod.imageUrl" [src]="prod.imageUrl" [alt]="prod.nom" />
+              <i *ngIf="!prod.imageUrl" class="bi bi-box-seam fo-fav-no-image"></i>
+            </a>
+
+            <!-- Floating Actions -->
+            <div class="fo-fav-actions">
+              <button
+                class="fo-fav-action fo-fav-action-remove"
+                (click)="removeItem($event, prod.id!)"
+                title="Retirer de la liste"
+              >
+                <i class="bi bi-heart-fill"></i>
+              </button>
+              <button
+                class="fo-fav-action"
+                [class.active]="compareService.isInCompare(prod.id!)"
+                (click)="toggleCompare($event, prod)"
+                [title]="
+                  compareService.isInCompare(prod.id!) ? 'Retirer de la comparaison' : 'Comparer'
+                "
+              >
+                <i
+                  class="bi"
+                  [class.bi-bar-chart-steps]="!compareService.isInCompare(prod.id!)"
+                  [class.bi-bar-chart-fill]="compareService.isInCompare(prod.id!)"
+                ></i>
+              </button>
+            </div>
+
+            <!-- Body -->
+            <div class="fo-product-card-body">
+              <span class="fo-product-card-category">{{ prod.categorieNom }}</span>
+              <h4 class="fw-bold">{{ prod.nom }}</h4>
+              <p>{{ prod.description || 'Description non disponible pour ce produit.' }}</p>
+
+              <div class="fo-fav-price-row">
+                <div *ngIf="isPromoActive(prod) && prod.prixOriginal" class="d-flex flex-column">
+                  <span class="text-muted text-decoration-line-through small"
+                    >{{ prod.prixOriginal | number: '1.2-2' }} TND</span
+                  >
+                  <span class="fw-bold text-danger">{{ prod.prix | number: '1.2-2' }} TND</span>
+                </div>
+                <div *ngIf="!isPromoActive(prod) || !prod.prixOriginal" class="fo-product-price">
+                  {{ prod.prix | number: '1.2-2' }} TND
+                </div>
+                <span
+                  class="fo-product-stock"
+                  [class.in-stock]="prod.quantite > 0"
+                  [class.out-of-stock]="prod.quantite === 0"
+                >
+                  {{ prod.quantite > 0 ? 'En stock' : 'Rupture' }}
+                </span>
+              </div>
+
+              <div class="fo-fav-countdown">
+                <app-promo-countdown
+                  *ngIf="isPromoActive(prod) && prod.dateFinPromo"
+                  [dateFinPromo]="prod.dateFinPromo"
+                  size="card"
+                >
+                </app-promo-countdown>
+              </div>
+
+              <button
+                *ngIf="prod.quantite > 0"
+                class="fo-add-cart-btn fo-fav-cart-btn btn-active-scale"
+                [class.fo-fav-cart-success]="ajoutOk === prod.id"
+                (click)="ajouterAuPanier($event, prod)"
+                [disabled]="ajoutEnCours === prod.id"
+              >
+                <span
+                  *ngIf="ajoutEnCours === prod.id"
+                  class="spinner-border spinner-border-sm me-1"
+                ></span>
+                <i
+                  *ngIf="ajoutEnCours !== prod.id && ajoutOk !== prod.id"
+                  class="bi bi-cart-plus"
+                ></i>
+                <i *ngIf="ajoutOk === prod.id" class="bi bi-check2-circle"></i>
+                {{ ajoutOk === prod.id ? 'Ajoute !' : 'Ajouter au panier' }}
+              </button>
+
+              <button *ngIf="prod.quantite === 0" class="fo-add-cart-btn fo-fav-out-btn" disabled>
+                <i class="bi bi-x-circle"></i> Rupture de stock
+              </button>
+            </div>
+          </article>
+        </div>
       </div>
     </div>
   `,
-  styles: [`
-    .clinical-card { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); border: 1px solid var(--border-color); }
-    .clinical-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px -6px rgba(0,0,0,0.15) !important; border-color: var(--accent-light, #EEF2FF); }
-    .bg-card-surface { background-color: var(--bg-card) !important; }
-    .bg-inset { background-color: var(--bg-inset) !important; }
-    
-    .btn-clinical-primary {
-      background-color: var(--accent-color, #4E80EE);
-      color: white;
-      border: 1px solid var(--accent-color, #4E80EE);
-      transition: all 0.2s;
-    }
-    .btn-clinical-primary:hover:not(:disabled) {
-      background-color: var(--accent-hover, #3b6bcc);
-      color: white;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(78, 128, 238, 0.3) !important;
-    }
+  styles: [
+    `
+      .fo-fav-title-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.35rem;
+        color: #dc3545;
+        background: rgba(220, 53, 69, 0.12);
+        border: 1px solid rgba(220, 53, 69, 0.22);
+      }
 
-    .bg-success-soft { background-color: rgba(16, 185, 129, 0.1) !important; color: #10B981 !important; }
-    .bg-danger-soft { background-color: rgba(239, 68, 68, 0.1) !important; color: #EF4444 !important; }
-    
-    .stagger-fade-in > * { animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards; }
-    .stagger-fade-in > *:nth-child(1) { animation-delay: 0.05s; }
-    .stagger-fade-in > *:nth-child(2) { animation-delay: 0.1s; }
-    .stagger-fade-in > *:nth-child(3) { animation-delay: 0.15s; }
-    .stagger-fade-in > *:nth-child(4) { animation-delay: 0.2s; }
-    .animate-fade-up { animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+      .fo-fav-clear-btn {
+        border-color: rgba(220, 53, 69, 0.42);
+        color: #dc3545;
+      }
 
-    html[data-theme="dark"] .clinical-card { border: 1px solid var(--border-color); }
-  `]
+      .fo-fav-clear-btn:hover {
+        background: #dc3545;
+        border-color: #dc3545;
+        color: #fff;
+      }
+
+      .fo-fav-empty {
+        margin-top: 10px;
+      }
+
+      .fo-fav-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      }
+
+      .fo-fav-card {
+        position: relative;
+      }
+
+      .fo-fav-image-link {
+        text-decoration: none;
+        position: relative;
+      }
+
+      .fo-fav-badge-new {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        z-index: 10;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        letter-spacing: 0.03em;
+        font-weight: 700;
+        padding: 4px 10px;
+        background: var(--accent-color);
+        color: #fff;
+        box-shadow: 0 4px 14px rgba(78, 128, 238, 0.32);
+      }
+
+      .fo-fav-no-image {
+        font-size: 3.1rem;
+        color: var(--text-secondary);
+        opacity: 0.45;
+      }
+
+      .fo-fav-actions {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 11;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .fo-fav-action {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+        color: var(--text-secondary);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+        box-shadow: 0 6px 18px rgba(2, 8, 23, 0.14);
+      }
+
+      .fo-fav-action:hover {
+        color: var(--accent-color);
+        border-color: var(--accent-color);
+        transform: translateY(-1px);
+      }
+
+      .fo-fav-action.active {
+        color: var(--accent-color);
+        border-color: rgba(78, 128, 238, 0.5);
+        background: var(--primary-light);
+      }
+
+      .fo-fav-action-remove {
+        color: #dc3545;
+        border-color: rgba(220, 53, 69, 0.4);
+      }
+
+      .fo-fav-action-remove:hover {
+        color: #fff;
+        background: #dc3545;
+        border-color: #dc3545;
+      }
+
+      .fo-fav-price-row {
+        margin-top: 8px;
+        padding-top: 10px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .fo-fav-countdown {
+        min-height: 24px;
+        margin: 10px 0 12px;
+      }
+
+      .fo-fav-cart-btn {
+        margin-top: auto;
+      }
+
+      .fo-fav-cart-success {
+        background: #16a34a;
+        border-color: #16a34a;
+        color: #fff;
+      }
+
+      .fo-fav-out-btn {
+        margin-top: auto;
+        border-color: rgba(220, 38, 38, 0.36);
+        color: #dc2626;
+        background: rgba(220, 38, 38, 0.08);
+        cursor: not-allowed;
+      }
+
+      .fo-fav-out-btn i {
+        margin-right: 6px;
+      }
+
+      .stagger-fade-in > * {
+        animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+      }
+      .stagger-fade-in > *:nth-child(1) {
+        animation-delay: 0.05s;
+      }
+      .stagger-fade-in > *:nth-child(2) {
+        animation-delay: 0.1s;
+      }
+      .stagger-fade-in > *:nth-child(3) {
+        animation-delay: 0.15s;
+      }
+      .stagger-fade-in > *:nth-child(4) {
+        animation-delay: 0.2s;
+      }
+      .animate-fade-up {
+        animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(15px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .fo-fav-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    `,
+  ],
 })
 export class WishlistComponent implements OnInit, OnDestroy {
   readonly isPromoActive = isPromoActive;
@@ -178,12 +378,12 @@ export class WishlistComponent implements OnInit, OnDestroy {
     public wishlistService: WishlistService,
     private panierService: PanierService,
     public compareService: CompareService,
-    public t: TraductionService
+    public t: TraductionService,
   ) {}
 
   ngOnInit(): void {
     console.log('[WishlistComponent] Initializing...');
-    this.sub = this.wishlistService.wishlist$.subscribe(items => {
+    this.sub = this.wishlistService.wishlist$.subscribe((items) => {
       this.items = items;
       console.log(`[WishlistComponent] Items loaded: ${items.length}`);
     });
@@ -217,7 +417,7 @@ export class WishlistComponent implements OnInit, OnDestroy {
     event.preventDefault();
     event.stopPropagation();
     if (!produit.id || this.ajoutEnCours === produit.id) return;
-    
+
     console.log(`[WishlistComponent] Adding to cart:`, produit);
     this.ajoutEnCours = produit.id;
     this.ajoutOk = null;
@@ -226,12 +426,14 @@ export class WishlistComponent implements OnInit, OnDestroy {
         console.log(`[WishlistComponent] Added to cart successfully.`);
         this.ajoutEnCours = null;
         this.ajoutOk = produit.id!;
-        setTimeout(() => { if (this.ajoutOk === produit.id) this.ajoutOk = null; }, 2000);
+        setTimeout(() => {
+          if (this.ajoutOk === produit.id) this.ajoutOk = null;
+        }, 2000);
       },
-      error: (err) => { 
+      error: (err) => {
         console.error(`[WishlistComponent] Failed to add to cart:`, err);
-        this.ajoutEnCours = null; 
-      }
+        this.ajoutEnCours = null;
+      },
     });
   }
 

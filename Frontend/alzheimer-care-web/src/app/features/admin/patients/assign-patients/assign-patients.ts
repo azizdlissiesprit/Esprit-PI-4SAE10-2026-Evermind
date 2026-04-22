@@ -45,7 +45,7 @@ export class AssignPatientsComponent implements OnInit {
 
     console.log('[DEBUG] Calling PatientService.getAll()...');
     this.patientService.getAll().subscribe({
-      next: (data) => {
+      next: (data: Patient[]) => {
         console.log('[DEBUG] Received Patients data:', data);
         this.patients = data;
       },
@@ -62,7 +62,7 @@ export class AssignPatientsComponent implements OnInit {
 
     console.log('[DEBUG] Calling HTTP GET for Caregivers (http://localhost:8082/user/type/AIDANT)...');
     this.http.get<any[]>('http://localhost:8082/user/type/AIDANT').subscribe({
-      next: (data) => {
+      next: (data: any[]) => {
         console.log('[DEBUG] Received Caregivers data:', data);
         this.caregivers = data;
       },

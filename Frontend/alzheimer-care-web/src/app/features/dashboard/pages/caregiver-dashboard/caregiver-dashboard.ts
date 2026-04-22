@@ -124,7 +124,7 @@ export class CaregiverDashboardComponent implements OnInit {
       interventions: this.interventionService.getAllInterventions().pipe(catchError(() => of([]))),
       assessments: this.assessmentService.getAllAssessments().pipe(catchError(() => of([])))
     }).subscribe({
-      next: (data) => {
+      next: (data: any) => {
         this.patients = this.isMedecin ? data.allPatients : data.patients;
         this.alerts = data.alerts || [];
         this.interventions = data.interventions || [];
@@ -140,7 +140,7 @@ export class CaregiverDashboardComponent implements OnInit {
         this.isLoading = false;
         this.cdr.detectChanges();
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Dashboard load error:', err);
         this.loadError = 'Some data could not be loaded. Showing available information.';
         this.isLoading = false;
@@ -155,7 +155,7 @@ export class CaregiverDashboardComponent implements OnInit {
     // Load escalated interventions for this doctor
     this.interventionService.getEscalatedInterventions(this.userId).pipe(
       catchError(() => of([]))
-    ).subscribe(escalated => {
+    ).subscribe((escalated: Intervention[]) => {
       this.escalatedInterventions = escalated;
       this.cdr.detectChanges();
     });

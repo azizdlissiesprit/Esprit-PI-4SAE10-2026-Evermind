@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { AuthService } from '../../core/services/auth.service';
-import { AdminUserService } from '../../core/services/admin-user.service';
-import { SessionTimerService } from '../../core/services/session-timer.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { AdminUserService } from '../../../core/services/admin-user.service';
+import { SessionTimerService } from '../../../core/services/session-timer.service';
 import { Subscription } from 'rxjs';
 
 // Import the sub-components
@@ -84,7 +84,7 @@ export class ProfileContainerComponent implements OnInit, OnDestroy {
     console.log('[ProfileContainer] ngOnInit started');
     
     // Subscribe to session timer
-    this.timerSub = this.sessionTimer.elapsedSeconds$.subscribe(seconds => {
+    this.timerSub = this.sessionTimer.elapsedSeconds$.subscribe((seconds: number) => {
       this.formattedSessionTime = this.sessionTimer.formatDuration(seconds);
     });
 
@@ -102,12 +102,12 @@ export class ProfileContainerComponent implements OnInit, OnDestroy {
         
         console.log('[ProfileContainer] Making API call to AdminUserService.getUserById...');
         this.adminUserService.getUserById(userId).subscribe({
-          next: (user) => {
+          next: (user: any) => {
             console.log('[ProfileContainer] API call SUCCESS. User data received:', user);
             this.currentUser = user;
             this.isLoading = false;
           },
-          error: (err) => {
+          error: (err: any) => {
             console.error('[ProfileContainer] API call FAILED. Error details:', err);
             this.error = 'Failed to load full profile data from server.';
             // Fallback to basic local storage data

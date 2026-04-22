@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, PLATFORM_ID, ChangeDetectorRef  } from '@angular/core'; // <--- Import Inject & PLATFORM_ID
 import { CommonModule, isPlatformBrowser } from '@angular/common'; // <--- Import isPlatformBrowser
 import { FormsModule } from '@angular/forms';
-import { AdminUserService } from '../../core/services/admin-user.service';
+import { AdminUserService } from '../../../core/services/admin-user.service';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { RouterModule, Router } from '@angular/router'; 
@@ -72,7 +72,7 @@ totalElements = 0;
           this.totalElements--;
           this.cd.detectChanges();
         },
-        error: (err) => alert('Failed to delete user.')
+        error: (err: any) => alert('Failed to delete user.')
       });
     }
   }
@@ -131,7 +131,7 @@ totalElements = 0;
       this.sortColumn,
       this.sortDirection
     ).subscribe({
-      next: (data) => {
+      next: (data: any) => {
         console.log("4. SUCCESS - Data Received:", data);
         
         this.users = data.content || [];
@@ -141,7 +141,7 @@ totalElements = 0;
         this.loading = false;
         this.cd.detectChanges(); // <--- 3. FORCE UI UPDATE
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error("4. ERROR - API Failed:", err);
         this.loading = false;
         this.cd.detectChanges(); // <--- 3. FORCE UI UPDATE

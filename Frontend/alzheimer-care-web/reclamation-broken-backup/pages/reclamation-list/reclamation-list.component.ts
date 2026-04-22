@@ -2,25 +2,39 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReclamationService } from '../../../../core/services/reclamation.service';
-import { TokenLocalStorageService } from '../../../../core/services/token-local-storage.service';
+import { AuthService } from '../../../../core/services/auth.service';
 import { 
   Reclamation, 
   ReclamationStatus, 
   ReclamationPriority 
 } from '../../../../core/models/reclamation.model';
 import { ReclamationModalComponent } from '../../components/reclamation-modal/reclamation-modal.component';
-import { ReclamationDetailModalComponent } from '../../components/reclamation-detail-modal/reclamation-detail-modal.component';
 
 @Component({
   selector: 'app-reclamation-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReclamationModalComponent, ReclamationDetailModalComponent],
-  templateUrl: './reclamation-list.component.html',
-  styleUrls: ['./reclamation-list.component.scss']
+  imports: [CommonModule, FormsModule, ReclamationModalComponent],
+  template: `
+    <div class="container mt-4">
+      <h2>Reclamations</h2>
+      <div *ngIf="isLoading">Loading...</div>
+      <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+      <div *ngIf="!isLoading && reclamations.length === 0">No reclamations found.</div>
+      <ul class="list-group">
+        <li *ngFor="let rec of filteredReclamations" class="list-group-item">
+          {{ rec.subject }} - <span class="badge bg-primary">{{ rec.status }}</span>
+        </li>
+      </ul>
+    </div>
+  `,
+  styles: [`
+    .status-pending { color: orange; }
+    .status-resolved { color: green; }
+  `]
 })
 export class ReclamationListComponent implements OnInit {
   private reclamationService = inject(ReclamationService);
-  private tokenStorage = inject(TokenLocalStorageService);
+  private authService = inject(AuthService);
   
   reclamations: Reclamation[] = [];
   filteredReclamations: Reclamation[] = [];
@@ -48,7 +62,7 @@ export class ReclamationListComponent implements OnInit {
   }
 
   loadReclamations(): void {
-    const userId = this.tokenStorage.getUserId();
+    const userId = this.authService.getUserId();
     
     if (!userId) {
       this.errorMessage = 'Utilisateur non connecté';
@@ -59,15 +73,15 @@ export class ReclamationListComponent implements OnInit {
     this.errorMessage = '';
 
     this.reclamationService.getReclamationsByUserId(userId).subscribe({
-      next: (data) => {
-        this.reclamations = data.sort((a, b) => 
+      next: (data: Reclamation[]) => {
+        this.reclamations = data.sort((a: Reclamation, b: Reclamation) => 
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
         this.filterReclamations();
         this.calculateStats();
         this.isLoading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         this.errorMessage = 'Erreur lors du chargement des réclamations';
         this.isLoading = false;
         console.error('Erreur chargement réclamations:', error);

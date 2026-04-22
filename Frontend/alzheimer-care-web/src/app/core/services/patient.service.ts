@@ -13,6 +13,35 @@ export interface Patient {
   bloodType?: string;
   medicalDiagnosis?: string;
   wearableDeviceId?: string;
+  geofenceRadius?: number;
+  baseLatitude?: number;
+  baseLongitude?: number;
+  emergencyContactName?: string;
+  emergencyContactRelation?: string;
+  emergencyContactPhone?: string;
+  allergies?: string;
+  chronicMedications?: string;
+  responsable?: number;
+  userIdResponsable?: number;
+}
+
+export interface MedicalReport {
+  id?: number;
+  patientId: number;
+  doctorId?: number;
+  title?: string;
+  content?: string;
+  date?: string;
+  reportDate?: string;
+  doctorName?: string;
+  medicationReview?: string;
+  treatmentPlan?: string;
+  additionalNotes?: string;
+  cognitiveAssessment?: string;
+  functionalStatus?: string;
+  behavioralObservations?: string;
+  primaryDiagnosis?: string;
+  diseaseStage?: string;
 }
 
 @Injectable({
@@ -48,5 +77,20 @@ export class PatientService {
   // 5. Delete Patient
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  // 6. Get Medical Reports for a Patient
+  getMedicalReports(patientId: number): Observable<MedicalReport[]> {
+    return this.http.get<MedicalReport[]>(`${this.apiUrl}/${patientId}/medical-reports`);
+  }
+
+  // 7. Submit a new medical report
+  submitMedicalReport(report: MedicalReport): Observable<MedicalReport> {
+    return this.http.post<MedicalReport>(`${this.apiUrl}/medical-reports`, report);
+  }
+
+  // 8. Get patients managed by a specific responsable
+  getPatientsByResponsable(responsableId: number): Observable<Patient[]> {
+    return this.http.get<Patient[]>(`${this.apiUrl}/responsable/${responsableId}`);
   }
 }
