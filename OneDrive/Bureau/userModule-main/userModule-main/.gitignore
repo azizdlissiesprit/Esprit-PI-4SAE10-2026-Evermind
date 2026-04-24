@@ -1,0 +1,37 @@
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Java / Maven
+**/target/
+**/.mvn/wrapper/maven-wrapper.jar
+*.log
+
+# Node / Angular
+**/node_modules/
+**/dist/
+**/.angular/
+
+# Python
+**/.venv/
+**/__pycache__/
+**/*.pyc
+**/.pytest_cache/
+
+# Local environment / secrets
+.env
+.env.*
+
+# Packaging
+.package-staging/
+*-client.zip
+
+# Generated face-service data
+Backend/face-service/data/
+
+# Local uploads
+Backend/Reclamation/uploads/

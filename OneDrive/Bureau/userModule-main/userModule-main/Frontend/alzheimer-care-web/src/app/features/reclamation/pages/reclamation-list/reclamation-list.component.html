@@ -1,0 +1,120 @@
+<div class="reclamation-list-container">
+  <!-- En-tête -->
+  <div class="header">
+    <h1>Mes Réclamations</h1>
+    <button class="btn-primary" (click)="openCreateModal()">
+      <i class="icon-plus"></i>
+      Nouvelle Réclamation
+    </button>
+  </div>
+
+  <!-- Statistiques -->
+  <div class="stats-container">
+    <div class="stat-card">
+      <div class="stat-value">{{ stats.total }}</div>
+      <div class="stat-label">Total</div>
+    </div>
+    <div class="stat-card status-pending">
+      <div class="stat-value">{{ stats.enAttente }}</div>
+      <div class="stat-label">En attente</div>
+    </div>
+    <div class="stat-card status-in-progress">
+      <div class="stat-value">{{ stats.enCours }}</div>
+      <div class="stat-label">En cours</div>
+    </div>
+    <div class="stat-card status-resolved">
+      <div class="stat-value">{{ stats.resolues }}</div>
+      <div class="stat-label">Résolues</div>
+    </div>
+    <div class="stat-card status-rejected">
+      <div class="stat-value">{{ stats.rejetees }}</div>
+      <div class="stat-label">Rejetées</div>
+    </div>
+  </div>
+
+  <!-- Filtres -->
+  <div class="filters">
+    <label for="status-filter">Filtrer par statut:</label>
+    <select 
+      id="status-filter" 
+      [(ngModel)]="selectedStatus" 
+      (change)="onStatusChange()"
+      class="filter-select"
+    >
+      <option *ngFor="let status of statuses" [value]="status">
+        {{ getStatusLabel(status) }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Message d'erreur -->
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Loader -->
+  <div *ngIf="isLoading" class="loading">
+    <div class="spinner"></div>
+    <p>Chargement des réclamations...</p>
+  </div>
+
+  <!-- Liste des réclamations -->
+  <div *ngIf="!isLoading && filteredReclamations.length === 0" class="no-data">
+    <p>Aucune réclamation trouvée</p>
+    <button class="btn-secondary" (click)="openCreateModal()">
+      Créer votre première réclamation
+    </button>
+  </div>
+
+  <div *ngIf="!isLoading && filteredReclamations.length > 0" class="reclamations-grid">
+    <div 
+      *ngFor="let reclamation of filteredReclamations" 
+      class="reclamation-card"
+      (click)="viewDetails(reclamation)"
+    >
+      <div class="card-header">
+        <div class="card-title-section">
+          <h3>{{ reclamation.subject }}</h3>
+          <span class="category-badge">{{ reclamation.category }}</span>
+        </div>
+        <div class="card-badges">
+          <span [class]="'status-badge ' + getStatusClass(reclamation.status)">
+            {{ getStatusLabel(reclamation.status) }}
+          </span>
+          <span [class]="'priority-badge ' + getPriorityClass(reclamation.priority)">
+            {{ reclamation.priority }}
+          </span>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <p class="description">{{ reclamation.description }}</p>
+      </div>
+
+      <div class="card-footer">
+        <div class="date-info">
+          <span class="date-label">Créée le:</span>
+          <span class="date-value">{{ reclamation.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+        <div class="date-info" *ngIf="reclamation.updatedAt">
+          <span class="date-label">Modifiée le:</span>
+          <span class="date-value">{{ reclamation.updatedAt | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de création -->
+<app-reclamation-modal 
+  *ngIf="showCreateModal"
+  (closeModal)="closeCreateModal()"
+  (reclamationCreated)="onReclamationCreated()"
+></app-reclamation-modal>
+
+<!-- Modal de détails -->
+<app-reclamation-detail-modal
+  *ngIf="showDetailModal && selectedReclamation"
+  [reclamation]="selectedReclamation"
+  (closeModal)="closeDetailModal()"
+></app-reclamation-detail-modal>

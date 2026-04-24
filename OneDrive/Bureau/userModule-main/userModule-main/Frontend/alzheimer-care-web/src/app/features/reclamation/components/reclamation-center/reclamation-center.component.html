@@ -1,0 +1,506 @@
+<div class="reclamation-center">
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">{{ mode === 'admin' ? 'Backoffice' : 'Espace utilisateur' }}</p>
+      <h1>{{ title }}</h1>
+      <p class="subtitle">{{ subtitle }}</p>
+    </div>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span>Total</span>
+        <strong>{{ reclamations.length }}</strong>
+      </div>
+      <div class="hero-stat">
+        <span>Resolues</span>
+        <strong>{{ resolvedReclamationCount }}</strong>
+      </div>
+      <div class="hero-stat">
+        <span>Ouvertes</span>
+        <strong>{{ openReclamationCount }}</strong>
+      </div>
+    </div>
+  </section>
+
+  <div class="banner error" *ngIf="workspaceError">{{ workspaceError }}</div>
+
+  <section class="panel create-panel create-panel-top material-create" *ngIf="canCreate && isCreateView">
+    <div class="panel-header">
+      <div>
+        <h2>Nouvelle reclamation</h2>
+        <p>Renseignez les informations de votre reclamation.</p>
+      </div>
+      <a class="ghost-link" [routerLink]="getBackRoute()">Retour a mes reclamations</a>
+    </div>
+
+    <form [formGroup]="createForm" class="stack create-grid" (ngSubmit)="submitCreate()">
+      <div class="create-main">
+        <mat-form-field appearance="outline" class="subject-field">
+          <mat-label>Sujet</mat-label>
+          <input matInput type="text" formControlName="subject" placeholder="Ex: Probleme de bracelet GPS" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="description-field">
+          <mat-label>Description</mat-label>
+          <textarea
+            matInput
+            rows="7"
+            formControlName="description"
+            placeholder="Explique le probleme, le contexte, et l urgence."
+            (input)="onDescriptionInput($event)"
+            (keydown)="onDescriptionKeydown($event)"
+          ></textarea>
+        </mat-form-field>
+        <div class="autocomplete-hint" *ngIf="descriptionSuggestion">
+          <span class="autocomplete-label">Suggestion</span>
+          <span class="autocomplete-copy">{{ createForm.getRawValue().description }}<strong>{{ descriptionSuggestion }}</strong></span>
+          <span class="autocomplete-action">Tab pour completer</span>
+        </div>
+      </div>
+
+      <div class="create-side">
+        <div class="field-grid compact">
+          <mat-form-field appearance="outline">
+            <mat-label>Categorie</mat-label>
+            <mat-select formControlName="category" (selectionChange)="onCreateCategoryChange($event.value)">
+              <mat-option *ngFor="let category of categoryOptions" [value]="category">
+                {{ getCategoryLabel(category) }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Priorite</mat-label>
+            <mat-select formControlName="priority">
+              <mat-option *ngFor="let priority of priorityOptions" [value]="priority">
+                {{ getPriorityLabel(priority) }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <label class="field upload-field">
+          <span>Pieces jointes</span>
+          <input type="file" multiple (change)="onCreateAttachmentsSelected($event)" />
+          <div class="upload-box">
+            <strong>Ajouter des fichiers</strong>
+            <p>{{ createAttachments.length ? (createAttachments.length + ' fichier(s) selectionne(s)') : 'Images, documents ou audio' }}</p>
+          </div>
+        </label>
+
+        <div class="voice-box">
+          <div>
+            <strong>Message vocal</strong>
+            <p>{{ selectedAudioLabel }}</p>
+          </div>
+          <div class="voice-actions">
+            <button type="button" class="btn secondary" *ngIf="!isRecording" (click)="startRecording()">
+              Demarrer
+            </button>
+            <button type="button" class="btn danger" *ngIf="isRecording" (click)="stopRecording()">
+              Arreter
+            </button>
+            <button type="button" class="btn ghost" *ngIf="recordedAudioBlob" (click)="clearRecordedAudio()">
+              Effacer
+            </button>
+          </div>
+          <p class="inline-error" *ngIf="recordingError">{{ recordingError }}</p>
+        </div>
+      </div>
+
+      <div class="create-actions">
+        <button mat-flat-button class="submit-field material-submit" type="submit" [disabled]="isSubmittingCreate">
+          {{ isSubmittingCreate ? 'Creation...' : 'Envoyer la reclamation' }}
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <div class="workspace" [class.detail-workspace]="isDetailView || isCreateView">
+    <aside class="left-column" *ngIf="!isDetailView && !isCreateView">
+      <section class="panel overview-panel">
+        <div class="panel-header">
+          <div>
+            <h2>{{ mode === 'admin' ? 'Vue de pilotage' : 'Vue personnelle' }}</h2>
+            <p>{{ mode === 'admin' ? 'Indicateurs de suivi des reclamations.' : 'Apercu de vos reclamations.' }}</p>
+          </div>
+        </div>
+
+        <div class="overview-grid">
+          <article class="overview-card tone-gold">
+            <span>En attente</span>
+            <strong>{{ pendingReclamationCount }}</strong>
+          </article>
+          <article class="overview-card tone-blue">
+            <span>En cours</span>
+            <strong>{{ inProgressReclamationCount }}</strong>
+          </article>
+          <article class="overview-card tone-green">
+            <span>Resolues</span>
+            <strong>{{ resolvedReclamationCount }}</strong>
+          </article>
+        </div>
+      </section>
+    </aside>
+
+    <section class="center-column" *ngIf="!isDetailView && !isCreateView">
+      <section class="panel list-panel">
+        <div class="panel-header">
+          <div>
+            <h2>{{ mode === 'admin' ? 'Toutes les reclamations' : 'Mes reclamations' }}</h2>
+            <p>{{ mode === 'admin' ? 'Consultez et ouvrez les dossiers.' : 'Consultez et ouvrez vos dossiers.' }}</p>
+          </div>
+          <a class="primary-link" *ngIf="canCreate" [routerLink]="getCreateRoute()">Ajouter reclamation</a>
+        </div>
+
+        <div class="toolbar">
+          <mat-form-field appearance="outline">
+            <mat-label>Recherche</mat-label>
+            <input
+              matInput
+              type="search"
+              [value]="searchTerm"
+              (input)="onSearchInput($event)"
+              placeholder="Sujet ou description"
+            />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Statut</mat-label>
+            <mat-select [value]="selectedStatusFilter" (selectionChange)="onStatusFilterChange($event.value)">
+              <mat-option *ngFor="let status of statusFilterOptions" [value]="status">
+                {{ getStatusLabel(status) }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Date</mat-label>
+            <mat-select [value]="selectedDateFilter" (selectionChange)="onDateFilterChange($event.value)">
+              <mat-option value="ALL">Toutes</mat-option>
+              <mat-option value="TODAY">Aujourd'hui</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Tri</mat-label>
+            <mat-select [value]="selectedSort" (selectionChange)="onSortChange($event.value)">
+              <mat-option value="NEWEST">Plus recentes</mat-option>
+              <mat-option value="OLDEST">Plus anciennes</mat-option>
+              <mat-option value="PRIORITY">Priorite</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="loading" *ngIf="isLoading">Chargement des reclamations...</div>
+
+        <div class="reclamation-list table-shell" *ngIf="!isLoading && filteredReclamations.length; else noReclamation">
+          <table mat-table [dataSource]="pagedReclamations" class="reclamation-table">
+            <ng-container matColumnDef="subject">
+              <th mat-header-cell *matHeaderCellDef>Sujet</th>
+              <td mat-cell *matCellDef="let reclamation">
+                <button class="table-primary" type="button" (click)="openReclamation(reclamation)">
+                  <strong>{{ reclamation.subject }}</strong>
+                  <span>{{ reclamation.description }}</span>
+                </button>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="category">
+              <th mat-header-cell *matHeaderCellDef>Categorie</th>
+              <td mat-cell *matCellDef="let reclamation">
+                <span class="category-pill">{{ getCategoryLabel(reclamation.category) }}</span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>Statut</th>
+              <td mat-cell *matCellDef="let reclamation">
+                <span class="badge" [class]="getStatusClass(reclamation.status)">
+                  {{ getStatusLabel(reclamation.status) }}
+                </span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="priority">
+              <th mat-header-cell *matHeaderCellDef>Priorite</th>
+              <td mat-cell *matCellDef="let reclamation">
+                <span class="priority" [class]="getPriorityClass(reclamation.priority)">
+                  {{ getPriorityLabel(reclamation.priority) }}
+                </span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="createdAt">
+              <th mat-header-cell *matHeaderCellDef>Creation</th>
+              <td mat-cell *matCellDef="let reclamation">
+                {{ reclamation.createdAt | date: 'dd/MM/yyyy HH:mm' }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let reclamation">
+                <div class="table-actions">
+                  <button mat-stroked-button type="button" (click)="openReclamation(reclamation)">
+                    Ouvrir
+                  </button>
+                  <button
+                    mat-stroked-button
+                    class="danger-button"
+                    type="button"
+                    *ngIf="canDeleteReclamation(reclamation)"
+                    (click)="deleteReclamation(reclamation, $event)"
+                  >
+                    Supprimer
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+        </div>
+
+        <div class="pagination-bar" *ngIf="!isLoading && filteredReclamations.length > pageSize">
+          <span class="pagination-copy">{{ paginationLabel }}</span>
+
+          <div class="pagination-actions">
+            <button class="page-btn" type="button" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">
+              Prec.
+            </button>
+
+            <button
+              class="page-btn"
+              type="button"
+              *ngFor="let page of pageNumbers"
+              [class.active]="page === currentPage"
+              (click)="goToPage(page)"
+            >
+              {{ page }}
+            </button>
+
+            <button
+              class="page-btn"
+              type="button"
+              (click)="goToPage(currentPage + 1)"
+              [disabled]="currentPage === totalPages"
+            >
+              Suiv.
+            </button>
+          </div>
+        </div>
+
+        <ng-template #noReclamation>
+          <div class="empty-state">
+            <h3>Aucune reclamation</h3>
+            <p>{{ mode === 'admin' ? 'Aucun dossier disponible.' : 'Cree ta premiere reclamation depuis le formulaire au-dessus.' }}</p>
+          </div>
+        </ng-template>
+      </section>
+    </section>
+
+    <aside class="right-column" *ngIf="!isCreateView">
+      <section class="panel detail-panel" *ngIf="selectedReclamation; else selectPrompt">
+        <div class="detail-topbar" *ngIf="isDetailView">
+          <a class="back-link" [routerLink]="getBackRoute()">Retour a la liste</a>
+        </div>
+
+        <div class="panel-header">
+          <div>
+            <h2>{{ selectedReclamation.subject }}</h2>
+            <p>{{ selectedOwnerDisplayName }}</p>
+          </div>
+          <div class="header-badges">
+            <span class="badge" [class]="getStatusClass(selectedReclamation.status)">
+              {{ getStatusLabel(selectedReclamation.status) }}
+            </span>
+            <span class="priority-chip" [class]="getPriorityClass(selectedReclamation.priority)">
+              {{ getPriorityLabel(selectedReclamation.priority) }}
+            </span>
+          </div>
+        </div>
+
+        <div class="banner error" *ngIf="detailError">{{ detailError }}</div>
+        <div class="loading" *ngIf="isDetailLoading">Chargement du dossier...</div>
+
+        <div class="detail-metadata">
+          <article class="meta-card">
+            <span>Priorite</span>
+            <strong>{{ getPriorityLabel(selectedReclamation.priority) }}</strong>
+          </article>
+          <article class="meta-card">
+            <span>Categorie</span>
+            <strong>{{ getCategoryLabel(selectedReclamation.category) }}</strong>
+          </article>
+          <article class="meta-card">
+            <span>Creation</span>
+            <strong>{{ selectedReclamation.createdAt | date: 'dd/MM/yyyy HH:mm' }}</strong>
+          </article>
+        </div>
+
+        <div class="detail-section body-copy">
+          <h3>Description</h3>
+          <p>{{ selectedReclamation.description }}</p>
+        </div>
+
+        <div class="detail-section response-panel" *ngIf="selectedReclamation.response">
+          <h3>Reponse admin</h3>
+          <p>{{ selectedReclamation.response }}</p>
+        </div>
+
+        <form class="detail-section control-panel" *ngIf="canModerate" [formGroup]="adminUpdateForm" (ngSubmit)="saveAdminUpdate()">
+          <h3>Action admin</h3>
+          <div class="field-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Statut</mat-label>
+              <mat-select formControlName="status">
+                <mat-option *ngFor="let status of [reclamationStatus.EN_ATTENTE, reclamationStatus.EN_COURS, reclamationStatus.RESOLUE, reclamationStatus.REJETEE]" [value]="status">
+                  {{ getStatusLabel(status) }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <mat-form-field appearance="outline">
+            <mat-label>Reponse</mat-label>
+            <textarea matInput rows="4" formControlName="response" placeholder="Message visible par l utilisateur"></textarea>
+          </mat-form-field>
+          <button mat-flat-button class="btn primary" type="submit" [disabled]="isSavingAdmin">
+            {{ isSavingAdmin ? 'Enregistrement...' : 'Mettre a jour' }}
+          </button>
+        </form>
+
+        <div class="detail-grid">
+          <div class="detail-section">
+            <div class="section-head">
+              <h3>Pieces jointes</h3>
+              <label class="btn ghost" *ngIf="canCreate">
+                Ajouter
+                <input type="file" hidden multiple (change)="onDetailAttachmentsSelected($event)" />
+              </label>
+            </div>
+
+            <div class="attachment-list" *ngIf="selectedAttachments.length; else noAttachments">
+              <article class="attachment-item" *ngFor="let attachment of selectedAttachments">
+                <div class="attachment-copy">
+                  <strong>{{ attachment.originalFileName }}</strong>
+                  <p>{{ attachment.contentType }} • {{ attachment.size }} o</p>
+                </div>
+
+                <div class="attachment-actions">
+                  <button mat-stroked-button class="btn tiny" type="button" (click)="downloadAttachment(attachment)">Telecharger</button>
+                  <button
+                    mat-stroked-button
+                    class="btn tiny danger"
+                    type="button"
+                    *ngIf="canCreate"
+                    (click)="deleteAttachment(attachment)"
+                  >
+                    Supprimer
+                  </button>
+                </div>
+
+                <img
+                  class="image-preview"
+                  *ngIf="isImageAttachment(attachment) && getAttachmentPreviewUrl(attachment.attachmentId)"
+                  [src]="getAttachmentPreviewUrl(attachment.attachmentId)!"
+                  [alt]="attachment.originalFileName"
+                />
+
+                <audio
+                  *ngIf="isAudioAttachment(attachment) && getAttachmentPreviewUrl(attachment.attachmentId)"
+                  controls
+                  [src]="getAttachmentPreviewUrl(attachment.attachmentId)!"
+                ></audio>
+              </article>
+            </div>
+            <ng-template #noAttachments>
+              <p class="empty-copy">Aucune piece jointe pour cette reclamation.</p>
+            </ng-template>
+          </div>
+
+          <div class="detail-section">
+            <h3>Historique</h3>
+            <div class="timeline" *ngIf="selectedHistory.length; else noHistory">
+              <article class="timeline-item" *ngFor="let item of selectedHistory">
+                <div class="timeline-dot"></div>
+                <div class="timeline-copy">
+                  <strong>{{ item.eventType }}</strong>
+                  <p>{{ item.description }}</p>
+                  <span>{{ item.createdAt | date: 'dd/MM/yyyy HH:mm' }}</span>
+                </div>
+              </article>
+            </div>
+            <ng-template #noHistory>
+              <p class="empty-copy">Aucun evenement historique.</p>
+            </ng-template>
+          </div>
+        </div>
+      </section>
+
+      <ng-template #selectPrompt>
+
+      </ng-template>
+    </aside>
+  </div>
+
+  <button
+    class="chat-launcher"
+    type="button"
+    *ngIf="isDetailView && selectedReclamation"
+    [class.open]="isChatOpen"
+    (click)="toggleChatPanel()"
+  >
+    {{ isChatOpen ? 'Fermer la discussion' : 'Ouvrir la discussion' }}
+  </button>
+
+  <section class="chat-drawer" *ngIf="isDetailView && selectedReclamation && isChatOpen">
+    <header class="chat-drawer-header">
+      <div class="chat-peer">
+        <div class="chat-avatar">{{ getChatAvatarLabel() }}</div>
+        <div>
+          <strong>Discussion</strong>
+          <p><span class="presence-dot"></span>{{ chatPresenceLabel }}</p>
+        </div>
+      </div>
+      <button mat-button class="btn ghost tiny" type="button" (click)="toggleChatPanel()">Fermer</button>
+    </header>
+
+    <div class="chat-shell">
+      <div class="comment-list" *ngIf="selectedComments.length; else noComments">
+        <article
+          class="comment"
+          *ngFor="let comment of selectedComments"
+          [class.outgoing]="isOutgoingComment(comment)"
+        >
+          <div class="comment-avatar" *ngIf="!isOutgoingComment(comment)">{{ getChatAvatarLabel(comment) }}</div>
+          <div class="comment-bubble">
+            <header>
+              <strong>{{ getCommentAuthorLabel(comment) }}</strong>
+              <span>{{ comment.createdAt | date: 'dd/MM/yyyy HH:mm' }}</span>
+            </header>
+            <p>{{ comment.message }}</p>
+          </div>
+        </article>
+      </div>
+      <ng-template #noComments>
+        <div class="empty-chat">
+          <h4>Aucun message pour le moment</h4>
+          <p>Le fil de discussion apparaitra ici des le premier echange.</p>
+        </div>
+      </ng-template>
+
+      <form class="message-box" [formGroup]="messageForm" (ngSubmit)="submitMessage()">
+        <mat-form-field appearance="outline" class="chat-input">
+          <mat-label>Message</mat-label>
+          <textarea matInput rows="3" formControlName="message" placeholder="Ecrire un message"></textarea>
+        </mat-form-field>
+        <button class="send-btn" type="submit" [disabled]="isSendingMessage" [attr.aria-label]="isSendingMessage ? 'Envoi en cours' : 'Envoyer le message'">
+          <span *ngIf="!isSendingMessage" class="send-icon" aria-hidden="true"></span>
+          <span *ngIf="isSendingMessage">...</span>
+        </button>
+      </form>
+    </div>
+  </section>
+</div>

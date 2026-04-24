@@ -1,0 +1,52 @@
+<div class="face-card" [class.compact]="compact">
+  <div class="face-card__header">
+    <div>
+      <h3>{{ title }}</h3>
+      <p>{{ subtitle }}</p>
+    </div>
+    <div class="face-pill" [class.ready]="selectedFile">
+      {{ selectedFile ? 'Ready' : cameraActive ? 'Live' : 'Secure' }}
+    </div>
+  </div>
+
+  <div class="camera-shell" [class.camera-shell--live]="cameraActive" [class.camera-shell--ready]="selectedFile">
+    <div class="camera-status">
+      <span class="status-dot"></span>
+      {{ cameraActive ? 'Camera active' : selectedFile ? 'Face captured' : 'Awaiting capture' }}
+    </div>
+
+    <ng-container *ngIf="!selectedFile; else previewState">
+      <video #videoElement *ngIf="cameraActive" autoplay playsinline muted></video>
+      <div *ngIf="!cameraActive" class="camera-idle">
+        <div class="camera-idle__orb"></div>
+        <div class="camera-idle__frame">
+          <div class="frame-notch"></div>
+        </div>
+        <p>Position your face in a clear, front-facing portrait.</p>
+      </div>
+    </ng-container>
+
+    <ng-template #previewState>
+      <img class="face-preview" [src]="previewUrl" alt="Face preview" />
+    </ng-template>
+  </div>
+
+  <div class="camera-actions">
+    <button type="button" class="secondary-btn" (click)="startCamera()" [disabled]="isCapturing">
+      {{ cameraActive ? 'Restart camera' : 'Open camera' }}
+    </button>
+    <button type="button" class="primary-btn" (click)="captureFrame()" [disabled]="!cameraActive">
+      Capture face
+    </button>
+    <button type="button" class="ghost-btn" (click)="openFilePicker()">
+      Upload photo
+    </button>
+    <button type="button" class="ghost-btn" *ngIf="selectedFile" (click)="resetSelection()">
+      Remove
+    </button>
+  </div>
+
+  <input #fileInput type="file" accept="image/*" hidden (change)="onFileSelected($event)" />
+
+  <p class="camera-error" *ngIf="cameraError">{{ cameraError }}</p>
+</div>

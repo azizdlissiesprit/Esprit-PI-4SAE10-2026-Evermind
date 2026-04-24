@@ -1,0 +1,77 @@
+<section class="profile-page">
+  <div class="profile-shell" *ngIf="!isLoading && currentUser; else profileState">
+    <div class="profile-hero">
+      <div class="identity">
+        <div class="avatar">{{ initials }}</div>
+        <div class="identity-copy">
+          <span class="eyebrow">Profil connecte</span>
+          <h1>{{ fullName }}</h1>
+          <p>{{ roleLabel }}</p>
+        </div>
+      </div>
+
+      <div class="status-chip" [class.inactive]="!currentUser.active || currentUser.banned">
+        {{ statusLabel }}
+      </div>
+    </div>
+
+    <div class="profile-grid">
+      <article class="info-card primary">
+        <h2>Informations personnelles</h2>
+
+        <div class="info-list">
+          <div class="info-row">
+            <span class="label">Prenom</span>
+            <strong>{{ currentUser.firstName || '-' }}</strong>
+          </div>
+
+          <div class="info-row">
+            <span class="label">Nom</span>
+            <strong>{{ currentUser.lastName || '-' }}</strong>
+          </div>
+
+          <div class="info-row">
+            <span class="label">Email</span>
+            <strong>{{ currentUser.email || '-' }}</strong>
+          </div>
+
+          <div class="info-row">
+            <span class="label">Telephone</span>
+            <strong>{{ currentUser.phoneNumber || '-' }}</strong>
+          </div>
+        </div>
+      </article>
+
+      <article class="info-card">
+        <h2>Compte</h2>
+
+        <div class="info-list">
+          <div class="info-row">
+            <span class="label">Role</span>
+            <strong>{{ roleLabel }}</strong>
+          </div>
+
+          <div class="info-row">
+            <span class="label">Inscription</span>
+            <strong>{{ currentUser.createdAt | date: 'dd/MM/yyyy HH:mm' }}</strong>
+          </div>
+
+          <div class="info-row">
+            <span class="label">Derniere connexion</span>
+            <strong>{{ currentUser.lastLogin ? (currentUser.lastLogin | date: 'dd/MM/yyyy HH:mm') : 'Jamais connecte' }}</strong>
+          </div>
+
+          <div class="info-row">
+            <span class="label">Identifiant</span>
+            <strong>{{ currentUser.userId }}</strong>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <ng-template #profileState>
+    <div class="state-card" *ngIf="isLoading">Chargement du profil...</div>
+    <div class="state-card error" *ngIf="!isLoading && errorMessage">{{ errorMessage }}</div>
+  </ng-template>
+</section>

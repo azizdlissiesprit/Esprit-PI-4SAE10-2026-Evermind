@@ -1,0 +1,154 @@
+.shell {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: 100vh;
+  background: #f6f8fb;
+  color: #0f172a;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+.sidebar {
+  background: #eaf2fb;
+  border-right: 1px solid #dbe7f6;
+  padding: 18px 14px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 8px 18px;
+}
+
+.logo {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: #2c6fb2;
+}
+
+.brand-title {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.section-title {
+  margin: 18px 10px 8px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: #7b8da6;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 6px;
+}
+
+.nav-item {
+  display: block;
+  padding: 12px 14px;
+  border-radius: 10px;
+  color: #29465f;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.nav-item:hover {
+  background: #dbeafc;
+}
+
+.nav-item.active {
+  background: #2c6fb2;
+  color: #fff;
+}
+
+.main {
+  display: grid;
+  grid-template-rows: 72px 1fr;
+}
+
+.topbar {
+  background: #f8fbff;
+  border-bottom: 1px solid #e7eef8;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+}
+
+.search input {
+  width: 440px;
+  max-width: 52vw;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #e6edf6;
+  outline: none;
+  background: #fff;
+}
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.logout-btn {
+  border: 1px solid #ead4d4;
+  background: #fff6f6;
+  color: #9f3232;
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.icon-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  border: 1px solid #e6edf6;
+  background: #fff;
+  cursor: pointer;
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-text {
+  text-align: right;
+}
+
+.user-name {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.user-role {
+  font-size: 12px;
+  color: #7b8da6;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: #cfe3fb;
+  border: 1px solid #bcd7f7;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #2c6fb2;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.content {
+  padding: 22px;
+}

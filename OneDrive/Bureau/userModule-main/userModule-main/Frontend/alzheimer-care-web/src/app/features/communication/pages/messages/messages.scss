@@ -1,0 +1,324 @@
+// Variables
+$bg-body: #F4F7FC;
+$bg-white: #FFFFFF;
+$primary-blue: #4E80EE;
+$text-dark: #1A202C;
+$text-grey: #718096;
+$border-color: #E2E8F0;
+$online-green: #38A169;
+
+/* --- GLOBAL RESET & LAYOUT --- */
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+  font-family: 'Inter', sans-serif;
+  /* CRITICAL FIX: Ensures padding doesn't increase width */
+  box-sizing: border-box; 
+}
+
+/* Apply box-sizing to all elements inside this component */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+.page-container {
+  background-color: $bg-body;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 100vh; /* Strict height limit */
+  padding: 20px;
+  overflow: hidden; /* Prevent page-level scrollbars */
+}
+
+/* --- Top Header --- */
+.top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-shrink: 0; /* Prevent header from squishing */
+}
+
+.breadcrumbs {
+  color: $text-grey;
+  font-size: 14px;
+  span { color: $text-dark; font-weight: 600; }
+}
+
+.user-actions {
+  display: flex; align-items: center; gap: 15px;
+}
+
+.monitoring-dropdown {
+  background: white; padding: 8px 16px; border-radius: 20px;
+  color: $text-dark; font-size: 13px; font-weight: 500;
+  display: flex; align-items: center; gap: 8px; cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+}
+
+.icon-btn {
+  width: 40px; height: 40px; border-radius: 50%; border: 1px solid white;
+  background: white; display: flex; align-items: center; justify-content: center;
+  color: $text-dark; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+}
+
+.user-avatar-sm {
+  width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid white;
+}
+
+/* --- Dashboard Grid --- */
+.dashboard-grid {
+  display: flex;
+  gap: 25px;
+  flex: 1; /* Take all remaining height */
+  min-height: 0; /* CRITICAL: Allows flex children to scroll internally */
+  width: 100%;
+}
+
+/* --- LEFT PANEL: CONVERSATIONS --- */
+.conv-panel {
+  width: 360px;
+  background: $bg-white;
+  border-radius: 24px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  height: 100%; /* Fill the grid height */
+  overflow: hidden; /* Keep children inside */
+}
+
+.conv-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 20px; flex-shrink: 0;
+  h2 { font-size: 20px; font-weight: 700; color: $text-dark; margin: 0; }
+}
+
+.btn-new {
+  background: $primary-blue; color: white; border: none;
+  padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer;
+}
+
+/* Search Bar Fix */
+.search-wrapper {
+  position: relative; margin-bottom: 20px; flex-shrink: 0;
+  width: 100%; /* Ensure wrapper fits */
+  
+  i { 
+    position: absolute; left: 15px; top: 50%; transform: translateY(-50%); 
+    color: #A0AEC0; pointer-events: none; 
+  }
+}
+
+.search-input {
+  width: 100%; /* Fill wrapper */
+  padding: 12px 12px 12px 40px; /* Padding for text + icon */
+  border: 1px solid $border-color; border-radius: 20px;
+  font-size: 13px; outline: none; background: #FAFCFE;
+  /* box-sizing is handled by global reset, so this won't overflow now */
+}
+
+.filters {
+  display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto;
+  padding-bottom: 5px; scrollbar-width: none; flex-shrink: 0;
+}
+
+.filter-chip {
+  padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 500;
+  background: #F0F4F8; color: $text-grey; border: none; cursor: pointer; white-space: nowrap;
+  &.active { background: $text-dark; color: white; }
+}
+
+.conv-list {
+  overflow-y: auto; 
+  flex: 1; /* Take remaining space */
+  padding-right: 5px;
+  /* Scrollbar Styling */
+  &::-webkit-scrollbar { width: 5px; }
+  &::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 10px; }
+}
+
+.conv-item {
+  padding: 16px; border-radius: 16px; display: flex; gap: 15px;
+  cursor: pointer; margin-bottom: 10px; border: 1px solid transparent;
+  transition: all 0.2s;
+  &:hover { background: #F7FAFC; }
+  &.selected { background: #EBF3FF; border-color: #E2E8F0; }
+}
+
+.avatar-wrapper { position: relative; flex-shrink: 0; }
+.avatar-lg { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
+.status-dot {
+  width: 12px; height: 12px; background: $online-green;
+  border: 2px solid white; border-radius: 50%; position: absolute; bottom: 0; right: 0;
+}
+
+.conv-info { flex: 1; min-width: 0; /* Allows text truncation to work */ }
+.conv-top { display: flex; justify-content: space-between; margin-bottom: 4px; }
+.conv-name { font-weight: 700; font-size: 14px; color: $text-dark; }
+.conv-role { font-size: 12px; color: $text-grey; margin-left: 6px; }
+.badge-role { background:#EBF8FF; color:#3182CE; padding: 2px 8px; border-radius:6px; font-size:10px; font-weight:700; margin-left: 6px;}
+.conv-time { font-size: 11px; color: #A0AEC0; flex-shrink: 0;}
+.conv-preview { font-size: 13px; color: $text-grey; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.conv-meta { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
+
+/* --- RIGHT PANEL: CHAT WINDOW --- */
+.chat-window {
+  flex: 1; /* Take remaining width */
+  background: $bg-white;
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Crucial: Keeps child elements inside rounded corners */
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  height: 100%;
+}
+
+.chat-header {
+  padding: 20px 30px;
+  border-bottom: 1px solid $border-color;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-shrink: 0;
+}
+
+.doctor-profile {
+  display: flex; align-items: center; gap: 15px;
+  .doc-details h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; margin-top: 0; }
+  .doc-details p { font-size: 12px; color: $text-grey; margin: 0; }
+  .doc-status { color: $online-green; font-size: 12px; font-weight: 600; margin-top: 2px; }
+}
+
+.chat-actions { display: flex; gap: 10px; }
+.btn-outline {
+  border: 1px solid $border-color; background: white; padding: 10px 16px;
+  border-radius: 14px; color: $text-grey; font-size: 13px; font-weight: 600;
+  cursor: pointer; display: flex; align-items: center; gap: 8px;
+  &:hover { background: #F7FAFC; }
+}
+
+.chat-body {
+  flex: 1; /* Fill available space */
+  padding: 30px; 
+  overflow-y: auto; /* Scroll ONLY the messages */
+  display: flex; flex-direction: column; gap: 20px;
+  background: white;
+}
+
+.security-notice {
+  text-align: center; color: #A0AEC0; font-size: 11px;
+  margin-bottom: 10px; display: flex; justify-content: center; gap: 6px;
+}
+
+.system-message {
+  text-align: center; margin: 10px 0;
+  span {
+    background: #F7FAFC; padding: 6px 16px; border-radius: 20px;
+    font-size: 12px; color: $text-grey; font-weight: 500;
+  }
+}
+
+.message-group {
+  display: flex; flex-direction: column; gap: 6px;
+  max-width: 100%; /* Prevent wide messages from breaking layout */
+  
+  &.received { align-items: flex-start; .timestamp { margin-left: 5px; } }
+  &.sent { align-items: flex-end; .timestamp { margin-right: 5px; } }
+}
+
+.bubble {
+  max-width: 75%; padding: 16px 22px; font-size: 14px; line-height: 1.6;
+  position: relative; word-wrap: break-word; /* Wrap long text */
+  
+  &.received {
+    background: white; border: 1px solid $border-color;
+    border-radius: 20px 20px 20px 4px; color: $text-dark;
+  }
+  
+  &.sent {
+    background: $primary-blue; color: white;
+    border-radius: 20px 20px 4px 20px;
+    box-shadow: 0 4px 15px rgba(78, 128, 238, 0.25);
+  }
+}
+
+.file-attachment {
+  background: #F7FAFC; border-radius: 12px; padding: 12px;
+  display: flex; align-items: center; gap: 12px; margin-top: 10px;
+  border: 1px solid $border-color;
+  width: 100%; /* Fit inside bubble */
+  
+  .file-icon { font-size: 24px; color: $text-dark; flex-shrink: 0; }
+  .file-name { font-weight: 600; font-size: 13px; color: $text-dark; display: block; word-break: break-all;}
+  .file-size { font-size: 11px; color: $text-grey; }
+}
+
+.timestamp { font-size: 11px; color: #A0AEC0; font-weight: 500;}
+
+/* Audio Player Fix */
+.audio-player {
+  display: flex; align-items: center; gap: 12px; margin-top: 10px;
+  background: white; padding: 10px; border-radius: 12px; border: 1px solid $border-color;
+  color: $text-dark; 
+  /* Responsive width */
+  width: 100%; 
+  max-width: 280px;
+  
+  .play-btn { background: none; border: none; cursor: pointer; color: $text-dark; font-size: 14px; flex-shrink: 0;}
+  .progress-bar { flex: 1; height: 4px; background: $border-color; border-radius: 2px; }
+  .progress-fill { width: 60%; height: 100%; background: $primary-blue; }
+  .audio-time { font-size: 11px; color: $text-grey; flex-shrink: 0; }
+}
+
+/* --- Chat Input Fix --- */
+.chat-input-area {
+  padding: 20px 30px; 
+  background: white; 
+  border-top: 1px solid $border-color;
+  flex-shrink: 0; /* Keep it at bottom */
+  width: 100%; /* Ensure it fits container */
+}
+
+.input-wrapper {
+  background: #FAFCFE; 
+  border: 1px solid $border-color; 
+  border-radius: 24px;
+  padding: 8px; 
+  display: flex; 
+  flex-direction: column;
+  width: 100%; /* Fill the area */
+}
+
+.message-input {
+  border: none; background: transparent; 
+  width: 100%; /* Fill wrapper */
+  padding: 12px 15px;
+  font-size: 14px; outline: none; resize: none; min-height: 45px;
+  font-family: 'Inter', sans-serif;
+}
+
+.input-actions {
+  display: flex; justify-content: space-between; align-items: center; 
+  padding: 0 10px 5px 10px;
+  width: 100%;
+}
+
+.attach-tools {
+  display: flex; gap: 15px;
+  .tool-btn { color: #A0AEC0; background: none; border: none; cursor: pointer; font-size: 18px; }
+}
+
+.btn-send {
+  background: $primary-blue; color: white; border: none;
+  padding: 10px 24px; border-radius: 18px; font-weight: 600; font-size: 13px;
+  cursor: pointer; box-shadow: 0 4px 12px rgba(78, 128, 238, 0.3);
+}
+
+/* --- RESPONSIVENESS --- */
+@media (max-width: 900px) {
+  .dashboard-grid { flex-direction: column; overflow-y: auto; }
+  .conv-panel { width: 100%; height: 400px; margin-bottom: 20px; }
+  .chat-window { height: 600px; }
+}

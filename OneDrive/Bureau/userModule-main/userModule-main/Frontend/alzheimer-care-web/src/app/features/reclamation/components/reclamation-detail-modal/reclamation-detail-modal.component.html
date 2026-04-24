@@ -1,0 +1,81 @@
+<div class="modal-backdrop" (click)="onBackdropClick($event)">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Détails de la réclamation</h2>
+      <button class="close-btn" (click)="close()">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Badges de statut et priorité -->
+      <div class="badges-section">
+        <span [class]="'status-badge ' + getStatusClass(reclamation.status)">
+          {{ getStatusLabel(reclamation.status) }}
+        </span>
+        <span [class]="'priority-badge ' + getPriorityClass(reclamation.priority)">
+          {{ getPriorityLabel(reclamation.priority) }}
+        </span>
+        <span class="category-badge">
+          {{ getCategoryLabel(reclamation.category) }}
+        </span>
+      </div>
+
+      <!-- Informations principales -->
+      <div class="info-section">
+        <div class="info-group">
+          <label>Sujet:</label>
+          <p class="subject">{{ reclamation.subject }}</p>
+        </div>
+
+        <div class="info-group">
+          <label>Description:</label>
+          <p class="description">{{ reclamation.description }}</p>
+        </div>
+      </div>
+
+      <!-- Réponse (si disponible) -->
+      <div class="info-section" *ngIf="reclamation.response">
+        <div class="response-section">
+          <label>Réponse:</label>
+          <p class="response">{{ reclamation.response }}</p>
+          <p class="responded-by" *ngIf="reclamation.respondedBy">
+            <em>Répondu par l'utilisateur ID: {{ reclamation.respondedBy }}</em>
+          </p>
+        </div>
+      </div>
+
+      <!-- Dates -->
+      <div class="dates-section">
+        <div class="date-item">
+          <label>Créée le:</label>
+          <span>{{ reclamation.createdAt | date:'dd/MM/yyyy à HH:mm' }}</span>
+        </div>
+
+        <div class="date-item" *ngIf="reclamation.updatedAt">
+          <label>Mise à jour le:</label>
+          <span>{{ reclamation.updatedAt | date:'dd/MM/yyyy à HH:mm' }}</span>
+        </div>
+
+        <div class="date-item" *ngIf="reclamation.resolvedAt">
+          <label>Résolue le:</label>
+          <span>{{ reclamation.resolvedAt | date:'dd/MM/yyyy à HH:mm' }}</span>
+        </div>
+      </div>
+
+      <!-- IDs (pour référence) -->
+      <div class="ids-section">
+        <div class="id-item">
+          <label>ID Réclamation:</label>
+          <span>#{{ reclamation.reclamationId }}</span>
+        </div>
+        <div class="id-item">
+          <label>ID Utilisateur:</label>
+          <span>#{{ reclamation.userId }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="close()">Fermer</button>
+    </div>
+  </div>
+</div>
