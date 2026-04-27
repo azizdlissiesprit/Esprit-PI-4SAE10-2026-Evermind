@@ -2,7 +2,7 @@
 :host {
     --bg-page: #f3f4f6;
     --bg-card: #ffffff;
-    --border-color: #e5e7eb;
+    --border-color:  var(--border-color);
     --text-primary: #111827;
     --text-secondary: #6b7280;
     
@@ -10,7 +10,7 @@
     --critical-bg: #fef2f2;
     --warning-color: #f59e0b;  // Amber
     --warning-bg: #fffbeb;
-    --stable-color: #10b981;   // Green
+    --stable-color: var(--text-primary);   // Green
     --stable-bg: #ecfdf5;
 }
 
@@ -31,7 +31,7 @@
         align-items: center;
         gap: 12px;
         
-        i { color: #8b5cf6; } // AI Purple icon
+        i { color: var(--text-muted); } // AI Purple icon
     }
     p { color: var(--text-secondary); margin-top: 4px; }
 }
@@ -83,8 +83,8 @@
     &:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
 
     /* Dynamic States */
-    &.critical { background: var(--critical-bg); border-color: #fecaca; }
-    &.warning  { background: var(--warning-bg); border-color: #fde68a; }
+    &.critical { background: var(--critical-bg); border-color:  var(--border-color); }
+    &.warning  { background: var(--warning-bg); border-color:  var(--border-color); }
     &.stable   { background: var(--stable-bg); border-color: #bbf7d0; }
 
     .risk-info {
@@ -97,9 +97,9 @@
         
         .badge {
             font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px;
-            &.critical { color: var(--critical-color); background: white; border: 1px solid var(--critical-color); }
-            &.warning  { color: var(--warning-color); background: white; border: 1px solid var(--warning-color); }
-            &.stable   { color: var(--stable-color); background: white; border: 1px solid var(--stable-color); }
+            &.critical { color: var(--critical-color); background: var(--bg-card); border: 1px solid var(--critical-color); }
+            &.warning  { color: var(--warning-color); background: var(--bg-card); border: 1px solid var(--warning-color); }
+            &.stable   { color: var(--stable-color); background: var(--bg-card); border: 1px solid var(--stable-color); }
         }
     }
 

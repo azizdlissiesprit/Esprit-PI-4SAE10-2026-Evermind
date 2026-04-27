@@ -17,9 +17,9 @@
                 <i class="fa-regular fa-bell"></i>
             </div>
             <div class="team-avatars">
-                <img src="https://i.pravatar.cc/150?img=33" alt="Team 1">
-                <img src="https://i.pravatar.cc/150?img=47" alt="Team 2">
-                <img src="https://i.pravatar.cc/150?img=12" alt="Team 3">
+                <img src="https://ui-avatars.com/api/?background=random&color=fff&name=U" alt="Team 1">
+                <img src="https://ui-avatars.com/api/?background=random&color=fff&name=U" alt="Team 2">
+                <img src="https://ui-avatars.com/api/?background=random&color=fff&name=U" alt="Team 3">
                 <span class="team-text">3 team members online</span>
             </div>
         </div>
@@ -102,8 +102,11 @@
     <div class="ai-insight-box" *ngIf="alert.aiAnalysis">
         <i class="fa-solid fa-wand-magic-sparkles"></i>
         <span class="ai-text">
-            <strong>AI Assessment:</strong> {{ alert.aiAnalysis | slice:0:120 }}<span *ngIf="alert.aiAnalysis.length > 120">...</span>
+            <strong>AI Assessment:</strong> 
+            {{ (alert.aiAnalysis.includes('429') || alert.aiAnalysis.includes('403')) ? 'no ai analysis is currently available' : (alert.aiAnalysis | slice:0:120) }}
+            <span *ngIf="!(alert.aiAnalysis.includes('429') || alert.aiAnalysis.includes('403')) && alert.aiAnalysis.length > 120">...</span>
         </span>
+
     </div>
 </div>
                     </div>
@@ -113,7 +116,8 @@
                 <div class="patient-row">
                     <div class="patient-details">
                         <!-- Placeholder Avatar -->
-                        <img src="https://i.pravatar.cc/150?img={{alert.alertId}}" class="patient-avatar" alt="Patient">
+                        <img [src]="getPatientImage(alert.patientId)" class="patient-avatar" alt="Patient">
+
                         <div class="patient-text">
                             <h4>Patient ID: {{ alert.patientId }}</h4>
                             <p>{{ alert.statut }}</p>

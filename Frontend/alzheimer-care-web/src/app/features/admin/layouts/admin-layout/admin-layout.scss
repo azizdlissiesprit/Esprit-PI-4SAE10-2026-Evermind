@@ -34,7 +34,7 @@
 
 .logout-btn {
     padding: 8px 20px; border-radius: 8px; border: none; background: #fee2e2; color: #ef4444; font-weight: 600; cursor: pointer;
-    &:hover { background: #fecaca; }
+    &:hover { background: var(--bg-inset); }
 }
 
 .content-scroll {

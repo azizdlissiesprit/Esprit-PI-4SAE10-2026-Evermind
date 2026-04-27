@@ -1,0 +1,17 @@
+tn\esprit\chatbot\Service\DatabaseSchemaService.class
+tn\esprit\chatbot\Entity\ChatbotInteraction.class
+tn\esprit\chatbot\Service\DatabaseSchemaService$TableSchema.class
+tn\esprit\chatbot\Service\GeminiService$GeminiSqlResult.class
+tn\esprit\chatbot\ChatbotApplication.class
+tn\esprit\chatbot\DTO\ChatbotResponse.class
+tn\esprit\chatbot\DTO\ChatbotRequest.class
+tn\esprit\chatbot\Config\CorsConfig$1.class
+tn\esprit\chatbot\Repository\ChatbotInteractionRepository.class
+tn\esprit\chatbot\Config\CorsConfig.class
+tn\esprit\chatbot\DTO\ChatbotResponse$ChatbotResponseBuilder.class
+tn\esprit\chatbot\Config\DatabaseConfig.class
+tn\esprit\chatbot\Service\ChatbotService.class
+tn\esprit\chatbot\Controller\ChatbotController.class
+tn\esprit\chatbot\Service\DatabaseSchemaService$ColumnInfo.class
+tn\esprit\chatbot\Service\GeminiService.class
+tn\esprit\chatbot\Entity\ChatbotInteraction$ChatbotInteractionBuilder.class

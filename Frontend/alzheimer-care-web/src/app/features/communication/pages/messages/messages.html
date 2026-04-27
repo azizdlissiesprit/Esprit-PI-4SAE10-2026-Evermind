@@ -12,7 +12,7 @@
             <button class="icon-btn">
                 <i class="fa-regular fa-bell"></i>
             </button>
-            <img src="https://i.pravatar.cc/150?img=32" alt="Profile" class="user-avatar-sm">
+            <img src="https://ui-avatars.com/api/?background=random&color=fff&name=U" alt="Profile" class="user-avatar-sm">
         </div>
     </header>
 
@@ -21,8 +21,11 @@
         <!-- LEFT PANEL -->
         <div class="conv-panel">
             <div class="conv-header">
-                <h2>Conversations</h2>
-                <button class="btn-new">New</button>
+                <h2>Messages</h2>
+                <div class="tab-switcher">
+                    <button class="tab-btn" [class.active]="activeTab === 'conversations'" (click)="activeTab = 'conversations'">Chats</button>
+                    <button class="tab-btn" [class.active]="activeTab === 'users'" (click)="activeTab = 'users'">Contacts</button>
+                </div>
             </div>
 
             <div class="search-wrapper">
@@ -30,47 +33,67 @@
                 <input type="text" class="search-input" placeholder="Search...">
             </div>
 
-            <div class="filters">
-                <button class="filter-chip active">All</button>
-                <button class="filter-chip">Medical</button>
-                <button class="filter-chip">Family</button>
-                <button class="filter-chip">Alerts</button>
-            </div>
-
-            <div class="conv-list">
-                <div class="conv-item selected">
+            <!-- CONVERSATIONS TAB -->
+            <div class="conv-list" *ngIf="activeTab === 'conversations' && !loadingConversations">
+                <div class="conv-item" 
+                     *ngFor="let conv of conversations" 
+                     [class.selected]="activeConversation?.id === conv.id"
+                     (click)="selectConversation(conv)">
                     <div class="avatar-wrapper">
-                        <img src="https://i.pravatar.cc/150?img=5" alt="Doctor" class="avatar-lg">
+                        <img [src]="'https://ui-avatars.com/api/?background=random&color=fff&name=' + conv.otherParticipant.firstName" alt="User" class="avatar-lg">
                         <div class="status-dot online"></div>
                     </div>
                     <div class="conv-info">
                         <div class="conv-top">
                             <div>
-                                <span class="conv-name">Dr. Sarah Smith</span>
-                                <span class="conv-role">Neurologist</span>
+                                <span class="conv-name">{{ conv.otherParticipant.firstName }} {{ conv.otherParticipant.lastName }}</span>
+                                <span class="conv-role">{{ conv.otherParticipant.userType }}</span>
                             </div>
-                            <span class="conv-time">10:42 AM</span>
+                            <span class="conv-time">{{ conv.lastUpdated | date:'shortTime' }}</span>
                         </div>
-                        <div class="conv-preview">Let's review John's MRI results...</div>
-                        <div class="conv-meta">
-                            <i class="fa-solid fa-circle notification-dot"></i>
-                            <i class="fa-solid fa-paperclip attachment-icon"></i>
-                        </div>
+                        <div class="conv-preview">{{ conv.lastMessagePreview }}</div>
                     </div>
                 </div>
-                <!-- ... other items ... -->
+                <div *ngIf="conversations.length === 0" class="empty-state-mini">
+                    No active conversations found.
+                </div>
+            </div>
+
+            <!-- USERS TAB -->
+            <div class="conv-list" *ngIf="activeTab === 'users' && !loadingUsers">
+                <div class="conv-item" 
+                     *ngFor="let user of availableUsers" 
+                     (click)="startNewConversation(user)">
+                    <div class="avatar-wrapper">
+                        <img [src]="'https://ui-avatars.com/api/?background=random&color=fff&name=' + user.firstName" alt="User" class="avatar-lg">
+                        <div class="status-dot"></div>
+                    </div>
+                    <div class="conv-info">
+                        <div class="conv-top">
+                            <div>
+                                <span class="conv-name">{{ user.firstName }} {{ user.lastName }}</span>
+                                <span class="conv-role">{{ user.userType }}</span>
+                            </div>
+                        </div>
+                        <div class="conv-preview">{{ user.email }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="(activeTab === 'conversations' && loadingConversations) || (activeTab === 'users' && loadingUsers)" class="loading-state">
+                <i class="fa-solid fa-spinner fa-spin"></i> Loading...
             </div>
         </div>
 
         <!-- RIGHT PANEL -->
-        <div class="chat-window">
+        <div class="chat-window" *ngIf="activeConversation">
             
             <div class="chat-header">
                 <div class="doctor-profile">
-                    <img src="https://i.pravatar.cc/150?img=5" alt="Doctor" class="avatar-lg">
+                    <img [src]="'https://ui-avatars.com/api/?background=random&color=fff&name=' + activeConversation.otherParticipant.firstName" alt="User" class="avatar-lg">
                     <div class="doc-details">
-                        <h3>Dr. Sarah Smith</h3>
-                        <p>Neurologist &bull; Monitoring John Doe</p>
+                        <h3>{{ activeConversation.otherParticipant.firstName }} {{ activeConversation.otherParticipant.lastName }}</h3>
+                        <p>{{ activeConversation.otherParticipant.userType }} &bull; EverMind Member</p>
                         <div class="doc-status">Available</div>
                     </div>
                 </div>
@@ -82,63 +105,51 @@
                 </div>
             </div>
 
-            <div class="chat-body">
+            <div class="chat-body" #chatBody>
                 <div class="security-notice">
                     <i class="fa-solid fa-lock"></i> End-to-end encrypted &bull; HIPAA compliant
                 </div>
 
-                <div class="message-group received">
-                    <div class="message-row received">
-                        <div class="bubble received">
-                            Good morning! I adjusted John's medication.
-                        </div>
-                    </div>
-                    <div class="timestamp">10:38 AM</div>
+                <div *ngIf="messages.length === 0 && activeConversation.id === 0" class="new-conv-prompt">
+                    Start of a new conversation with {{ activeConversation.otherParticipant.firstName }}.
                 </div>
 
-                <div class="message-group sent">
-                    <div class="message-row sent">
-                        <div class="bubble sent">
-                            Thank you. Should we move the second dose later?
+                <div *ngFor="let msg of messages" 
+                     [class.message-group]="true" 
+                     [class.received]="msg.senderId !== currentUserId"
+                     [class.sent]="msg.senderId === currentUserId">
+                    <div class="message-row" [class.received]="msg.senderId !== currentUserId" [class.sent]="msg.senderId === currentUserId">
+                        <div class="bubble" [class.received]="msg.senderId !== currentUserId" [class.sent]="msg.senderId === currentUserId">
+                            {{ msg.content }}
                         </div>
                     </div>
-                    <div class="timestamp">
-                        10:40 AM <span class="checks"><i class="fa-solid fa-check-double"></i></span>
-                    </div>
-                </div>
-
-                <div class="message-group received">
-                    <div class="message-row received">
-                        <div class="bubble received">
-                            Yes, please shift the second dose to 12 PM.
-                            <div class="audio-player">
-                                <button class="play-btn"><i class="fa-solid fa-play"></i></button>
-                                <div class="progress-bar">
-                                    <div class="progress-fill">
-                                        <div class="progress-handle"></div>
-                                    </div>
-                                </div>
-                                <span class="audio-time">0:45</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="timestamp">10:42 AM</div>
+                    <div class="timestamp">{{ msg.timestamp | date:'shortTime' }}</div>
                 </div>
             </div>
 
             <div class="chat-input-area">
                 <div class="input-wrapper">
-                    <textarea class="message-input" placeholder="Type a message..."></textarea>
+                    <textarea class="message-input" 
+                              placeholder="Type a message..." 
+                              [(ngModel)]="newMessageContent"
+                              (keyup.enter)="onSendMessage()"></textarea>
                     <div class="input-actions">
                         <div class="attach-tools">
                             <button class="tool-btn"><i class="fa-solid fa-paperclip"></i></button>
                             <button class="tool-btn"><i class="fa-solid fa-microphone"></i></button>
                         </div>
-                        <button class="btn-send">Send</button>
+                        <button class="btn-send" (click)="onSendMessage()">Send</button>
                     </div>
                 </div>
             </div>
 
+        </div>
+
+        <div class="chat-window empty-state" *ngIf="!activeConversation && !loadingConversations">
+            <div class="empty-msg">
+                <i class="fa-regular fa-comment-dots"></i>
+                <p>Select a conversation or a contact to start messaging</p>
+            </div>
         </div>
     </div>
 </div>

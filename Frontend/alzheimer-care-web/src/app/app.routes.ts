@@ -5,6 +5,7 @@ import { MainLayoutComponent } from './core/layouts/main-layout/main-layout';
 import { VerifyComponent } from './features/auth/pages/verify/verify'; // <--- ADD THIS IMPORT
 import { AdminLayoutComponent } from './features/admin/layouts/admin-layout/admin-layout';
 import { adminGuard } from './core/guards/admin-guard';
+import { authGuard } from './core/guards/auth-guard';
 
 export const routes: Routes = [
   {
@@ -22,11 +23,15 @@ export const routes: Routes = [
   {
     path: 'admin',
     component: AdminLayoutComponent, // Uses the Admin specific sidebar
-    // canActivate: [adminGuard],    // <--- Uncomment when ready
+    canActivate: [adminGuard],    // <--- Uncomment when ready
     children: [
       { 
   path: 'alerts', 
   loadComponent: () => import('./features/admin/alerts-admin/alerts-admin').then(m => m.AlertAdminListComponent) 
+},
+{ 
+  path: 'assign-patients', 
+  loadComponent: () => import('./features/admin/patients/assign-patients/assign-patients').then(m => m.AssignPatientsComponent) 
 },
 { 
   path: 'alerts/add', 
@@ -35,6 +40,11 @@ export const routes: Routes = [
 { 
   path: 'alerts/edit/:id', 
   loadComponent: () => import('./features/admin/alerts-admin/alert-add/alert-add').then(m => m.AlertAddComponent) 
+},
+{
+  path: 'data-seeding',
+  title: 'Data Seeding Console',
+  loadComponent: () => import('./features/admin/data-seeding/data-seeding').then((m) => m.DataSeedingComponent)
 },
       {
         path: 'dashboard',
@@ -144,6 +154,14 @@ export const routes: Routes = [
         path: 'stock/analyse',
         loadComponent: () => import('./features/admin/stock-admin/analyse-stock/analyse-stock.component').then(m => m.AnalyseStockComponent)
       },
+      {
+        path: 'stock/emails',
+        loadComponent: () => import('./features/admin/stock-admin/email-logs/email-log-list.component').then(m => m.EmailLogListComponent)
+      },
+      {
+        path: 'stock/analytics',
+        loadComponent: () => import('./features/stock-front/analytics/analytics').then(m => m.AnalyticsComponent)
+      },
 
       // --- ADD THIS REDIRECT ---
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -153,9 +171,11 @@ export const routes: Routes = [
   {
     path: 'app',
     component: MainLayoutComponent,
+    canActivate: [authGuard],
     children: [
       {
         path: 'dashboard',
+        title: 'Tableau de Bord',
         // --- UPDATED THIS SECTION ---
         // Lazy loading the new CaregiverDashboardComponent directly
         loadComponent: () =>
@@ -164,7 +184,28 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'patients/:id/tracking',
+        loadComponent: () =>
+          import('./features/patients/patient-tracking/patient-tracking').then(
+            (m) => m.PatientTrackingComponent,
+          ),
+      },
+      {
+        path: 'patients/:id/medical-report',
+        loadComponent: () =>
+          import('./features/patients/patient-medical-report/patient-medical-report').then(
+            (m) => m.PatientMedicalReportComponent,
+          ),
+      },
+      {
+        path: 'patients/:id/profile',
+        title: 'Profil Patient',
+        loadComponent: () =>
+          import('./features/patients/patient-profile/patient-profile').then((m) => m.PatientProfileComponent),
+      },
+      {
         path: 'patients',
+        title: 'Liste des Patients',
         // --- UPDATED THIS SECTION ---
         // Lazy loading the new CaregiverDashboardComponent directly
         loadComponent: () =>
@@ -179,6 +220,7 @@ export const routes: Routes = [
       },
       {
         path: 'profile',
+        title: 'Mon Profil',
         loadComponent: () =>
           import('./features/profile/profile-container/profile-container').then(
             (m) => m.ProfileContainerComponent,
@@ -197,6 +239,7 @@ export const routes: Routes = [
 },
       {
         path: 'alerts/:id',
+        title: 'Détails de l\'Alerte',
         loadComponent: () =>
           import('./features/alerts/pages/alert-detail/alert-detail').then(
             (m) => m.AlertDetailComponent,
@@ -204,6 +247,7 @@ export const routes: Routes = [
       },
       {
         path: 'alerts',
+        title: 'Alertes',
         loadComponent: () =>
           import('./features/alerts/pages/alert-list/alert-list').then((m) => m.AlertListComponent),
       },
@@ -229,6 +273,14 @@ export const routes: Routes = [
         loadComponent: () => import('./features/stock-front/panier/panier.component').then(m => m.PanierComponent)
       },
       {
+        path: 'store/wishlist',
+        loadComponent: () => import('./features/stock-front/wishlist/wishlist.component').then(m => m.WishlistComponent)
+      },
+      {
+        path: 'store/comparer',
+        loadComponent: () => import('./features/stock-front/comparer/comparer.component').then(m => m.ComparerComponent)
+      },
+      {
         path: 'store/commander',
         loadComponent: () => import('./features/stock-front/commander/commander.component').then(m => m.CommanderComponent)
       },
@@ -236,6 +288,7 @@ export const routes: Routes = [
         path: 'store/commande/:ref',
         loadComponent: () => import('./features/stock-front/confirmation-commande/confirmation-commande.component').then(m => m.ConfirmationCommandeComponent)
       },
+
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

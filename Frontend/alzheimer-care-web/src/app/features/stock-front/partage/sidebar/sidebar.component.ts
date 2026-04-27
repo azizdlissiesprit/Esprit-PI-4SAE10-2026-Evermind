@@ -28,57 +28,86 @@ import { ThemeService } from '../../../../core/services/theme';
       <nav class="sidebar-nav">
         <div class="sidebar-nav-label">sidebar.principal</div>
 
-        <a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
-           class="sidebar-nav-item" (click)="mobileOpen = false">
+        <a
+          routerLink="/admin"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="sidebar-nav-item"
+          (click)="mobileOpen = false"
+        >
           <i class="bi bi-grid-1x2-fill"></i>
           Tableau de Bord
         </a>
 
         <div class="sidebar-nav-label">sidebar.gestion</div>
 
-        <a routerLink="/admin/stock/categories" routerLinkActive="active"
-           class="sidebar-nav-item" (click)="mobileOpen = false">
+        <a
+          routerLink="/admin/stock/categories"
+          routerLinkActive="active"
+          class="sidebar-nav-item"
+          (click)="mobileOpen = false"
+        >
           <i class="bi bi-tags-fill"></i>
           Catégories
         </a>
 
-        <a routerLink="/admin/stock/produits" routerLinkActive="active"
-           class="sidebar-nav-item" (click)="mobileOpen = false">
+        <a
+          routerLink="/admin/stock/produits"
+          routerLinkActive="active"
+          class="sidebar-nav-item"
+          (click)="mobileOpen = false"
+        >
           <i class="bi bi-box-seam-fill"></i>
           Produits
         </a>
 
-        <a routerLink="/admin/stock/commandes" routerLinkActive="active"
-           class="sidebar-nav-item" (click)="mobileOpen = false">
+        <a
+          routerLink="/admin/stock/commandes"
+          routerLinkActive="active"
+          class="sidebar-nav-item"
+          (click)="mobileOpen = false"
+        >
           <i class="bi bi-receipt-cutoff"></i>
           Commandes
         </a>
 
         <div class="sidebar-nav-label">Analyse</div>
 
-        <a routerLink="/admin/analyse-stock" routerLinkActive="active"
-           class="sidebar-nav-item" (click)="mobileOpen = false">
+        <a
+          routerLink="/admin/analyse-stock"
+          routerLinkActive="active"
+          class="sidebar-nav-item"
+          (click)="mobileOpen = false"
+        >
           <i class="bi bi-graph-up"></i>
           Analyse de Stock
         </a>
 
         <div class="sidebar-nav-label">sidebar.actionsRapides</div>
 
-        <a routerLink="/admin/stock/categories/ajouter" routerLinkActive="active"
-           class="sidebar-nav-item" (click)="mobileOpen = false">
+        <a
+          routerLink="/admin/stock/categories/ajouter"
+          routerLinkActive="active"
+          class="sidebar-nav-item"
+          (click)="mobileOpen = false"
+        >
           <i class="bi bi-plus-circle"></i>
           sidebar.nouvelleCat
         </a>
 
-        <a routerLink="/admin/stock/produits/ajouter" routerLinkActive="active"
-           class="sidebar-nav-item" (click)="mobileOpen = false">
+        <a
+          routerLink="/admin/stock/produits/ajouter"
+          routerLinkActive="active"
+          class="sidebar-nav-item"
+          (click)="mobileOpen = false"
+        >
           <i class="bi bi-plus-circle"></i>
           sidebar.nouveauProd
         </a>
       </nav>
 
       <div class="sidebar-footer">
-        <a routerLink="/" class="sidebar-footer-site-link">
+        <a routerLink="/app/store" class="sidebar-footer-site-link">
           <i class="bi bi-box-arrow-up-right"></i>
           <span>sidebar.voirSite</span>
         </a>
@@ -106,15 +135,21 @@ import { ThemeService } from '../../../../core/services/theme';
         <div class="lang-toggle lang-toggle-bo">
           <!-- NO LANG TOGGLE -->
         </div>
-        <button class="theme-toggle" (click)="th.toggleTheme()" [attr.title]="th.isDarkMode() ? 'Light Mode' : 'Dark Mode'">
-          <i class="bi" [class.bi-moon-fill]="!th.isDarkMode()" [class.bi-sun-fill]="th.isDarkMode()"></i>
+        <button
+          class="theme-toggle"
+          (click)="th.toggleTheme()"
+          [attr.title]="th.isDarkMode() ? 'Light Mode' : 'Dark Mode'"
+        >
+          <i
+            class="bi"
+            [class.bi-moon-fill]="!th.isDarkMode()"
+            [class.bi-sun-fill]="th.isDarkMode()"
+          ></i>
         </button>
-        <span class="topbar-clock">
-          <i class="bi bi-clock me-1"></i>{{ currentTime }}
-        </span>
+        <span class="topbar-clock"> <i class="bi bi-clock me-1"></i>{{ currentTime }} </span>
       </div>
     </header>
-  `
+  `,
 })
 export class SidebarComponent implements OnInit, OnDestroy {
   mobileOpen = false;
@@ -123,12 +158,15 @@ export class SidebarComponent implements OnInit, OnDestroy {
   private routerSub!: Subscription;
   private timerInterval: any;
 
-  constructor(private router: Router, public th: ThemeService) {}
+  constructor(
+    private router: Router,
+    public th: ThemeService,
+  ) {}
 
   ngOnInit(): void {
     this.updateBreadcrumb(this.router.url);
     this.routerSub = this.router.events
-      .pipe(filter(e => e instanceof NavigationEnd))
+      .pipe(filter((e) => e instanceof NavigationEnd))
       .subscribe((e: any) => this.updateBreadcrumb(e.urlAfterRedirects || e.url));
 
     this.updateTime();
@@ -148,7 +186,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
       '/admin/stock/produits': 'breadcrumb.produits',
       '/admin/stock/produits/ajouter': 'breadcrumb.nouveauProd',
       '/admin/stock/commandes': 'breadcrumb.commandes',
-      '/admin/analyse-stock': 'breadcrumb.analyseStock'
+      '/admin/analyse-stock': 'breadcrumb.analyseStock',
     };
     if (map[url] !== undefined) {
       this.currentPage = map[url];
@@ -166,7 +204,11 @@ export class SidebarComponent implements OnInit, OnDestroy {
   private updateTime(): void {
     const now = new Date();
     this.currentTime = now.toLocaleDateString('fr', {
-      weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+      hour: '2-digit',
+      minute: '2-digit',
     });
   }
 }

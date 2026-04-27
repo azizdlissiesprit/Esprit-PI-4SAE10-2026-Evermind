@@ -1,0 +1,180 @@
+:host {
+  --primary-green: #059669;
+  --primary-green-light: #d1fae5;
+  --bg-body: #F4F7FC;
+  --white: #FFFFFF;
+  --text-dark: #1E293B;
+  --text-grey: #64748B;
+  --text-light: #94A3B8;
+  --border-color:  var(--border-color);
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  --radius-md: 12px;
+  --radius-lg: 16px;
+
+  display: block;
+  min-height: 100vh;
+  background-color: var(--bg-body);
+  color: var(--text-dark);
+  font-family: 'Inter', sans-serif;
+  padding: 32px 40px;
+}
+
+.page-container { max-width: 860px; margin: 0 auto; }
+
+/* --- HEADER --- */
+.top-header {
+  margin-bottom: 24px;
+  .breadcrumbs {
+    display: flex; align-items: center; gap: 12px; font-size: 14px; color: var(--text-grey);
+  }
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--white); border: 1px solid var(--border-color); border-radius: 8px;
+    padding: 8px 16px; font-size: 13px; font-weight: 500; color: var(--text-dark);
+    cursor: pointer; transition: all 0.2s;
+    &:hover { background: var(--bg-inset); border-color: var(--primary-green); color: var(--primary-green); }
+  }
+  .divider { color: var(--border-color); }
+}
+
+/* --- BANNER --- */
+.report-banner {
+  background: linear-gradient(135deg, #059669, #10b981);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  color: white;
+  box-shadow: 0 8px 24px rgba(5, 150, 105, 0.25);
+
+  .banner-icon {
+    width: 56px; height: 56px; border-radius: 16px;
+    background: rgba(255,255,255,0.2); backdrop-filter: blur(8px);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; flex-shrink: 0;
+  }
+
+  .banner-text {
+    flex: 1;
+    h2 { margin: 0 0 4px; font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
+    p { margin: 0; font-size: 14px; opacity: 0.9; }
+  }
+
+  .patient-summary {
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(255,255,255,0.15); backdrop-filter: blur(8px);
+    border-radius: 12px; padding: 10px 16px;
+
+    .patient-thumb { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.5); }
+    .patient-name-badge { display: block; font-weight: 600; font-size: 14px; }
+    .patient-meta { display: block; font-size: 12px; opacity: 0.8; }
+  }
+}
+
+/* --- FORM --- */
+.report-form { display: flex; flex-direction: column; gap: 24px; }
+
+.form-section {
+  background: var(--white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: var(--card-shadow);
+  transition: box-shadow 0.2s;
+
+  &:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.06); }
+
+  .section-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 20px; padding-bottom: 16px;
+    border-bottom: 1px solid #f1f5f9;
+
+    i {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--primary-green-light); color: var(--primary-green);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+    }
+
+    h3 { margin: 0; font-size: 16px; font-weight: 600; color: var(--text-dark); }
+  }
+}
+
+.form-group {
+  margin-bottom: 18px;
+
+  &:last-child { margin-bottom: 0; }
+
+  label {
+    display: block; margin-bottom: 8px;
+    font-size: 13px; font-weight: 600; color: var(--text-grey);
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+
+  textarea, select {
+    width: 100%; padding: 12px 16px;
+    border: 1px solid var(--border-color); border-radius: 10px;
+    font-size: 14px; font-family: 'Inter', sans-serif;
+    color: var(--text-dark); background: var(--bg-inset);
+    transition: all 0.2s; resize: vertical;
+    box-sizing: border-box;
+
+    &:focus {
+      outline: none; border-color: var(--primary-green);
+      box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+      background: var(--white);
+    }
+
+    &::placeholder { color: var(--text-light); font-style: italic; }
+  }
+
+  select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 40px;
+    cursor: pointer;
+  }
+}
+
+/* --- ACTIONS --- */
+.form-actions {
+  display: flex; justify-content: flex-end; gap: 12px;
+  padding-top: 8px;
+
+  .btn-cancel {
+    padding: 12px 24px; border-radius: 10px;
+    border: 1px solid var(--border-color); background: var(--white);
+    font-size: 14px; font-weight: 600; color: var(--text-grey);
+    cursor: pointer; display: flex; align-items: center; gap: 8px;
+    transition: all 0.2s;
+    &:hover { background: var(--bg-inset); }
+  }
+
+  .btn-submit {
+    padding: 12px 32px; border-radius: 10px;
+    border: none; background: linear-gradient(135deg, #059669, #10b981);
+    font-size: 14px; font-weight: 600; color: white;
+    cursor: pointer; display: flex; align-items: center; gap: 8px;
+    transition: all 0.2s; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+    &:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(5, 150, 105, 0.4); }
+    &:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  }
+}
+
+/* --- LOADING --- */
+.loading-container {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 60vh; gap: 16px; color: var(--text-grey);
+
+  .spinner {
+    width: 40px; height: 40px; border: 3px solid var(--border-color);
+    border-top-color: var(--primary-green); border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }

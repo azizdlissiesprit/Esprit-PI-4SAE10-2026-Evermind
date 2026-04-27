@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { SidebarComponent } from '../../components/sidebar/sidebar'; // Import sidebar
+import { SidebarComponent } from '../../components/sidebar/sidebar';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, SidebarComponent], // Add Sidebar here
+  imports: [CommonModule, RouterOutlet, SidebarComponent],
   template: `
     <div class="app-container">
       <!-- 1. The Sidebar -->
@@ -20,15 +20,15 @@ import { SidebarComponent } from '../../components/sidebar/sidebar'; // Import s
   `,
   styles: [`
     .app-container {
-      display: flex; /* Or Grid */
+      display: flex;
       width: 100%;
       min-height: 100vh;
-      background-color: #F4F7FC;
+      background-color: var(--bg-main, #F4F7FC);
+      transition: background-color 0.3s ease;
     }
 
     .main-content {
-      flex: 1; /* Takes remaining space */
-      /* No padding here because your page components have their own container/padding */
+      flex: 1;
       overflow-y: auto;
       height: 100vh;
     }

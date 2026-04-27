@@ -18,4 +18,7 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
 
     // Search for Doctors/Nurses
     List<Patient> findByLastNameContainingIgnoreCase(String lastName);
+
+    // Find by Caregiver
+    List<Patient> findByResponsable(Long responsable);
 }

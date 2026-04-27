@@ -3,7 +3,8 @@ import {
   Severite, 
   StatutAlerte, 
   TypeEvent, 
-  ResultatIntervention 
+  InterventionOutcome,
+  InterventionStatus
 } from './enums';
 
 export interface AbnormalEvent {
@@ -24,16 +25,31 @@ export interface Alert {
   dateCreation: string;
   statut: StatutAlerte;
   message: string;
-    aiAnalysis?: string;   // Optional because old alerts might not have it
+  aiAnalysis?: string;
   aiRiskScore?: number; 
+  context?: string;
+}
+
+export interface InterventionLog {
+  id: number;
+  timestamp: string;
+  actionType: string;
+  performedBy: number;
+  notes: string;
 }
 
 export interface Intervention {
-  interventionId: number; // PK
-  userId: number; // The caregiver/doctor handling it
-  alertId: number; // FK to the specific Alert
-  dateDebut: Date;
-  dateFin?: Date; // Optional if not finished
-  description: string;
-  resultat: ResultatIntervention;
+  id: number;
+  alertId: number;
+  userId: number;
+  patientId: number;
+  notes?: string;
+  outcome?: InterventionOutcome;
+  status: InterventionStatus;
+  startedAt: string;
+  completedAt?: string;
+  durationInSeconds?: number;
+  isEscalated?: boolean;
+  escalatedToUserId?: number;
+  logs?: InterventionLog[];
 }

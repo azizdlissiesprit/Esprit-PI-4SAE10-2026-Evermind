@@ -1,13 +1,13 @@
 // Variables
 $primary: #4f46e5;
 $bg-page: #f9fafb;
-$card-bg: #ffffff;
-$text-main: #1f2937;
+$card-bg: var(--bg-card);
+$text-main: var(--text-primary);
 $text-light: #6b7280;
 $green: #10b981;
 $red: #ef4444;
 $orange: #f59e0b;
-$border: #e5e7eb;
+$border:  var(--border-color);
 $radius: 16px;
 
 .dashboard-wrapper {
@@ -44,7 +44,7 @@ $radius: 16px;
     padding: 10px 24px;
     border-radius: 40px;
     font-weight: 600;
-    color: #4338ca;
+    color: var(--text-secondary);
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
@@ -119,11 +119,11 @@ $radius: 16px;
   .chart-wrapper { height: 300px; width: 100%; }
 
   .notes-container {
-    background: #fffbeb; // Light yellow note feel
-    border-color: #fcd34d;
+    background: var(--bg-inset); // Light yellow note feel
+    border-color:  var(--border-color);
     
-    .note-text { font-style: italic; color: #78350f; line-height: 1.6; }
-    .evaluator-tag { margin-top: 16px; font-size: 12px; font-weight: 700; color: #92400e; text-align: right; }
+    .note-text { font-style: italic; color: var(--text-muted); line-height: 1.6; }
+    .evaluator-tag { margin-top: 16px; font-size: 12px; font-weight: 700; color: var(--text-muted); text-align: right; }
   }
 }
 
@@ -161,8 +161,8 @@ $radius: 16px;
   }
 
   &.warning-bg {
-    background: #fef2f2; border-color: #fecaca;
-    h4 { color: #991b1b; }
+    background: #fef2f2; border-color:  var(--border-color);
+    h4 { color: var(--text-muted); }
     p { color: #b91c1c; }
   }
 }
@@ -196,7 +196,7 @@ $radius: 16px;
   label {
     font-size: 11px;
     font-weight: 700;
-    color: #6b7280;
+    color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -210,29 +210,29 @@ $radius: 16px;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    color: #4f46e5; // Primary color
+    color: var(--text-secondary); // Primary color
     pointer-events: none;
     
     &.fa-hospital-user { left: 12px; font-size: 16px; }
-    &.arrow { right: 12px; font-size: 12px; color: #9ca3af; }
+    &.arrow { right: 12px; font-size: 12px; color: var(--text-muted); }
   }
 
   select {
     width: 100%;
     appearance: none; /* Hide default arrow */
-    background: white;
-    border: 1px solid #e5e7eb;
+    background: var(--bg-card);
+    border: 1px solid  var(--border-color);
     border-radius: 8px;
     padding: 10px 32px 10px 36px; // Space for icons
     font-family: 'Inter', sans-serif;
     font-weight: 600;
-    color: #1f2937;
+    color: var(--text-primary);
     cursor: pointer;
     box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     transition: all 0.2s;
 
-    &:hover { border-color: #c7d2fe; }
-    &:focus { outline: none; border-color: #4f46e5; box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
+    &:hover { border-color:  var(--border-color); }
+    &:focus { outline: none; border-color: var(--text-secondary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
   }
 }
 
@@ -243,12 +243,12 @@ $radius: 16px;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: #6b7280;
+    color: var(--text-secondary);
     
     .spinner {
         width: 40px; height: 40px;
-        border: 3px solid #e5e7eb;
-        border-top-color: #4f46e5;
+        border: 3px solid  var(--border-color);
+        border-top-color: var(--text-secondary);
         border-radius: 50%;
         animation: spin 1s linear infinite;
         margin-bottom: 16px;
@@ -256,7 +256,7 @@ $radius: 16px;
 }
 
 .empty-state {
-    text-align: center; padding: 60px; color: #9ca3af;
+    text-align: center; padding: 60px; color: var(--text-muted);
     i { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
 }
 

@@ -17,7 +17,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-// 1. ADD THIS: "implements UserDetails"
 public class User implements UserDetails {
 
     @Id
@@ -57,6 +56,20 @@ public class User implements UserDetails {
     @Column(nullable = false)
     @Builder.Default
     private Boolean active = false;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean banned = false;
+
+    @Column(name = "reset_token", length = 64)
+    private String resetToken;
+
+    @Column(name = "reset_token_expiry")
+    private LocalDateTime resetTokenExpiry;
+
+    @Column(name = "face_enabled", nullable = false)
+    @Builder.Default
+    private Boolean faceEnabled = false;
 
     // --- 2. IMPLEMENT REQUIRED METHODS BELOW ---
 
@@ -105,6 +118,12 @@ public class User implements UserDetails {
     protected void onCreate() {
         if (this.active == null) {
             this.active = true;
+        }
+        if (this.banned == null) {
+            this.banned = false;
+        }
+        if (this.faceEnabled == null) {
+            this.faceEnabled = false;
         }
     }
 }

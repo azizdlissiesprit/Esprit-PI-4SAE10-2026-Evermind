@@ -4,16 +4,17 @@
     <header class="page-header">
         <div class="header-left">
             <h1>Doctor / Specialist profile</h1>
-            <p>Configure secure availability, delegates, and clinical notifications.</p>
+            <p>Review contact information and account details.</p>
         </div>
         <div class="header-right">
             <div class="status-pill">
-                <div class="dot"></div> Current status: Available
+                <div class="dot" [style.background]="userData?.active ? 'var(--success-green)' : 'var(--text-grey)'"></div> 
+                Current status: {{ userData?.active ? 'Active Account' : 'Inactive Account' }}
             </div>
             <button class="icon-btn">
                 <i class="fa-regular fa-bell"></i>
             </button>
-            <div class="avatar-placeholder">{{ userData?.firstName?.charAt(0) }}{{ userData?.lastName?.charAt(0) }}</div>
+            <div class="avatar-placeholder">{{ userData?.firstName?.charAt(0) || '' }}{{ userData?.lastName?.charAt(0) || '?' }}</div>
         </div>
     </header>
 
@@ -23,47 +24,28 @@
         <!-- LEFT: Profile Card -->
         <div class="card profile-card">
             <div class="avatar-wrapper">
-                <img src="https://i.pravatar.cc/150?img=13" alt="Doctor Avatar" class="avatar-lg">
-                <div class="badge-certified"><i class="fa-solid fa-check-circle"></i> Board certified</div>
+                <img src="https://ui-avatars.com/api/?background=random&color=fff&name={{userData?.firstName}}+{{userData?.lastName}}" alt="Doctor Avatar" class="avatar-lg">
+                <div class="badge-certified" *ngIf="userData?.active"><i class="fa-solid fa-check-circle"></i> Verified</div>
             </div>
 
-            <h2 class="profile-name">Dr. {{ userData?.firstName }} {{ userData?.lastName }}, MD</h2>
-            <p class="profile-specialty">{{ userData?.specialty }}</p>
-            <p class="profile-role">{{ userData?.role }}</p>
+            <h2 class="profile-name">Dr. {{ userData?.firstName || 'Unknown' }} {{ userData?.lastName || 'User' }}</h2>
+            <p class="profile-role">{{ userData?.userType || userData?.role || 'Doctor' }}</p>
 
             <div class="status-row">
-                <span class="tag tag-green">On rounds</span>
-                <span class="tag tag-grey">Pager protected</span>
+                <span class="tag" [ngClass]="userData?.active ? 'tag-green' : 'tag-grey'">
+                    {{ userData?.active ? 'Active Member' : 'Inactive' }}
+                </span>
             </div>
 
             <div class="info-section">
-                <h4 class="info-label">Hospital affiliation</h4>
+                <h4 class="info-label">Contact</h4>
                 <div class="info-item">
-                    <div class="sub-label">Primary hospital</div>
-                    <div class="sub-value">{{ userData?.hospital }}</div>
+                    <div class="sub-label">Direct line / Phone</div>
+                    <div class="sub-value">{{ userData?.phoneNumber || 'Not provided' }}</div>
                 </div>
                 <div class="info-item">
-                    <div class="sub-label">Department</div>
-                    <div class="sub-value">{{ userData?.department }}</div>
-                </div>
-            </div>
-
-            <div class="info-section">
-                <h4 class="info-label">Access & security</h4>
-                <div class="info-item">
-                    <div class="sub-label">Pager / direct line</div>
-                    <div class="sub-value">Visible to clinical staff only</div>
-                </div>
-                <div class="info-item">
-                    <div class="sub-label">License number</div>
-                    <div class="sub-value">{{ userData?.license }}</div>
-                </div>
-            </div>
-
-            <div class="info-section mb-0">
-                <h4 class="info-label">Visibility controls</h4>
-                <div class="visibility-control">
-                    Contact details hidden from relatives by default
+                    <div class="sub-label">Secure email</div>
+                    <div class="sub-value">{{ userData?.email || 'Not provided' }}</div>
                 </div>
             </div>
         </div>
@@ -73,96 +55,34 @@
             
             <div class="settings-header">
                 <div class="settings-title">
-                    <h2>Clinical availability & settings</h2>
-                    <p>Define consult hours, alerts, and delegation rules.</p>
+                    <h2>Account Details</h2>
+                    <p>Registration and activity information</p>
                 </div>
                 <button class="btn-edit"><i class="fa-solid fa-pen"></i> Edit profile</button>
             </div>
 
             <div class="split-row">
-                <!-- Availability -->
-                <div class="inner-card">
+                <!-- System Info -->
+                <div class="inner-card" style="width: 100%;">
                     <div class="inner-header">
-                        <h3 class="inner-title">Availability & rounds</h3>
-                        <span class="pill-sm">Schedule</span>
-                    </div>
-
-                    <div *ngFor="let slot of availability">
-                        <div class="avail-text">{{ slot.label }}</div>
-                        <div class="avail-time">{{ slot.value }}</div>
-                    </div>
-
-                    <div class="toggle-row">
-                        <span class="toggle-label">Accept urgent consults</span>
-                        <div class="toggle-switch active"></div>
-                    </div>
-                    <div class="toggle-row">
-                        <span class="toggle-label">Show as available in telehealth</span>
-                        <div class="toggle-switch"></div>
-                    </div>
-                </div>
-
-                <!-- Notifications -->
-                <div class="inner-card">
-                    <div class="inner-header">
-                        <h3 class="inner-title">Notification protocol</h3>
-                        <span class="pill-sm">Alert rules</span>
+                        <h3 class="inner-title">System Information</h3>
+                        <span class="pill-sm">Account</span>
                     </div>
 
                     <div class="notif-item">
-                        <span class="notif-label">Falls</span>
-                        <span class="notif-val">Always alert</span>
+                        <span class="notif-label">Member Since</span>
+                        <span class="notif-val">{{ userData?.createdAt ? (userData.createdAt | date:'longDate') : 'Unknown' }}</span>
                     </div>
                     <div class="notif-item">
-                        <span class="notif-label">Vitals</span>
-                        <span class="notif-val">Critical only</span>
+                        <span class="notif-label">Last Login</span>
+                        <span class="notif-val">{{ userData?.lastLogin ? (userData.lastLogin | date:'medium') : 'Never logged in' }}</span>
                     </div>
-                    <div class="notif-item">
-                        <span class="notif-label">Sleep</span>
-                        <span class="notif-val">Weekly summary</span>
+
+                    <div class="notif-item" style="border-top: 1px solid #eee; margin-top: 12px; padding-top: 12px;">
+                        <span class="notif-label" style="color: var(--primary-color);">Current Session</span>
+                        <span class="notif-val" style="font-weight: 700; font-family: monospace;">{{ sessionTime }}</span>
                     </div>
                 </div>
-            </div>
-
-            <!-- Delegates -->
-            <div class="inner-card mb-24">
-                <div class="inner-header">
-                    <h3 class="inner-title">Authorized delegates</h3>
-                    <span class="pill-sm">Acting on behalf</span>
-                </div>
-
-                <div class="delegate-item" *ngFor="let delegate of delegates">
-                    <div class="delegate-info">
-                        <img [src]="delegate.img" [alt]="delegate.name" class="delegate-avatar">
-                        <div class="del-text">
-                            <h4>{{ delegate.name }}</h4>
-                            <p>{{ delegate.role }}</p>
-                        </div>
-                    </div>
-                    <button class="btn-manage">Manage</button>
-                </div>
-            </div>
-
-            <!-- Signature -->
-            <div class="inner-card">
-                <div class="inner-header">
-                    <h3 class="inner-title">Digital signature</h3>
-                    <span class="pill-sm">Prescriptions</span>
-                </div>
-
-                <div class="signature-area">
-                    <div class="sig-text">
-                        <h4>Digital signature</h4>
-                        <p>Upload e-signature for prescriptions.</p>
-                    </div>
-                    <div class="sig-placeholder">Signature</div>
-                </div>
-
-                <button class="btn-blue">Upload new signature</button>
-
-                <p class="disclaimer">
-                    Liability disclaimer: Remote monitoring guidance does not replace in-person clinical examination. Final medical decisions remain the responsibility of the attending physician.
-                </p>
             </div>
 
         </div>

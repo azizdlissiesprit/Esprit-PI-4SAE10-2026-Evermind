@@ -39,4 +39,8 @@ predictStability(patientId: number): Observable<any> {
   getAlertById(id: number): Observable<Alert> {
     return this.http.get<Alert>(`${this.baseUrl}/retrieve-alert/${id}`);
   }
+
+  getAlertsByIds(ids: number[]): Observable<Alert[]> {
+    return this.http.post<Alert[]>(`${this.baseUrl}/retrieve-alerts-by-ids`, ids);
+  }
 }

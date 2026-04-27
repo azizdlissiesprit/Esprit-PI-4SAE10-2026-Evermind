@@ -18,16 +18,7 @@ export class CaregiverProfileComponent {
     phone: '***-***-4821'
   };
 
-  // Mock data for display (in real app, fetch this from backend)
-  certifications = [
-    { title: 'CPR Certified', expiry: 'March 2025' },
-    { title: 'Dementia Care Specialist', expiry: 'Issued by: National Care Council' },
-    { title: 'Medication Admin Training', expiry: 'Last refreshed: Jan 2024' }
-  ];
+  @Input() sessionTime: string = '00:00:00';
 
-  stats = [
-    { label: 'Patients monitored', value: 12 },
-    { label: 'Hours logged', value: 450 },
-    { label: 'Incidents filed', value: 3 }
-  ];
+  // Removed mock data for clean UI
 }

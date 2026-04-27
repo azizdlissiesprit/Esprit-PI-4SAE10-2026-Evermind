@@ -117,6 +117,100 @@
     }
 }
 
+/* --- Nav Group (Stock & Shop) --- */
+.nav-group {
+    display: flex;
+    flex-direction: column;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    border-radius: 14px;
+    transition: background-color 0.3s;
+    
+    &.expanded {
+        background-color: rgba(196, 149, 106, 0.05); /* Soft cosmetic rose-gold tint */
+        
+        .group-header {
+            color: var(--text-primary);
+        }
+    }
+}
+
+.group-header {
+    cursor: pointer;
+    background: transparent !important;
+    box-shadow: none !important;
+    border-left: 3px solid transparent;
+    transition: all 0.3s ease;
+    padding-right: 12px;
+
+    &:hover {
+        border-left-color: rgba(196, 149, 106, 0.5);
+    }
+    
+    &.active-group {
+        border-left-color: #C4956A;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .toggle-icon {
+        margin-left: auto;
+        font-size: 10px;
+        transition: transform 0.3s ease;
+        opacity: 0.6;
+        
+        &.rotated {
+            transform: rotate(180deg);
+        }
+    }
+}
+
+.sub-menu-container {
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    max-height: 0; 
+}
+
+.sub-menu {
+    list-style: none;
+    padding-left: 14px;
+    margin: 4px 0 8px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-left: 1px dashed rgba(196, 149, 106, 0.3);
+    margin-left: 28px;
+    
+    .nav-link.sub-link {
+        padding: 10px 14px;
+        font-size: 13px;
+        border-radius: 10px;
+        
+        .icon-wrapper {
+            font-size: 13px;
+            width: 18px;
+            margin-right: 10px;
+        }
+        
+        &:hover {
+            color: #C4956A;
+            background-color: rgba(196, 149, 106, 0.1);
+        }
+        
+        &.active {
+            background-color: #C4956A;
+            color: white;
+            box-shadow: 0 4px 10px rgba(196, 149, 106, 0.25);
+        }
+    }
+}
+
+/* Hide toggle icon when sidebar is collapsed */
+.collapsed-sidebar .toggle-icon {
+    display: none;
+}
+
+
 /* --- User Profile Footer --- */
 .user-profile {
     margin-top: auto; display: flex; align-items: center; gap: 12px;

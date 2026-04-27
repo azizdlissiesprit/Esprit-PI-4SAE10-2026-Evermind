@@ -11,14 +11,7 @@ import java.util.List;
 @Service
 public class PredictiveAnalysisService {
 
-    /**
-     * Calculates the "Stability Trend" (Slope) using Linear Regression.
-     * X-axis: Sequence of Alert (1, 2, 3...)
-     * Y-axis: Gap in hours since previous alert
-     *
-     * Result < 0: Gaps are getting smaller (DANGER: Accelerating frequency)
-     * Result > 0: Gaps are getting larger (Improving)
-     */
+
     public double calculateStabilitySlope(List<Alert> history) {
         if (history.size() < 3) return 0.0; // Not enough data
 

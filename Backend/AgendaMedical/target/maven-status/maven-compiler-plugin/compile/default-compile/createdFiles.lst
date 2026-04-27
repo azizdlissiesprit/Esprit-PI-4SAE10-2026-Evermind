@@ -1,0 +1,16 @@
+com\agenda\service\RendezVousService.class
+com\agenda\dto\RendezVousDTO.class
+com\agenda\dto\VideoRoomResponse.class
+com\agenda\repository\RendezVousRepository.class
+com\agenda\AgendaMedicalApplication.class
+com\agenda\config\GoogleCalendarConfig.class
+com\agenda\dto\RendezVousStats.class
+com\agenda\entity\RendezVous$TypeRDV.class
+com\agenda\service\DailyCoService.class
+com\agenda\dto\VideoRoomRequest.class
+com\agenda\controller\GoogleCalendarController.class
+com\agenda\controller\VideoController.class
+com\agenda\controller\RendezVousController.class
+com\agenda\entity\RendezVous$StatutRDV.class
+com\agenda\entity\RendezVous.class
+com\agenda\service\GoogleCalendarService.class

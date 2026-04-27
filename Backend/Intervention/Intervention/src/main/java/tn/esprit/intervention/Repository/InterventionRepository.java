@@ -9,6 +9,6 @@ import java.util.Optional;
 public interface InterventionRepository extends JpaRepository<Intervention, Long> {
     Optional<Intervention> findByAlertId(Long alertId);
     List<Intervention> findByPatientId(Long patientId);
-
+    List<Intervention> findByEscalatedToUserId(Long userId);
 
 }

@@ -14,6 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,6 +70,11 @@ public class ProduitServiceImpl implements ProduitService {
                 .prix(produitDTO.getPrix())
                 .quantite(produitDTO.getQuantite())
                 .imageUrl(produitDTO.getImageUrl())
+                .prixOriginal(produitDTO.getPrixOriginal())
+                .enPromo(produitDTO.getEnPromo() != null ? produitDTO.getEnPromo() : false)
+                .dateExpiration(produitDTO.getDateExpiration())
+                .numeroLot(produitDTO.getNumeroLot())
+                .dateFinPromo(produitDTO.getDateFinPromo())
                 .categorie(categorie)
                 .build();
 
@@ -85,6 +95,11 @@ public class ProduitServiceImpl implements ProduitService {
         produit.setPrix(produitDTO.getPrix());
         produit.setQuantite(produitDTO.getQuantite());
         produit.setImageUrl(produitDTO.getImageUrl());
+        produit.setPrixOriginal(produitDTO.getPrixOriginal());
+        produit.setEnPromo(produitDTO.getEnPromo() != null ? produitDTO.getEnPromo() : false);
+        produit.setDateExpiration(produitDTO.getDateExpiration());
+        produit.setNumeroLot(produitDTO.getNumeroLot());
+        produit.setDateFinPromo(produitDTO.getDateFinPromo());
         produit.setCategorie(categorie);
 
         Produit modifie = produitRepository.save(produit);
@@ -144,7 +159,51 @@ public class ProduitServiceImpl implements ProduitService {
         }
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProduitDTO> obtenirProduitsCrossSell(Long produitId) {
+        // Find products frequently bought together via order lines
+        List<Long> coPurchasedIds = ligneCommandeRepository.findCoPurchasedProductIds(produitId);
+        if (coPurchasedIds.isEmpty()) {
+            // Fallback: return products from the same category
+            Produit produit = produitRepository.findById(produitId).orElse(null);
+            if (produit == null) return List.of();
+            return produitRepository.findByCategorieId(produit.getCategorie().getId())
+                    .stream()
+                    .filter(p -> !p.getId().equals(produitId))
+                    .limit(4)
+                    .map(this::convertirEnDTO)
+                    .collect(Collectors.toList());
+        }
+        return coPurchasedIds.stream()
+                .limit(4)
+                .map(id -> produitRepository.findById(id).orElse(null))
+                .filter(p -> p != null)
+                .map(this::convertirEnDTO)
+                .collect(Collectors.toList());
+    }
+
     private ProduitDTO convertirEnDTO(Produit produit) {
+        // Promo is active only if enPromo=true AND dateFinPromo is either null (eternal) or in the future
+        boolean promoActive = Boolean.TRUE.equals(produit.getEnPromo())
+                && (produit.getDateFinPromo() == null
+                    || produit.getDateFinPromo().isAfter(LocalDateTime.now()));
+
+        Integer remise = null;
+        if (promoActive && produit.getPrixOriginal() != null
+                && produit.getPrixOriginal().compareTo(BigDecimal.ZERO) > 0
+                && produit.getPrix().compareTo(produit.getPrixOriginal()) < 0) {
+            remise = produit.getPrixOriginal().subtract(produit.getPrix())
+                    .multiply(BigDecimal.valueOf(100))
+                    .divide(produit.getPrixOriginal(), 0, RoundingMode.HALF_UP)
+                    .intValue();
+        }
+
+        Integer joursAvantExpiration = null;
+        if (produit.getDateExpiration() != null) {
+            joursAvantExpiration = (int) ChronoUnit.DAYS.between(LocalDate.now(), produit.getDateExpiration());
+        }
+
         return ProduitDTO.builder()
                 .id(produit.getId())
                 .nom(produit.getNom())
@@ -152,6 +211,13 @@ public class ProduitServiceImpl implements ProduitService {
                 .prix(produit.getPrix())
                 .quantite(produit.getQuantite())
                 .imageUrl(produit.getImageUrl())
+                .prixOriginal(promoActive ? produit.getPrixOriginal() : null)
+                .enPromo(promoActive)
+                .remise(remise)
+                .dateExpiration(produit.getDateExpiration())
+                .numeroLot(produit.getNumeroLot())
+                .joursAvantExpiration(joursAvantExpiration)
+                .dateFinPromo(produit.getDateFinPromo())
                 .categorieId(produit.getCategorie().getId())
                 .categorieNom(produit.getCategorie().getNom())
                 .dateCreation(produit.getDateCreation())

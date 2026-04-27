@@ -61,12 +61,12 @@
 
 .status-active {
   background-color: #dcfce7;
-  color: #166534;
+  color: var(--text-primary);
 }
 
 .risk-badge {
   background-color: #fee2e2;
-  color: #991b1b;
+  color: var(--text-muted);
   padding: 4px 10px;
   border-radius: 999px;
   font-size: 12px;
@@ -75,7 +75,7 @@
 
 .stage-badge {
   background-color: #ffedd5;
-  color: #9a3412;
+  color: var(--text-muted);
   padding: 4px 10px;
   border-radius: 999px;
   font-size: 12px;
@@ -108,7 +108,7 @@
 /* Alert Banner */
 .alert-banner {
   background-color: #fee2e2;
-  border: 1px solid #f87171;
+  border: 1px solid  var(--border-color);
   border-radius: var(--radius-lg);
   padding: 16px 20px;
   display: flex;
@@ -130,7 +130,7 @@
 }
 
 .alert-content h4 {
-  color: #991b1b;
+  color: var(--text-muted);
   font-size: 15px;
   font-weight: 600;
   margin-bottom: 4px;
@@ -173,17 +173,17 @@
 
 .kpi-icon.blue {
   background-color: #dbeafe;
-  color: #1e40af;
+  color: var(--text-primary);
 }
 
 .kpi-icon.orange {
   background-color: #ffedd5;
-  color: #9a3412;
+  color: var(--text-muted);
 }
 
 .kpi-icon.red {
   background-color: #fee2e2;
-  color: #991b1b;
+  color: var(--text-muted);
 }
 
 .kpi-info h3 {
@@ -217,7 +217,7 @@
 }
 
 .kpi-info p span.stable {
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 /* Grid Layout */
@@ -408,7 +408,7 @@
 }
 
 .trend-up {
-  color: #16a34a;
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   gap: 4px;
@@ -416,7 +416,7 @@
 }
 
 .trend-stable {
-  color: #64748b;
+  color: var(--text-secondary);
   display: flex;
   align-items: center;
   gap: 4px;
@@ -445,7 +445,7 @@
 .btn-icon:hover {
   background: var(--secondary);
   color: var(--foreground);
-  border-color: #cbd5e1;
+  border-color: var(--text-muted);
 }
 
 /* Responsive Design */

@@ -1,6 +1,5 @@
 <div class="page-wrapper">
   <div class="main-container">
-    <!-- Left Section (Image) -->
     <div class="image-section">
       <div class="logo">Alzheimer Care</div>
       <img
@@ -12,28 +11,47 @@
       <div class="promo-card">
         <div class="promo-text">
           Secure monitoring<br />
-          for peace of mind.
+          with a calmer, faster sign-in.
         </div>
       </div>
     </div>
 
-    <!-- Right Section (Form) -->
     <div class="form-section">
-      <!-- Stepper (Optional visually, kept to match design) -->
       <div class="stepper">
         <div class="step active">
           <div class="step-circle">1</div>
-          Login
+          Credentials
         </div>
         <div class="step-line"></div>
-        <div class="step">
+        <div class="step active">
           <div class="step-circle">2</div>
-          2FA
+          Face Scan
         </div>
       </div>
 
       <h1 class="form-title">Welcome Back</h1>
-      <div class="form-subtitle">Sign in to manage patient alerts and data.</div>
+      <div class="form-subtitle">
+        Choose the sign-in method that fits the moment: classic credentials or Face ID.
+      </div>
+
+      <div class="mode-switch" role="tablist" aria-label="Login mode">
+        <button
+          type="button"
+          class="mode-switch__option"
+          [class.mode-switch__option--active]="loginMode === 'face'"
+          (click)="setLoginMode('face')"
+        >
+          Email + Face ID
+        </button>
+        <button
+          type="button"
+          class="mode-switch__option"
+          [class.mode-switch__option--active]="loginMode === 'classic'"
+          (click)="setLoginMode('classic')"
+        >
+          Email + Password
+        </button>
+      </div>
 
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <div class="form-group">
@@ -46,13 +64,13 @@
           />
         </div>
 
-        <div class="form-group">
+        <div class="form-group" *ngIf="loginMode === 'classic'">
           <label class="label">Password</label>
           <input
             type="password"
             class="input-field"
             formControlName="password"
-            placeholder="••••••••••"
+            placeholder="..........."
           />
 
           <div class="forgot-row">
@@ -60,43 +78,52 @@
               <input type="checkbox" formControlName="rememberMe" class="remember-checkbox" />
               <span>Remember me</span>
             </label>
-            <span class="forgot-link">Forgot password?</span>
+            <a routerLink="/auth/forgot-password" class="forgot-link">Forgot password?</a>
           </div>
         </div>
-        <div
-          *ngIf="errorMessage"
-          style="
-            color: #dc2626;
-            background-color: #fee2e2;
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-            font-size: 14px;
-            text-align: center;
-          "
-        >
+
+        <app-face-capture
+          *ngIf="loginMode === 'face'"
+          [compact]="true"
+          title="Face ID Verification"
+          subtitle="Enter your email, then use the front camera or upload a clean portrait to complete the login."
+          (faceSelected)="onFaceSelected($event)"
+        />
+
+        <div *ngIf="loginMode === 'classic'" class="classic-note">
+          Classic login uses your email and password only.
+        </div>
+
+        <div *ngIf="errorMessage" class="feedback-banner feedback-banner--error">
           {{ errorMessage }}
         </div>
+
         <button class="submit-btn" type="submit" [disabled]="loginForm.invalid || isLoading">
-          {{ isLoading ? 'Logging in...' : 'Log in' }}
+          {{
+            isLoading
+              ? loginMode === 'face'
+                ? 'Verifying...'
+                : 'Signing in...'
+              : loginMode === 'face'
+                ? 'Log in with Email + Face ID'
+                : 'Log in'
+          }}
         </button>
 
-        <div class="divider">
-          <div class="divider-line"></div>
-          <span>or continue with</span>
-          <div class="divider-line"></div>
+        <div class="form-group recaptcha-wrap">
+          <re-captcha
+            formControlName="recaptcha"
+            siteKey="6LfWLoAsAAAAADs5GBuGWXl4DdEoukT1eT9YBGd3"
+          >
+          </re-captcha>
         </div>
 
-        <div class="social-buttons">
-          <button type="button" class="social-btn">
-            <!-- Icons handled by script in index.html -->
-            <iconify-icon icon="logos:facebook" style="font-size: 18px"></iconify-icon>
-            <span>Facebook</span>
-          </button>
-          <button type="button" class="social-btn">
-            <iconify-icon icon="logos:google-icon" style="font-size: 18px"></iconify-icon>
-            <span>Google</span>
-          </button>
+        <div class="security-note">
+          {{
+            loginMode === 'face'
+              ? 'Your session is unlocked after your enrolled face is verified.'
+              : 'Your session is unlocked with your email and password.'
+          }}
         </div>
 
         <div class="bottom-text">

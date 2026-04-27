@@ -16,4 +16,5 @@ public class AuthenticationResponse {
     private String lastName;
     private String email;
     private UserType role;
+    private Boolean faceEnabled;
 }

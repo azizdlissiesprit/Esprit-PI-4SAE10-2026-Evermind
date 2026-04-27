@@ -43,22 +43,31 @@ public class AlertController {
     public Alert updateAlert(@PathVariable Long id, @RequestBody Alert alert) {
         return alertService.updateAlert(id, alert);
     }
-    @PatchMapping("/take-charge/{id}")
+    @PutMapping("/take-charge/{id}")
     public Alert takeCharge(@PathVariable Long id) {
         return alertService.updateStatus(id, StatutAlerte.EN_COURS);
     }
-    @PatchMapping("/resolve/{id}")
+
+    @PutMapping("/resolve/{id}")
     public Alert resolve(@PathVariable Long id) {
         return alertService.resolveAlert(id);
     }
-    @PatchMapping("/ignore/{id}")
+
+    @PutMapping("/ignore/{id}")
     public Alert ignore(@PathVariable Long id) {
         return alertService.ignoreAlert(id);
     }
+
     @DeleteMapping("/remove-alert/{alert-id}")
     public void removeAlert(@PathVariable("alert-id") Long alertId) {
         alertService.removeAlert(alertId);
     }
+
+    @PostMapping("/by-ids")
+    public List<Alert> getAlertsByIds(@RequestBody List<Long> alertIds) {
+        return alertService.retrieveAlertsByIds(alertIds);
+    }
+
     @GetMapping("/predict/patient/{id}")
     public Map<String, Object> predictStability(@PathVariable Long id) {
         List<Alert> history = alertRepository.findTop10ByPatientIdOrderByDateCreationDesc(id);

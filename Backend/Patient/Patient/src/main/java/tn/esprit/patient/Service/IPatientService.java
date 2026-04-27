@@ -25,4 +25,7 @@ public interface IPatientService {
 
     // Search by Name (Partial Match)
     List<Patient> searchByName(String lastName);
+
+    // Search by Caregiver
+    List<Patient> getPatientsByResponsable(Long responsableId);
 }

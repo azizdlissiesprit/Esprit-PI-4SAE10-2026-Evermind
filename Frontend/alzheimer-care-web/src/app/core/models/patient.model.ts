@@ -10,4 +10,7 @@ export interface Patient {
   niveauMobilite: NiveauMobilite;
   contactUrgence: string;
   userIdResponsable: number; // FK to User
+  geofenceRadius?: number;
+  baseLatitude?: number;
+  baseLongitude?: number;
 }

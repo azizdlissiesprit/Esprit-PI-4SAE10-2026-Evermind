@@ -1,10 +1,10 @@
 // Variables
-$bg-body: #F4F7FC;
-$bg-white: #FFFFFF;
+$bg-body: var(--bg-main);
+$bg-white: var(--bg-card);
 $primary-blue: #4E80EE;
-$text-dark: #1A202C;
-$text-grey: #718096;
-$border-color: #E2E8F0;
+$text-dark: var(--text-primary);
+$text-grey: var(--text-secondary);
+$border-color: var(--border-color);
 $online-green: #38A169;
 
 /* --- GLOBAL RESET & LAYOUT --- */
@@ -52,7 +52,7 @@ $online-green: #38A169;
 }
 
 .monitoring-dropdown {
-  background: white; padding: 8px 16px; border-radius: 20px;
+  background: var(--bg-card); padding: 8px 16px; border-radius: 20px;
   color: $text-dark; font-size: 13px; font-weight: 500;
   display: flex; align-items: center; gap: 8px; cursor: pointer;
   box-shadow: 0 2px 5px rgba(0,0,0,0.03);
@@ -60,7 +60,7 @@ $online-green: #38A169;
 
 .icon-btn {
   width: 40px; height: 40px; border-radius: 50%; border: 1px solid white;
-  background: white; display: flex; align-items: center; justify-content: center;
+  background: var(--bg-card); display: flex; align-items: center; justify-content: center;
   color: $text-dark; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.03);
 }
 
@@ -91,15 +91,33 @@ $online-green: #38A169;
   overflow: hidden; /* Keep children inside */
 }
 
-.conv-header {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 20px; flex-shrink: 0;
-  h2 { font-size: 20px; font-weight: 700; color: $text-dark; margin: 0; }
+.tab-switcher {
+  display: flex; background: #EDF2F7; border-radius: 12px; padding: 4px; gap: 4px;
+}
+
+.tab-btn {
+  flex: 1; border: none; background: transparent; padding: 6px 12px; border-radius: 8px;
+  font-size: 13px; font-weight: 600; color: $text-grey; cursor: pointer; transition: all 0.2s;
+  &.active { background: var(--bg-card); color: $primary-blue; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+}
+
+.loading-state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 40px; color: $text-grey; font-size: 14px; gap: 10px;
+  i { font-size: 24px; color: $primary-blue; }
+}
+
+.empty-state-mini {
+  padding: 40px 20px; text-align: center; color: $text-grey; font-size: 13px;
+}
+
+.new-conv-prompt {
+  text-align: center; padding: 20px; background: #EBF3FF; border-radius: 12px;
+  color: var(--text-secondary); font-size: 13px; margin: 20px 0; border: 1px dashed #3182CE;
 }
 
 .btn-new {
-  background: $primary-blue; color: white; border: none;
-  padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer;
+  display: none; // Hidden because we use tabs now
 }
 
 /* Search Bar Fix */
@@ -117,7 +135,7 @@ $online-green: #38A169;
   width: 100%; /* Fill wrapper */
   padding: 12px 12px 12px 40px; /* Padding for text + icon */
   border: 1px solid $border-color; border-radius: 20px;
-  font-size: 13px; outline: none; background: #FAFCFE;
+  font-size: 13px; outline: none; background: var(--bg-inset);
   /* box-sizing is handled by global reset, so this won't overflow now */
 }
 
@@ -128,7 +146,7 @@ $online-green: #38A169;
 
 .filter-chip {
   padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 500;
-  background: #F0F4F8; color: $text-grey; border: none; cursor: pointer; white-space: nowrap;
+  background: var(--bg-inset); color: $text-grey; border: none; cursor: pointer; white-space: nowrap;
   &.active { background: $text-dark; color: white; }
 }
 
@@ -146,7 +164,7 @@ $online-green: #38A169;
   cursor: pointer; margin-bottom: 10px; border: 1px solid transparent;
   transition: all 0.2s;
   &:hover { background: #F7FAFC; }
-  &.selected { background: #EBF3FF; border-color: #E2E8F0; }
+  &.selected { background: #EBF3FF; border-color:  var(--border-color); }
 }
 
 .avatar-wrapper { position: relative; flex-shrink: 0; }
@@ -160,7 +178,7 @@ $online-green: #38A169;
 .conv-top { display: flex; justify-content: space-between; margin-bottom: 4px; }
 .conv-name { font-weight: 700; font-size: 14px; color: $text-dark; }
 .conv-role { font-size: 12px; color: $text-grey; margin-left: 6px; }
-.badge-role { background:#EBF8FF; color:#3182CE; padding: 2px 8px; border-radius:6px; font-size:10px; font-weight:700; margin-left: 6px;}
+.badge-role { background:#EBF8FF; color: var(--text-secondary); padding: 2px 8px; border-radius:6px; font-size:10px; font-weight:700; margin-left: 6px;}
 .conv-time { font-size: 11px; color: #A0AEC0; flex-shrink: 0;}
 .conv-preview { font-size: 13px; color: $text-grey; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .conv-meta { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
@@ -193,7 +211,7 @@ $online-green: #38A169;
 
 .chat-actions { display: flex; gap: 10px; }
 .btn-outline {
-  border: 1px solid $border-color; background: white; padding: 10px 16px;
+  border: 1px solid $border-color; background: var(--bg-card); padding: 10px 16px;
   border-radius: 14px; color: $text-grey; font-size: 13px; font-weight: 600;
   cursor: pointer; display: flex; align-items: center; gap: 8px;
   &:hover { background: #F7FAFC; }
@@ -204,7 +222,7 @@ $online-green: #38A169;
   padding: 30px; 
   overflow-y: auto; /* Scroll ONLY the messages */
   display: flex; flex-direction: column; gap: 20px;
-  background: white;
+  background: var(--bg-card);
 }
 
 .security-notice {
@@ -233,7 +251,7 @@ $online-green: #38A169;
   position: relative; word-wrap: break-word; /* Wrap long text */
   
   &.received {
-    background: white; border: 1px solid $border-color;
+    background: var(--bg-card); border: 1px solid $border-color;
     border-radius: 20px 20px 20px 4px; color: $text-dark;
   }
   
@@ -260,7 +278,7 @@ $online-green: #38A169;
 /* Audio Player Fix */
 .audio-player {
   display: flex; align-items: center; gap: 12px; margin-top: 10px;
-  background: white; padding: 10px; border-radius: 12px; border: 1px solid $border-color;
+  background: var(--bg-card); padding: 10px; border-radius: 12px; border: 1px solid $border-color;
   color: $text-dark; 
   /* Responsive width */
   width: 100%; 
@@ -275,14 +293,14 @@ $online-green: #38A169;
 /* --- Chat Input Fix --- */
 .chat-input-area {
   padding: 20px 30px; 
-  background: white; 
+  background: var(--bg-card); 
   border-top: 1px solid $border-color;
   flex-shrink: 0; /* Keep it at bottom */
   width: 100%; /* Ensure it fits container */
 }
 
 .input-wrapper {
-  background: #FAFCFE; 
+  background: var(--bg-inset); 
   border: 1px solid $border-color; 
   border-radius: 24px;
   padding: 8px; 

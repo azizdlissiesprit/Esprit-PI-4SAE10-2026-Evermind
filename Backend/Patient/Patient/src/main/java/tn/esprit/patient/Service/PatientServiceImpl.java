@@ -60,6 +60,7 @@ public class PatientServiceImpl implements IPatientService {
         // System Linking
         existing.setWearableDeviceId(updated.getWearableDeviceId());
         existing.setGuardianUserId(updated.getGuardianUserId());
+        existing.setResponsable(updated.getResponsable());
 
         return repository.save(existing);
     }
@@ -97,5 +98,10 @@ public class PatientServiceImpl implements IPatientService {
     @Override
     public List<Patient> searchByName(String lastName) {
         return repository.findByLastNameContainingIgnoreCase(lastName);
+    }
+
+    @Override
+    public List<Patient> getPatientsByResponsable(Long responsableId) {
+        return repository.findByResponsable(responsableId);
     }
 }

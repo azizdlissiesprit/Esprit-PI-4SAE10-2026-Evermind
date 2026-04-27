@@ -1,0 +1,329 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: evermind-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: postgres
+    command: ["postgres", "-c", "max_connections=200"]
+    volumes:
+      - ./Backend/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - evermind-network
+
+  eureka-server:
+    build: ./Backend/Eureka/EurekaServer
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - evermind-network
+
+  gateway:
+    build: ./Backend/Gateway
+    container_name: gateway
+    ports:
+      - "8090:8090"
+    environment:
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka
+    depends_on:
+      - eureka-server
+    networks:
+      - evermind-network
+
+  alert-service:
+    build: ./Backend/Alert/Alert
+    container_name: alert-service
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/Alert
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka
+    depends_on:
+      - db
+      - eureka-server
+    networks:
+      - evermind-network
+
+  user-service:
+    build: ./Backend/User/User
+    container_name: user-service
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/User
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka
+      - RABBITMQ_HOST=rabbitmq
+      - FACE_SERVICE_URL=http://face-service:8000
+    depends_on:
+      - db
+      - eureka-server
+      - rabbitmq
+    networks:
+      - evermind-network
+
+  patient-service:
+    build: ./Backend/Patient/Patient
+    container_name: patient-service
+    ports:
+      - "8084:8084"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/Patient
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka
+    depends_on:
+      - db
+      - eureka-server
+    networks:
+      - evermind-network
+
+  product-service:
+    build: ./Backend/Product/Product
+    container_name: product-service
+    ports:
+      - "8087:8084"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/Product
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka
+    depends_on:
+      - db
+      - eureka-server
+    networks:
+      - evermind-network
+
+  profile-service:
+    build: ./Backend/Profile/Profile
+    container_name: profile-service
+    ports:
+      - "8085:8085"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/Profile
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka
+    depends_on:
+      - db
+      - eureka-server
+    networks:
+      - evermind-network
+
+  stock-service:
+    build: ./Backend/Stock/service-stock
+    container_name: stock-service
+    ports:
+      - "8095:8095"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/alzheimer_stock
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka
+    depends_on:
+      - db
+      - eureka-server
+    networks:
+      - evermind-network
+
+  intervention-service:
+    build: ./Backend/Intervention/Intervention
+    container_name: intervention-service
+    ports:
+      - "8086:8086"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/Intervention
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka
+    depends_on:
+      - db
+      - eureka-server
+    networks:
+      - evermind-network
+
+  conversation-service:
+    build: ./Backend/Conversation/Conversation
+    container_name: conversation-service
+    ports:
+      - "8088:8088"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/Conversation
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka
+    depends_on:
+      - db
+      - eureka-server
+    networks:
+      - evermind-network
+
+  sensorsimulator:
+    build: ./Backend/SensorSimulator
+    container_name: sensorsimulator
+    ports:
+      - "8089:8089"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/SensorSimulator
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka
+    depends_on:
+      - db
+      - eureka-server
+    networks:
+      - evermind-network
+
+  autonomy-service:
+    build: ./Backend/Autonomy/Autonomy
+    container_name: autonomy-service
+    ports:
+      - "8097:8097"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/autonomy
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka
+    depends_on:
+      - db
+      - eureka-server
+    networks:
+      - evermind-network
+
+  cognitive-assessment:
+    build: ./Backend/CognitiveAssessment/CognitiveAssessment
+    container_name: cognitive-assessment
+    ports:
+      - "8098:8098"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/cognitive_assessment
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka
+    depends_on:
+      - db
+      - eureka-server
+    networks:
+      - evermind-network
+
+  agenda-medical:
+    build: ./Backend/AgendaMedical
+    container_name: agenda-medical
+    ports:
+      - "8101:8101"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/agendamedical
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka
+    depends_on:
+      - db
+      - eureka-server
+    networks:
+      - evermind-network
+
+  chatbot-service:
+    build: ./Backend/Chatbot/Chatbot
+    container_name: chatbot-service
+    ports:
+      - "8099:8099"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/Chatbot
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka
+      - DB_HOST=db
+      - DB_PORT=5432
+      - GEMINI_API_KEY=AIzaSyCpFwTv8o_6JVkqI8EfgGit2lOaixU5kr0
+    depends_on:
+      - db
+      - eureka-server
+    networks:
+      - evermind-network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    networks:
+      - evermind-network
+
+  loginlog-service:
+    build: ./Backend/LoginLog/LoginLog
+    container_name: loginlog-service
+    ports:
+      - "8100:8100"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/loginlog
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka
+      - RABBITMQ_HOST=rabbitmq
+    depends_on:
+      - db
+      - eureka-server
+      - rabbitmq
+    networks:
+      - evermind-network
+
+  stock-analytics:
+    build: ./Backend/Stock/python-analytics
+    container_name: stock-analytics
+    ports:
+      - "8083:8083"
+    environment:
+      - DATABASE_URL=postgresql://postgres:123@db:5432/alzheimer_stock
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka
+    depends_on:
+      - db
+      - eureka-server
+    networks:
+      - evermind-network
+
+  face-service:
+    build: ./Backend/face-service
+    container_name: face-service
+    ports:
+      - "8000:8000"
+    networks:
+      - evermind-network
+
+  frontend:
+    build: ./Frontend/alzheimer-care-web
+    container_name: evermind-frontend
+    ports:
+      - "4200:4000"
+    depends_on:
+      - gateway
+    networks:
+      - evermind-network
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    volumes:
+      - ./Monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - evermind-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - prometheus
+    networks:
+      - evermind-network
+
+  reclamation-service:
+    build: ./Backend/Reclamation
+    container_name: reclamation-service
+    ports:
+      - "8096:8096"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/Reclamation
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka
+    depends_on:
+      - db
+      - eureka-server
+    networks:
+      - evermind-network
+
+networks:
+  evermind-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

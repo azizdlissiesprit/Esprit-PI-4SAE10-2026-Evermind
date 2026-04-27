@@ -1,0 +1,136 @@
+<div class="page-container" *ngIf="!isLoading && patient; else loadingState">
+
+    <!-- HEADER -->
+    <header class="top-header">
+        <div class="breadcrumbs">
+            <button class="back-btn" (click)="goBack()">
+                <i class="fa-solid fa-arrow-left"></i> Back to Patient List
+            </button>
+            <span class="divider">/</span>
+            <span>Medical Report — Patient #{{ patient.id }}</span>
+        </div>
+    </header>
+
+    <!-- BANNER -->
+    <div class="report-banner">
+        <div class="banner-icon">
+            <i class="fa-solid fa-file-medical"></i>
+        </div>
+        <div class="banner-text">
+            <h2>Physician Medical Report</h2>
+            <p>Complete the clinical assessment for <strong>{{ patient.firstName }} {{ patient.lastName }}</strong></p>
+        </div>
+        <div class="patient-summary">
+            <img [src]="getPatientImage(patient.id)" alt="Patient" class="patient-thumb">
+            <div>
+                <span class="patient-name-badge">{{ patient.firstName }} {{ patient.lastName }}</span>
+                <span class="patient-meta">Age {{ getAge(patient.dateOfBirth) }} · Room {{ patient.roomNumber }} · {{ patient.gender }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- FORM -->
+    <form class="report-form" (ngSubmit)="submitReport()">
+
+        <!-- Section 1: Primary Diagnosis -->
+        <div class="form-section">
+            <div class="section-header">
+                <i class="fa-solid fa-stethoscope"></i>
+                <h3>Primary Diagnosis</h3>
+            </div>
+            <div class="form-group">
+                <label for="primaryDiagnosis">Clinical Diagnosis</label>
+                <textarea id="primaryDiagnosis" [(ngModel)]="report.primaryDiagnosis" name="primaryDiagnosis"
+                    placeholder="e.g., Alzheimer's Disease, Vascular Dementia, Mixed Dementia..." rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="diseaseStage">Disease Stage</label>
+                <select id="diseaseStage" [(ngModel)]="report.diseaseStage" name="diseaseStage">
+                    <option value="" disabled>-- Select Stage --</option>
+                    <option *ngFor="let stage of diseaseStages" [value]="stage">{{ stage }}</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Section 2: Cognitive & Functional -->
+        <div class="form-section">
+            <div class="section-header">
+                <i class="fa-solid fa-brain"></i>
+                <h3>Cognitive & Functional Assessment</h3>
+            </div>
+            <div class="form-group">
+                <label for="cognitiveAssessment">Cognitive Assessment (MMSE / MoCA Summary)</label>
+                <textarea id="cognitiveAssessment" [(ngModel)]="report.cognitiveAssessment" name="cognitiveAssessment"
+                    placeholder="e.g., MMSE score 18/30. Short-term memory severely impaired. Orientation to time partially preserved..." rows="4"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="functionalStatus">Functional Status (ADL Capabilities)</label>
+                <textarea id="functionalStatus" [(ngModel)]="report.functionalStatus" name="functionalStatus"
+                    placeholder="e.g., Requires assistance with bathing and dressing. Can feed independently. Needs supervision for ambulation..." rows="3"></textarea>
+            </div>
+        </div>
+
+        <!-- Section 3: Behavioral -->
+        <div class="form-section">
+            <div class="section-header">
+                <i class="fa-solid fa-eye"></i>
+                <h3>Behavioral Observations</h3>
+            </div>
+            <div class="form-group">
+                <label for="behavioralObservations">Observations</label>
+                <textarea id="behavioralObservations" [(ngModel)]="report.behavioralObservations" name="behavioralObservations"
+                    placeholder="e.g., Episodes of sundowning observed in the evening. Periodic agitation requiring redirection. No wandering events this week..." rows="4"></textarea>
+            </div>
+        </div>
+
+        <!-- Section 4: Medication & Treatment -->
+        <div class="form-section">
+            <div class="section-header">
+                <i class="fa-solid fa-pills"></i>
+                <h3>Medication & Treatment Plan</h3>
+            </div>
+            <div class="form-group">
+                <label for="medicationReview">Current Medication Review</label>
+                <textarea id="medicationReview" [(ngModel)]="report.medicationReview" name="medicationReview"
+                    placeholder="e.g., Donepezil 10mg daily — continue. Memantine 20mg daily — continue. Consider adding Sertraline 25mg for depressive symptoms..." rows="4"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="treatmentPlan">Treatment Plan & Recommendations</label>
+                <textarea id="treatmentPlan" [(ngModel)]="report.treatmentPlan" name="treatmentPlan"
+                    placeholder="e.g., Continue current pharmacotherapy. Schedule follow-up cognitive assessment in 3 months. Refer to speech therapy for swallowing evaluation..." rows="4"></textarea>
+            </div>
+        </div>
+
+        <!-- Section 5: Additional Notes -->
+        <div class="form-section">
+            <div class="section-header">
+                <i class="fa-solid fa-notes-medical"></i>
+                <h3>Additional Clinical Notes</h3>
+            </div>
+            <div class="form-group">
+                <label for="additionalNotes">Notes</label>
+                <textarea id="additionalNotes" [(ngModel)]="report.additionalNotes" name="additionalNotes"
+                    placeholder="Any additional observations, family communication notes, or follow-up reminders..." rows="3"></textarea>
+            </div>
+        </div>
+
+        <!-- SUBMIT -->
+        <div class="form-actions">
+            <button type="button" class="btn-cancel" (click)="goBack()">
+                <i class="fa-solid fa-xmark"></i> Cancel
+            </button>
+            <button type="submit" class="btn-submit" [disabled]="isSubmitting">
+                <i class="fa-solid fa-paper-plane" *ngIf="!isSubmitting"></i>
+                <i class="fa-solid fa-spinner fa-spin" *ngIf="isSubmitting"></i>
+                {{ isSubmitting ? 'Submitting...' : 'Submit Medical Report' }}
+            </button>
+        </div>
+    </form>
+</div>
+
+<ng-template #loadingState>
+    <div class="loading-container">
+        <div class="spinner"></div>
+        <p>Loading patient data...</p>
+    </div>
+</ng-template>

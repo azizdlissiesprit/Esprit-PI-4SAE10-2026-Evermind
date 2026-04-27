@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { forkJoin, of } from 'rxjs';
+import { catchError, finalize } from 'rxjs/operators';
 import { CategorieService } from '../../../core/services/categorie.service';
 import { ProduitService } from '../../../core/services/produit.service';
 import { PanierService } from '../../../core/services/panier.service';
 import { Categorie } from '../../../core/models/categorie.model';
 import { Produit } from '../../../core/models/produit.model';
-
 
 @Component({
   selector: 'app-categorie-produits',
@@ -15,22 +16,31 @@ import { Produit } from '../../../core/models/produit.model';
   imports: [CommonModule, RouterLink, FormsModule],
   template: `
     <div class="fo-section" *ngIf="!loading">
-      <div class="fo-section-container">
+      <div class="fo-section-container fo-view-shell">
         <!-- Breadcrumb -->
         <div class="fo-breadcrumb">
-          <a routerLink="/">Accueil</a>
+          <a routerLink="/app/store">Accueil</a>
           <span>/</span>
           <span>{{ categorie?.nom }}</span>
         </div>
 
         <!-- Category Header -->
-        <div class="fo-category-header" *ngIf="categorie">
+        <div class="fo-category-header fo-view-intro fo-view-intro-compact" *ngIf="categorie">
           <div class="fo-category-header-icon">
             <i class="bi bi-tag-fill"></i>
           </div>
           <div>
+            <span class="fo-view-kicker mb-2"><i class="bi bi-grid-3x3-gap"></i>Categorie</span>
             <h1>{{ categorie.nom }}</h1>
             <p>{{ categorie.description }}</p>
+            <div class="fo-view-meta mt-3">
+              <span class="fo-view-meta-item"
+                ><i class="bi bi-box-seam"></i>{{ products.length }} produits</span
+              >
+              <span class="fo-view-meta-item"
+                ><i class="bi bi-funnel"></i>Filtres intelligents</span
+              >
+            </div>
           </div>
         </div>
 
@@ -38,14 +48,22 @@ import { Produit } from '../../../core/models/produit.model';
         <div class="fo-filter-bar">
           <div class="fo-search-box">
             <i class="bi bi-search"></i>
-            <input type="text" title="Rechercher dans cette catégorie..."
-                   [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()">
+            <input
+              type="text"
+              title="Rechercher dans cette catégorie..."
+              [(ngModel)]="searchTerm"
+              (ngModelChange)="applyFilters()"
+            />
           </div>
-          <select class="fo-filter-select fo-filter-stock" [(ngModel)]="selectedStock" (ngModelChange)="applyFilters()">
+          <select
+            class="fo-filter-select fo-filter-stock"
+            [(ngModel)]="selectedStock"
+            (ngModelChange)="applyFilters()"
+          >
             <option value="tous">Tous</option>
             <option value="en-stock">Disponible</option>
           </select>
-          <a routerLink="/catalogue" class="fo-btn fo-btn-outline">
+          <a routerLink="/app/store/catalogue" class="fo-btn fo-btn-outline">
             <i class="bi bi-grid-3x3-gap me-1"></i>Tout parcourir
           </a>
         </div>
@@ -54,7 +72,8 @@ import { Produit } from '../../../core/models/produit.model';
         <div class="fo-toolbar">
           <div class="fo-toolbar-left">
             <span class="fo-results-count">
-              <strong>{{ filteredProducts.length }}</strong> {{ filteredProducts.length !== 1 ? 'produits' : 'produit' }}
+              <strong>{{ filteredProducts.length }}</strong>
+              {{ filteredProducts.length !== 1 ? 'produits' : 'produit' }}
               <span *ngIf="hasActiveFilters()" class="fo-results-filtered">
                 (filtré{{ filteredProducts.length !== 1 ? 's' : '' }})
                 <button class="fo-clear-filters" (click)="resetFilters()">
@@ -86,40 +105,80 @@ import { Produit } from '../../../core/models/produit.model';
           </span>
           <span class="fo-chip" *ngIf="selectedStock !== 'tous'">
             Stock : {{ getStockLabel(selectedStock) }}
-            <button (click)="selectedStock = 'tous'; applyFilters()"><i class="bi bi-x"></i></button>
+            <button (click)="selectedStock = 'tous'; applyFilters()">
+              <i class="bi bi-x"></i>
+            </button>
           </span>
         </div>
 
         <!-- Product Grid (paginated) -->
         <div class="fo-product-grid" *ngIf="pagedProducts.length > 0">
-          <a *ngFor="let prod of pagedProducts" [routerLink]="['/catalogue', prod.id]" class="fo-product-card">
-            <div class="fo-product-card-img">
-              <img *ngIf="prod.imageUrl" [src]="prod.imageUrl" [alt]="prod.nom" style="width: 100%; height: 100%; object-fit: cover;">
+          <a
+            *ngFor="let prod of pagedProducts; let i = index"
+            [routerLink]="['/app/store/catalogue', prod.id]"
+            class="fo-product-card staggered-item"
+            [style.animation-delay]="i * 0.05 + 's'"
+          >
+            <div class="fo-product-card-img" style="position: relative;">
+              <div *ngIf="prod.enPromo" class="fo-badge-promo">-{{ prod.remise }}%</div>
+              <img
+                *ngIf="prod.imageUrl"
+                [src]="prod.imageUrl"
+                [alt]="prod.nom"
+                style="width: 100%; height: 100%; object-fit: cover;"
+              />
               <i *ngIf="!prod.imageUrl" class="bi bi-box-seam"></i>
             </div>
             <div class="fo-product-card-body">
               <span class="fo-product-card-category">{{ prod.categorieNom }}</span>
-              <h4>{{ prod.nom }}</h4>
-              <p>{{ prod.description | slice:0:80 }}{{ prod.description && prod.description.length > 80 ? '...' : '' }}</p>
-              <div class="fo-product-card-footer">
-                <span class="fo-product-price">{{ prod.prix | number:'1.2-2' }} TND</span>
-                <span class="fo-product-stock"
-                      [class.in-stock]="prod.quantite > 0"
-                      [class.out-of-stock]="prod.quantite === 0">
+              <h4 class="fw-bold">{{ prod.nom }}</h4>
+              <p>
+                {{ prod.description | slice: 0 : 80
+                }}{{ prod.description && prod.description.length > 80 ? '...' : '' }}
+              </p>
+
+              <div
+                *ngIf="prod.joursAvantExpiration && prod.joursAvantExpiration <= 30"
+                class="fo-alert-expiry d-flex align-items-center gap-1 mb-2"
+              >
+                <i class="bi bi-exclamation-triangle"></i> Expire bientôt
+              </div>
+
+              <div class="fo-product-card-footer mt-auto">
+                <div class="d-flex align-items-center gap-2">
+                  <span *ngIf="prod.enPromo" class="fo-price-original" style="font-size: 0.8rem;">{{
+                    prod.prixOriginal | number: '1.2-2'
+                  }}</span>
+                  <span class="fo-product-price text-primary" style="font-size: 1.1rem;"
+                    >{{ prod.prix | number: '1.2-2' }} TND</span
+                  >
+                </div>
+                <span
+                  class="fo-product-stock small rounded-pill px-2 py-1"
+                  [class.in-stock]="prod.quantite > 0"
+                  [class.out-of-stock]="prod.quantite === 0"
+                >
                   {{ prod.quantite > 0 ? 'En stock' : 'Rupture' }}
                 </span>
               </div>
-              <button *ngIf="prod.quantite > 0" class="fo-add-cart-btn mt-2"
-                      (click)="ajouterAuPanier($event, prod)"
-                      [disabled]="ajoutEnCours === prod.id">
-                <span *ngIf="ajoutEnCours === prod.id" class="spinner-border spinner-border-sm me-1"></span>
-                <i *ngIf="ajoutEnCours !== prod.id && ajoutOk !== prod.id" class="bi bi-cart-plus me-1"></i>
+
+              <button
+                *ngIf="prod.quantite > 0"
+                class="fo-add-cart-btn btn-active-scale mt-3"
+                (click)="ajouterAuPanier($event, prod)"
+                [disabled]="ajoutEnCours === prod.id"
+              >
+                <span
+                  *ngIf="ajoutEnCours === prod.id"
+                  class="spinner-border spinner-border-sm me-1"
+                ></span>
+                <i
+                  *ngIf="ajoutEnCours !== prod.id && ajoutOk !== prod.id"
+                  class="bi bi-cart-plus me-1"
+                ></i>
                 <i *ngIf="ajoutOk === prod.id" class="bi bi-check-lg me-1"></i>
-                {{ ajoutOk === prod.id ? 'Produit ajouté au panier !' : 'Ajouter au panier' }}
+                {{ ajoutOk === prod.id ? 'Ajouté !' : 'Ajouter au panier' }}
               </button>
-              <span *ngIf="prod.quantite === 0" class="fo-out-of-stock-label mt-2" style="color: var(--danger, #dc3545); font-weight: 600; font-size: 0.85rem;">
-                <i class="bi bi-x-circle me-1"></i>Rupture
-              </span>
             </div>
           </a>
         </div>
@@ -136,12 +195,25 @@ import { Produit } from '../../../core/models/produit.model';
             <button (click)="goToPage(page - 1)" [disabled]="page === 1" title="Page précédente">
               <i class="bi bi-chevron-left"></i>
             </button>
-            <button *ngFor="let p of visiblePages" (click)="goToPage(p)"
-                    [class.active]="p === page">{{ p }}</button>
-            <button (click)="goToPage(page + 1)" [disabled]="page === totalPages" title="Page suivante">
+            <button
+              *ngFor="let p of visiblePages"
+              (click)="goToPage(p)"
+              [class.active]="p === page"
+            >
+              {{ p }}
+            </button>
+            <button
+              (click)="goToPage(page + 1)"
+              [disabled]="page === totalPages"
+              title="Page suivante"
+            >
               <i class="bi bi-chevron-right"></i>
             </button>
-            <button (click)="goToPage(totalPages)" [disabled]="page === totalPages" title="Dernière page">
+            <button
+              (click)="goToPage(totalPages)"
+              [disabled]="page === totalPages"
+              title="Dernière page"
+            >
               <i class="bi bi-chevron-double-right"></i>
             </button>
           </div>
@@ -159,7 +231,12 @@ import { Produit } from '../../../core/models/produit.model';
         <!-- Cart Error Toast -->
         <div *ngIf="ajoutErreur" class="fo-toast fo-toast-error fade-in">
           <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ ajoutErreur }}
-          <button (click)="ajoutErreur = ''" style="background: none; border: none; color: inherit; margin-left: 12px; cursor: pointer; font-size: 1.1rem;"><i class="bi bi-x-lg"></i></button>
+          <button
+            (click)="ajoutErreur = ''"
+            style="background: none; border: none; color: inherit; margin-left: 12px; cursor: pointer; font-size: 1.1rem;"
+          >
+            <i class="bi bi-x-lg"></i>
+          </button>
         </div>
 
         <!-- Empty State -->
@@ -170,7 +247,9 @@ import { Produit } from '../../../core/models/produit.model';
           <button *ngIf="hasActiveFilters()" class="fo-btn fo-btn-outline" (click)="resetFilters()">
             <i class="bi bi-arrow-counterclockwise me-1"></i>Réinitialiser les filtres
           </button>
-          <a *ngIf="!hasActiveFilters()" routerLink="/catalogue" class="fo-btn fo-btn-outline">Parcourir le catalogue</a>
+          <a *ngIf="!hasActiveFilters()" routerLink="/app/store/catalogue" class="fo-btn fo-btn-outline"
+            >Parcourir le catalogue</a
+          >
         </div>
       </div>
     </div>
@@ -181,7 +260,7 @@ import { Produit } from '../../../core/models/produit.model';
         <span class="visually-hidden">Chargement...</span>
       </div>
     </div>
-  `
+  `,
 })
 export class CategorieProduitsComponent implements OnInit {
   // Data
@@ -215,30 +294,36 @@ export class CategorieProduitsComponent implements OnInit {
     private categorieService: CategorieService,
     private produitService: ProduitService,
     private panierService: PanierService,
-    
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       const id = +params['id'];
       this.loading = true;
-      this.categorieService.obtenirParId(id).subscribe({
-        next: (cat) => this.categorie = cat
-      });
-      this.produitService.listerParCategorie(id).subscribe({
-        next: (prods) => {
+
+      forkJoin({
+        cat: this.categorieService.obtenirParId(id).pipe(catchError(() => of(null))),
+        prods: this.produitService.listerParCategorie(id).pipe(catchError(() => of([]))),
+      })
+        .pipe(
+          finalize(() => {
+            this.loading = false;
+            this.cdr.detectChanges();
+          }),
+        )
+        .subscribe(({ cat, prods }) => {
+          this.categorie = cat;
           this.products = prods;
           this.applyFilters();
-          this.loading = false;
-        },
-        error: () => this.loading = false
-      });
+        });
     });
   }
 
   applyFilters(): void {
-    this.filteredProducts = this.products.filter(p => {
-      const matchSearch = !this.searchTerm ||
+    this.filteredProducts = this.products.filter((p) => {
+      const matchSearch =
+        !this.searchTerm ||
         p.nom.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         (p.description || '').toLowerCase().includes(this.searchTerm.toLowerCase());
       let matchStock = true;
@@ -317,7 +402,7 @@ export class CategorieProduitsComponent implements OnInit {
 
   getStockLabel(value: string): string {
     const labels: Record<string, string> = {
-      'en-stock': 'Disponible'
+      'en-stock': 'Disponible',
     };
     return labels[value] || value;
   }
@@ -333,13 +418,15 @@ export class CategorieProduitsComponent implements OnInit {
       next: () => {
         this.ajoutEnCours = null;
         this.ajoutOk = produit.id!;
-        setTimeout(() => { if (this.ajoutOk === produit.id) this.ajoutOk = null; }, 2000);
+        setTimeout(() => {
+          if (this.ajoutOk === produit.id) this.ajoutOk = null;
+        }, 2000);
       },
       error: (err) => {
         this.ajoutEnCours = null;
         this.ajoutErreur = err.error?.message || "Erreur lors de l'ajout au panier.";
-        setTimeout(() => this.ajoutErreur = '', 5000);
-      }
+        setTimeout(() => (this.ajoutErreur = ''), 5000);
+      },
     });
   }
 }

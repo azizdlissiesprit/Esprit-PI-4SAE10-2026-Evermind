@@ -1,13 +1,14 @@
 // Premium Modern Variables
-$bg-body: #F0F4F8; // Softer, premium cool gray
-$bg-white: #FFFFFF;
+$bg-body: var(--bg-main);
+// Softer, premium cool gray
+$bg-white: var(--bg-card);
 $primary-blue: #3B82F6; // Vibrant Tailwind Blue
 $primary-hover: #2563EB;
-$text-dark: #0F172A; // Deep Slate
-$text-grey: #475569;
-$text-light: #94A3B8;
-$border-color: #E2E8F0;
-
+$text-dark: var(--text-primary);
+// Deep Slate
+$text-grey: var(--text-secondary);
+$text-light: var(--text-muted);
+$border-color: var(--border-color);
 // Status & Severity Colors (More Vibrant)
 $critical-red: #EF4444;
 $critical-bg: #FEF2F2;
@@ -103,11 +104,11 @@ $low-shadow: rgba(20, 184, 166, 0.4);
     gap: 8px;
     align-items: flex-start;
     font-size: 0.85rem;
-    color: #5b21b6;
+    color: var(--text-secondary);
 
     i {
         margin-top: 3px;
-        color: #7c3aed;
+        color: var(--text-muted);
     }
 
     .ai-text {
@@ -135,7 +136,7 @@ $low-shadow: rgba(20, 184, 166, 0.4);
 }
 
 .icon-btn {
-  background: white; 
+  background: var(--bg-card); 
   border: 1px solid $border-color;
   width: 44px; height: 44px; 
   border-radius: 50%;
@@ -185,7 +186,7 @@ $low-shadow: rgba(20, 184, 166, 0.4);
 .system-status { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
 
 .pill-status {
-  background: white; padding: 10px 20px; border-radius: 999px;
+  background: var(--bg-card); padding: 10px 20px; border-radius: 999px;
   border: 1px solid $border-color; font-size: 14px; color: $text-dark; font-weight: 500;
   display: flex; align-items: center; gap: 10px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.02);
@@ -218,7 +219,7 @@ $low-shadow: rgba(20, 184, 166, 0.4);
 
 .filter-dropdown {
   appearance: none; 
-  background-color: white;
+  background-color: var(--bg-card);
   border: 1px solid $border-color;
   padding: 10px 40px 10px 20px;
   border-radius: 999px; font-size: 14px; font-weight: 600; color: $text-dark;
@@ -254,7 +255,7 @@ $low-shadow: rgba(20, 184, 166, 0.4);
 /* Premium Cards */
 .alert-card {
   min-width: 380px; max-width: 380px; flex-shrink: 0;
-  background: white; border-radius: 24px; padding: 28px;
+  background: var(--bg-card); border-radius: 24px; padding: 28px;
   box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.01);
   border: 1px solid rgba(0,0,0,0.04);
   display: flex; flex-direction: column; gap: 24px;
@@ -313,10 +314,10 @@ $low-shadow: rgba(20, 184, 166, 0.4);
   &.low { background: $low-green; color: white; box-shadow: 0 2px 8px $low-shadow; }
 }
 
-.time-stamp { font-size: 12px; font-weight: 600; color: $text-light; text-align: right; flex-shrink: 0; background: #F8FAFC; padding: 4px 10px; border-radius: 12px; }
+.time-stamp { font-size: 12px; font-weight: 600; color: $text-light; text-align: right; flex-shrink: 0; background: var(--bg-inset); padding: 4px 10px; border-radius: 12px; }
 
 /* Patient Row */
-.patient-row { display: flex; justify-content: space-between; align-items: center; background: #F8FAFC; padding: 16px; border-radius: 16px; }
+.patient-row { display: flex; justify-content: space-between; align-items: center; background: var(--bg-inset); padding: 16px; border-radius: 16px; }
 .patient-details { display: flex; gap: 12px; align-items: center; }
 .patient-avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
 .patient-text {
@@ -336,7 +337,7 @@ $low-shadow: rgba(20, 184, 166, 0.4);
 .chart-label { font-size: 10px; font-weight: 600; color: $text-light; display: block; margin-top: 4px; text-transform: uppercase; }
 
 .metrics-container { display: flex; gap: 8px; }
-.metric-pill { font-size: 11px; font-weight: 600; color: $text-grey; background: white; border: 1px solid $border-color; padding: 4px 10px; border-radius: 8px; }
+.metric-pill { font-size: 11px; font-weight: 600; color: $text-grey; background: var(--bg-card); border: 1px solid $border-color; padding: 4px 10px; border-radius: 8px; }
 
 /* Actions */
 .card-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: auto; }
@@ -351,16 +352,16 @@ $low-shadow: rgba(20, 184, 166, 0.4);
 }
 
 .btn-secondary {
-  background: white; color: $text-dark; border: 1px solid #CBD5E1; padding: 12px;
+  background: var(--bg-card); color: $text-dark; border: 1px solid  var(--border-color); padding: 12px;
   border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s;
   display: flex; justify-content: center; align-items: center; gap: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.01);
-  &:hover { border-color: $primary-blue; color: $primary-blue; background: #F8FAFC; }
+  &:hover { border-color: $primary-blue; color: $primary-blue; background: var(--bg-inset); }
 }
 
 /* --- HISTORY TABLE --- */
 .history-section {
-  background: white; border-radius: 24px; border: 1px solid rgba(0,0,0,0.04);
+  background: var(--bg-card); border-radius: 24px; border: 1px solid rgba(0,0,0,0.04);
   padding: 32px; margin-top: 10px; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.03);
 }
 
@@ -378,7 +379,7 @@ $low-shadow: rgba(20, 184, 166, 0.4);
   position: relative; cursor: pointer; transition: 0.3s;
   &::after {
     content: ''; position: absolute; left: 2px; top: 2px;
-    width: 16px; height: 16px; background: white; border-radius: 50%;
+    width: 16px; height: 16px; background: var(--bg-card); border-radius: 50%;
     transition: 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
   &:hover { background: #94A3B8; }
@@ -393,14 +394,14 @@ $low-shadow: rgba(20, 184, 166, 0.4);
 table { width: 100%; border-collapse: collapse; min-width: 800px; }
 th {
   text-align: left; font-size: 12px; color: $text-light; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
-  padding: 16px 20px; border-bottom: 1px solid $border-color; background: #F8FAFC;
+  padding: 16px 20px; border-bottom: 1px solid $border-color; background: var(--bg-inset);
 }
 td {
   padding: 20px; font-size: 14px; font-weight: 500; color: $text-dark;
   border-bottom: 1px solid #F1F5F9; vertical-align: middle; transition: background 0.2s;
 }
 tr:last-child td { border-bottom: none; }
-tr:hover td { background: #F8FAFC; }
+tr:hover td { background: var(--bg-inset); }
 
 .check-box {
   width: 24px; height: 24px; background: $success-bg; border: 1px solid rgba(16, 185, 129, 0.2);
@@ -410,7 +411,7 @@ tr:hover td { background: #F8FAFC; }
 
 .alert-name { font-weight: 700; color: $text-dark; }
 .resolution-text { color: $text-grey; font-size: 13px; }
-.duration-text { color: $text-grey; font-size: 13px; font-family: 'SFMono-Regular', Consolas, monospace; background: #F1F5F9; padding: 4px 8px; border-radius: 6px; }
+.duration-text { color: $text-grey; font-size: 13px; font-family: 'SFMono-Regular', Consolas, monospace; background: var(--bg-inset); padding: 4px 8px; border-radius: 6px; }
 .link-text { color: $primary-blue; text-decoration: none; font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 6px; &:hover { text-decoration: underline; } }
 
 /* Responsive adjustments */

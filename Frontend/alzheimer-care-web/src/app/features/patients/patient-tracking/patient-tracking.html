@@ -1,0 +1,196 @@
+<div class="dashboard-container">
+  
+  <!-- Header -->
+  <header class="tracking-banner">
+      <div class="banner-top">
+          <div class="nav-back" (click)="goBack()">
+              <i class="fa-solid fa-chevron-left"></i>
+              <span>All Patients</span>
+          </div>
+          <div class="tracking-type-indicator">
+              <i class="fa-solid fa-satellite-dish"></i>
+              Real-time Simulation Monitoring
+          </div>
+      </div>
+      
+      <div class="banner-main">
+          <div class="patient-identifier">
+              <div class="avatar-wrap">
+                  <i class="fa-solid fa-user-injured"></i>
+              </div>
+              <div class="name-meta">
+                  <h1>{{ patient ? (patient.firstName + ' ' + patient.lastName) : 'Patient Tracking' }}</h1>
+                  <span class="ref-num">Ref ID: #{{ patientId }}</span>
+              </div>
+          </div>
+
+          <div class="live-status-group">
+              <div class="status-indicator" [ngClass]="{'alert': isAnomalousState}">
+                  <div class="indicator-dot"></div>
+                  <div class="status-label">
+                      <strong>{{ isAnomalousState ? 'EMERGENCY ALERT' : 'SYSTEM SECURED' }}</strong>
+                      <span>{{ isAnomalousState ? 'Anomalous activity detected' : 'Sensors within safe parameters' }}</span>
+                  </div>
+              </div>
+              <div class="timestamp-box">
+                  <i class="fa-regular fa-clock"></i>
+                  <span>Last Updated: <strong>{{ lastUpdated | date:'HH:mm:ss' }}</strong></span>
+              </div>
+          </div>
+      </div>
+  </header>
+
+  <!-- Loading Overlay -->
+  <div class="loading-state" *ngIf="isLoading">
+    <i class="fa-solid fa-circle-notch fa-spin"></i> Establishing secure sensor link...
+  </div>
+
+  <!-- Grid -->
+  <div class="dashboard-grid" *ngIf="!isLoading">
+      
+      <!-- Column 1: Quick Status Details -->
+      <div class="left-column">
+          <!-- Vitals Summary Card -->
+          <div class="card">
+              <div class="card-header">
+                  <h3 class="card-title">Current Status</h3>
+                  <span class="card-meta">Live</span>
+              </div>
+              
+              <div class="quick-actions">
+                  <!-- Heart Rate Block -->
+                  <div class="status-block" [ngClass]="{'abnormal': currentHeartRate && (currentHeartRate < 50 || currentHeartRate > 130)}">
+                    <div class="icon-wrap hr-icon">
+                      <i class="fa-solid fa-heart-pulse"></i>
+                    </div>
+                    <div class="val-wrap">
+                      <span class="label">Heart Rate</span>
+                      <span class="value">{{ currentHeartRate | number:'1.0-0' }} <small>BPM</small></span>
+                    </div>
+                  </div>
+
+                  <!-- Motion Block -->
+                  <div class="status-block" [ngClass]="{'inactive': !currentMotion}">
+                    <div class="icon-wrap mot-icon">
+                      <i class="fa-solid fa-person-walking"></i>
+                    </div>
+                    <div class="val-wrap">
+                      <span class="label">Motion detected</span>
+                      <span class="value">{{ currentMotion ? 'Active' : 'Resting/Still' }}</span>
+                    </div>
+                  </div>
+
+                  <!-- MedBox Block -->
+                  <div class="status-block">
+                    <div class="icon-wrap med-icon">
+                      <i class="fa-solid fa-pills"></i>
+                    </div>
+                    <div class="val-wrap">
+                      <span class="label">Medication Box</span>
+                      <span class="value">{{ currentMedBox ? 'Recently Opened' : 'Closed' }}</span>
+                    </div>
+                  </div>
+              </div>
+          </div>
+          
+          <!-- Position Monitoring Card -->
+          <div class="card mt-24">
+              <div class="card-header">
+                  <h3 class="card-title">Live Position Tracking</h3>
+                  <span class="card-meta">GPS</span>
+              </div>
+              
+              <div class="position-container">
+                  <div class="position-map">
+                      <!-- Grid markings -->
+                      <div class="map-grid"></div>
+                      
+                      <!-- Geofence zone (Circle) -->
+                      <div class="geofence-zone">
+                          <span class="geofence-tag">SAFE ZONE ({{ patient?.geofenceRadius || 100 }}m)</span>
+                      </div>
+                      
+                      <!-- Patient Marker -->
+                      <div class="patient-marker" 
+                           [style.left.%]="markerX" 
+                           [style.top.%]="markerY"
+                           [ngClass]="{'breach': isAnomalousState}">
+                          <div class="marker-pulse"></div>
+                      </div>
+                  </div>
+                  
+                  <div class="position-meta">
+                      <div class="coord-row">
+                          <span class="label">Lat</span>
+                          <span class="value">{{ currentLat ? (currentLat | number:'1.6-6') : '--' }}</span>
+                      </div>
+                      <div class="coord-row">
+                          <span class="label">Lon</span>
+                          <span class="value">{{ currentLon ? (currentLon | number:'1.6-6') : '--' }}</span>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <!-- Column 2: Visualizations (Center) -->
+      <div class="center-column">
+          <!-- Heart Rate Chart Card -->
+          <div class="card">
+              <div class="card-header">
+                  <h3 class="card-title">Heart Rate History</h3>
+                  <span class="card-meta">Past 50 readings</span>
+              </div>
+              <div class="chart-container">
+                  <canvas baseChart
+                          [data]="hrChartData"
+                          [options]="hrChartOptions"
+                          [type]="'line'">
+                  </canvas>
+              </div>
+          </div>
+
+          <!-- Accelerometer Chart Card -->
+          <div class="card mt-24">
+              <div class="card-header">
+                  <h3 class="card-title">Accelerometer (Fall Detection)</h3>
+                  <span class="card-meta">G-force X/Y/Z</span>
+              </div>
+              <div class="chart-container">
+                  <canvas baseChart
+                          [data]="accChartData"
+                          [options]="accChartOptions"
+                          [type]="'line'">
+                  </canvas>
+              </div>
+          </div>
+      </div>
+
+      <!-- Column 3: Event Logging (Right) -->
+      <div class="right-column">
+          <div class="card full-height-card">
+              <div class="card-header">
+                  <h3 class="card-title">Event Log</h3>
+                  <span class="card-meta">{{ events.length }} incidents</span>
+              </div>
+              
+              <div class="section-label" *ngIf="events.length === 0">No abnormal events recorded.</div>
+
+              <div class="activity-feed">
+                  <!-- Event Items -->
+                  <div class="activity-item" *ngFor="let ev of events">
+                      <div class="activity-dot" [ngClass]="getSeverityColorClass(ev.eventType)"></div>
+                      <div class="activity-text">
+                          {{ getTimeAgo(ev.detectedAt) }} &bull; <i class="fa-solid" [ngClass]="getSeverityIcon(ev.eventType)"></i> <span>{{ ev.eventType | titlecase }}</span>
+                          <span class="activity-sub">{{ ev.description }}</span>
+                          <span class="activity-alert pull-right" *ngIf="ev.alertSent">
+                            <i class="fa-solid fa-check-double text-green"></i> Alert Sent (ID: {{ ev.id }})
+                          </span>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+  </div>
+</div>
