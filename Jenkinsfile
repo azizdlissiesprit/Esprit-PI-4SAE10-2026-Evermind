@@ -67,7 +67,7 @@ pipeline {
             steps {
                 dir('Frontend/alzheimer-care-web') {
                     echo 'Installing npm dependencies...'
-                    sh 'npm install'
+                    sh 'npm install --legacy-peer-deps'
                     
                     echo 'Building Angular application...'
                     sh 'npm run build' 
