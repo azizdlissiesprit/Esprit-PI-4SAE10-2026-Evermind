@@ -68,6 +68,9 @@ public class GatewayApplication {
 				.route("reclamation-service", r -> r
 						.path("/reclamation/**")
 						.uri("lb://RECLAMATION"))
+				.route("face-service", r -> r
+						.path("/face/**")
+						.uri("http://face-service:8000"))
 				.build();
 	}
 }

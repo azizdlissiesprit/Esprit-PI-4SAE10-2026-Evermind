@@ -1,6 +1,5 @@
 <div class="page-wrapper">
   <div class="main-container">
-    <!-- Left Section (Image) -->
     <div class="image-section">
       <div class="logo">Alzheimer Care</div>
       <img
@@ -12,23 +11,21 @@
       <div class="promo-card">
         <div class="promo-text">
           Join our platform<br />
-          for secure patient monitoring.
+          with a verified identity from day one.
         </div>
       </div>
     </div>
 
-    <!-- Right Section (Form) -->
     <div class="form-section">
-      <!-- Stepper -->
       <div class="stepper">
         <div class="step active">
           <div class="step-circle">1</div>
           Account
         </div>
         <div class="step-line"></div>
-        <div class="step">
+        <div class="step active">
           <div class="step-circle">2</div>
-          Confirm
+          Face ID
         </div>
       </div>
 
@@ -38,52 +35,162 @@
         <div class="form-row">
           <div class="form-group half">
             <label class="label">First Name</label>
-            <input type="text" class="input-field" formControlName="firstName" placeholder="John" />
+            <div class="input-wrapper">
+              <input
+                type="text"
+                class="input-field"
+                [class.input-error]="isFieldInvalid('firstName')"
+                formControlName="firstName"
+                placeholder="John"
+              />
+              <span class="error-icon" *ngIf="isFieldInvalid('firstName')">!</span>
+            </div>
+            <span class="error-text" *ngIf="getFieldError('firstName')">
+              {{ getFieldError('firstName') }}
+            </span>
           </div>
 
           <div class="form-group half">
             <label class="label">Last Name</label>
-            <input type="text" class="input-field" formControlName="lastName" placeholder="Doe" />
+            <div class="input-wrapper">
+              <input
+                type="text"
+                class="input-field"
+                [class.input-error]="isFieldInvalid('lastName')"
+                formControlName="lastName"
+                placeholder="Doe"
+              />
+              <span class="error-icon" *ngIf="isFieldInvalid('lastName')">!</span>
+            </div>
+            <span class="error-text" *ngIf="getFieldError('lastName')">
+              {{ getFieldError('lastName') }}
+            </span>
           </div>
         </div>
 
         <div class="form-group">
           <label class="label">Email</label>
-          <input type="email" class="input-field" formControlName="email" placeholder="example@mail.com" />
-        </div>
-
-        <div class="form-group">
-          <label class="label">Password</label>
-          <input type="password" class="input-field" formControlName="password" placeholder="••••••••••" />
-        </div>
-
-        <div class="form-group">
-          <label class="label">Confirm Password</label>
-          <input type="password" class="input-field" formControlName="confirmPassword" placeholder="••••••••••" />
+          <div class="input-wrapper">
+            <input
+              type="email"
+              class="input-field"
+              [class.input-error]="isFieldInvalid('email')"
+              formControlName="email"
+              placeholder="example@mail.com"
+            />
+            <span class="error-icon" *ngIf="isFieldInvalid('email')">!</span>
+          </div>
+          <span class="error-text" *ngIf="getFieldError('email')">
+            {{ getFieldError('email') }}
+          </span>
         </div>
 
         <div class="form-group">
           <label class="label">Role</label>
-          <select class="input-field" formControlName="userType">
-            <option value="AIDANT">Caregiver</option>
-            <option value="MEDECIN">Doctor</option>
-            <option value="RESPONSABLE">Manager</option>
-          </select>
+          <div class="input-wrapper">
+            <select
+              class="input-field"
+              [class.input-error]="isFieldInvalid('role')"
+              formControlName="role"
+            >
+              <option value="" disabled selected>Select your role</option>
+              <option *ngFor="let role of roles" [value]="role.value">
+                {{ role.label }}
+              </option>
+            </select>
+            <span class="error-icon" *ngIf="isFieldInvalid('role')">!</span>
+          </div>
+          <span class="error-text" *ngIf="getFieldError('role')">
+            {{ getFieldError('role') }}
+          </span>
         </div>
-        <div *ngIf="errorMessage" style="color: #dc2626; background-color: #fee2e2; padding: 10px; border-radius: 6px; margin-bottom: 15px; font-size: 14px; text-align: center;">
+
+        <div class="form-group">
+          <label class="label">Password</label>
+          <div class="input-wrapper">
+            <input
+              type="password"
+              class="input-field"
+              [class.input-error]="isFieldInvalid('password')"
+              formControlName="password"
+              placeholder="..........."
+            />
+            <span class="error-icon" *ngIf="isFieldInvalid('password')">!</span>
+          </div>
+
+          <div class="password-strength" *ngIf="registerForm.get('password')?.value">
+            <div class="strength-bar-container">
+              <div
+                class="strength-bar"
+                [class]="'strength-' + getPasswordStrength().level"
+                [style.width.%]="getPasswordStrength().score"
+              ></div>
+            </div>
+            <div class="strength-label" [class]="'label-' + getPasswordStrength().level">
+              Strength: <strong>{{ getPasswordStrength().label }}</strong>
+            </div>
+          </div>
+
+          <span class="error-text" *ngIf="getFieldError('password')">
+            {{ getFieldError('password') }}
+          </span>
+          <small class="hint-text" *ngIf="registerForm.get('password')?.touched">
+            <span [class.valid]="registerForm.get('password')?.value?.match(/[A-Z]/)">
+              Contains uppercase
+            </span>
+            <span [class.valid]="registerForm.get('password')?.value?.match(/[a-z]/)">
+              Contains lowercase
+            </span>
+            <span [class.valid]="registerForm.get('password')?.value?.match(/[0-9]/)">
+              Contains number
+            </span>
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label class="label">Confirm Password</label>
+          <div class="input-wrapper">
+            <input
+              type="password"
+              class="input-field"
+              [class.input-error]="isFieldInvalid('confirmPassword')"
+              formControlName="confirmPassword"
+              placeholder="..........."
+            />
+            <span class="error-icon" *ngIf="isFieldInvalid('confirmPassword')">!</span>
+          </div>
+          <span class="error-text" *ngIf="getFieldError('confirmPassword')">
+            {{ getFieldError('confirmPassword') }}
+          </span>
+        </div>
+
+        <app-face-capture
+          title="Enrollment Face ID"
+          subtitle="Capture a polished front-facing portrait. This image will be used for secure sign-in."
+          (faceSelected)="onFaceSelected($event)"
+        />
+
+        <div *ngIf="errorMessage" class="feedback-banner feedback-banner--error">
           {{ errorMessage }}
         </div>
+
+        <div class="form-group captcha-wrap">
+          <re-captcha
+            formControlName="recaptcha"
+            siteKey="6LfWLoAsAAAAADs5GBuGWXl4DdEoukT1eT9YBGd3"
+          >
+          </re-captcha>
+        </div>
+
         <div class="legal-text">
-          By clicking "Register", you agree to our Terms of Use and Privacy Policy.
+          By clicking Register, you agree to our Terms of Use and Privacy Policy.
         </div>
 
         <button class="submit-btn" type="submit" [disabled]="registerForm.invalid || isLoading">
-          {{ isLoading ? 'Creating...' : "Register" }}
+          {{ isLoading ? 'Creating...' : 'Register with Face ID' }}
         </button>
 
-        <p class="login-link">
-          Already have an account? <a routerLink="/auth/login">Login</a>
-        </p>
+        <p class="login-link">Already have an account? <a routerLink="/auth/login">Login</a></p>
       </form>
     </div>
   </div>

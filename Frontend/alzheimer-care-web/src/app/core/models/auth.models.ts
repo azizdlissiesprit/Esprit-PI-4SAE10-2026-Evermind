@@ -1,6 +1,7 @@
 export interface LoginRequest {
   email: string;
   password: string; // Matches 'password' in Java
+  captchaToken?: string;
 }
 
 export interface RegisterRequest {
@@ -14,9 +15,20 @@ export interface RegisterRequest {
 
 export interface AuthenticationResponse {
   token: string;
+  userId: number;
   firstName: string;
   lastName: string;
   email: string;
   role: string;
-  userId?: number;
+  faceEnabled?: boolean;
+}
+
+export interface ForgotPasswordRequest {
+  email: string;
+  captchaToken?: string;
+}
+
+export interface ResetPasswordRequest {
+  token: string;
+  newPassword: string;
 }

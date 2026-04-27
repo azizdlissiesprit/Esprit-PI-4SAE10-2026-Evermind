@@ -1,17 +1,16 @@
 :host {
   display: block;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-// Variables matching Register page
 $primary: #3b99fc;
-$text-main: var(--text-primary);
+$text-main: #1e1e1e;
 $text-secondary: #8a8b8d;
 $input-bg: #f8fbfd;
 $border-radius: 32px;
 
 .page-wrapper {
-  background-color: var(--text-secondary);
+  background-color: #6c85e6;
   min-height: 100vh;
   width: 100%;
   display: flex;
@@ -21,18 +20,23 @@ $border-radius: 32px;
   box-sizing: border-box;
 }
 
+.recaptcha-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 18px 0 14px;
+}
+
 .main-container {
   width: 100%;
   max-width: 1200px;
   min-height: 750px;
-  background-color: var(--bg-card);
+  background-color: white;
   border-radius: $border-radius;
   display: flex;
   overflow: hidden;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
 
-/* Left Side - Image */
 .image-section {
   flex: 1;
   position: relative;
@@ -55,7 +59,7 @@ $border-radius: 32px;
   color: $primary;
   z-index: 10;
   text-transform: uppercase;
-  background: rgba(255,255,255,0.9);
+  background: rgba(255, 255, 255, 0.9);
   padding: 8px 12px;
   border-radius: 8px;
 }
@@ -81,7 +85,6 @@ $border-radius: 32px;
   line-height: 1.4;
 }
 
-/* Right Side - Form */
 .form-section {
   flex: 1.1;
   padding: 60px 80px;
@@ -91,7 +94,6 @@ $border-radius: 32px;
   overflow-y: auto;
 }
 
-/* Stepper */
 .stepper {
   display: flex;
   align-items: center;
@@ -111,6 +113,7 @@ $border-radius: 32px;
 .step.active {
   color: $primary;
   font-weight: 500;
+
   .step-circle {
     background-color: $primary;
     border-color: $primary;
@@ -122,7 +125,7 @@ $border-radius: 32px;
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  border: 1px solid  var(--border-color);
+  border: 1px solid #e0e0e0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -135,7 +138,6 @@ $border-radius: 32px;
   background-color: #e0e0e0;
 }
 
-/* Typography & Inputs */
 .form-title {
   font-size: 32px;
   font-weight: 700;
@@ -148,7 +150,41 @@ $border-radius: 32px;
   font-size: 14px;
   color: $text-secondary;
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.mode-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 6px;
+  margin-bottom: 18px;
+  border-radius: 999px;
+  background: #eef4ff;
+}
+
+.mode-switch__option {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 14px;
+  background: transparent;
+  color: #516074;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.mode-switch__option--active {
+  background: linear-gradient(135deg, #3b99fc 0%, #76b8ff 100%);
+  color: white;
+  box-shadow: 0 10px 18px rgba(59, 153, 252, 0.22);
 }
 
 .form-group {
@@ -176,12 +212,11 @@ $border-radius: 32px;
   transition: all 0.2s;
 
   &:focus {
-    background-color: var(--bg-card);
+    background-color: white;
     border-color: $primary;
   }
 }
 
-/* Checkbox & Forgot Password */
 .forgot-row {
   display: flex;
   justify-content: space-between;
@@ -196,7 +231,7 @@ $border-radius: 32px;
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  
+
   input {
     accent-color: $primary;
     width: 16px;
@@ -208,10 +243,38 @@ $border-radius: 32px;
   color: $primary;
   cursor: pointer;
   font-weight: 500;
-  &:hover { text-decoration: underline; }
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
-/* Buttons */
+.feedback-banner {
+  padding: 12px 14px;
+  border-radius: 12px;
+  margin: 4px 0 14px;
+  font-size: 13px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.feedback-banner--error {
+  color: #b42318;
+  background: #fef3f2;
+  border: 1px solid #fecdca;
+}
+
+.classic-note {
+  margin: 8px 0 14px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #f8fbff 0%, #eef5ff 100%);
+  border: 1px solid rgba(97, 139, 198, 0.2);
+  color: #5b6b80;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
 .submit-btn {
   width: 100%;
   background-color: $primary;
@@ -227,68 +290,58 @@ $border-radius: 32px;
   margin-top: 10px;
   transition: opacity 0.2s;
 
-  &:hover { opacity: 0.95; }
-  &:disabled { background-color: #ccc; box-shadow: none; cursor: not-allowed; }
+  &:hover {
+    opacity: 0.95;
+  }
+
+  &:disabled {
+    background-color: #ccc;
+    box-shadow: none;
+    cursor: not-allowed;
+  }
 }
 
-/* Social & Divider */
-.divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 24px 0;
+.security-note {
+  margin: 2px 0 24px;
+  text-align: center;
+  color: #667085;
   font-size: 12px;
-  color: $text-secondary;
-}
-
-.divider-line {
-  flex: 1;
-  height: 1px;
-  background-color: #e0e0e0;
-}
-
-.social-buttons {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  margin-bottom: 24px;
-}
-
-.social-btn {
-  flex: 1;
-  background: var(--bg-card);
-  border: 1px solid  var(--border-color);
-  border-radius: 24px;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  cursor: pointer;
-  font-size: 13px;
-  color: #333;
-  transition: background 0.2s;
-
-  &:hover { background-color: var(--bg-inset); }
+  line-height: 1.6;
 }
 
 .bottom-text {
   font-size: 13px;
   color: $text-secondary;
   text-align: center;
-  
+
   a {
     color: $primary;
     font-weight: 600;
     text-decoration: none;
     margin-left: 5px;
-    &:hover { text-decoration: underline; }
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }
 
-/* Responsive */
 @media (max-width: 900px) {
-  .image-section { display: none; }
-  .form-section { padding: 40px 20px; }
-  .main-container { max-width: 500px; height: auto; min-height: auto; }
+  .image-section {
+    display: none;
+  }
+
+  .form-section {
+    padding: 40px 20px;
+  }
+
+  .main-container {
+    max-width: 500px;
+    height: auto;
+    min-height: auto;
+  }
+
+  .stepper {
+    justify-content: center;
+  }
 }

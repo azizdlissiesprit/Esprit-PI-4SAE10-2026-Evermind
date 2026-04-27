@@ -67,6 +67,10 @@ public class User implements UserDetails {
     @Column(name = "reset_token_expiry")
     private LocalDateTime resetTokenExpiry;
 
+    @Column(name = "face_enabled", nullable = false)
+    @Builder.Default
+    private Boolean faceEnabled = false;
+
     // --- 2. IMPLEMENT REQUIRED METHODS BELOW ---
 
     @Override
@@ -117,6 +121,9 @@ public class User implements UserDetails {
         }
         if (this.banned == null) {
             this.banned = false;
+        }
+        if (this.faceEnabled == null) {
+            this.faceEnabled = false;
         }
     }
 }

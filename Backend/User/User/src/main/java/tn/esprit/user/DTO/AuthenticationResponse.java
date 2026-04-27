@@ -12,9 +12,9 @@ import tn.esprit.user.Entity.UserType;
 @NoArgsConstructor
 public class AuthenticationResponse {
     private String token;
-    private Long userId;
     private String firstName;
     private String lastName;
     private String email;
     private UserType role;
+    private Boolean faceEnabled;
 }

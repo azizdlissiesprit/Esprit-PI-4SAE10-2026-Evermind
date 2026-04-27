@@ -58,6 +58,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/User
       - EUREKA_SERVER_URL=http://eureka-server:8761/eureka
       - RABBITMQ_HOST=rabbitmq
+      - FACE_SERVICE_URL=http://face-service:8000
     depends_on:
       - db
       - eureka-server
@@ -261,6 +262,14 @@ services:
     depends_on:
       - db
       - eureka-server
+    networks:
+      - evermind-network
+
+  face-service:
+    build: ./Backend/face-service
+    container_name: face-service
+    ports:
+      - "8000:8000"
     networks:
       - evermind-network
 
