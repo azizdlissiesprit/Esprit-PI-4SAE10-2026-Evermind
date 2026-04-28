@@ -9,17 +9,21 @@ pipeline {
     stages {
         stage('Build & Package') {
             steps {
-                // Notice we don't need the dir() command anymore!
-                // Jenkins will start in this folder automatically based on how we set it up in Step 2.
-                echo 'Building User Service JAR...'
-                sh 'mvn clean package -DskipTests'
+                // We DO need to step into the folder so Maven can find the pom.xml!
+                dir('Backend/User/User') {
+                    echo 'Building User Service JAR...'
+                    sh 'mvn clean package -DskipTests'
+                }
             }
         }
         
         stage('Dockerize') {
             steps {
-                echo 'Building User Service Docker image...'
-                sh 'docker build -t user-service:latest .'
+                // Docker also needs to be in this folder to find the Dockerfile
+                dir('Backend/User/User') {
+                    echo 'Building User Service Docker image...'
+                    sh 'docker build -t user-service:latest .'
+                }
             }
         }
 
@@ -28,14 +32,17 @@ pipeline {
                 scannerHome = tool 'SonarScanner'
             }
             steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh """
-                        ${scannerHome}/bin/sonar-scanner \
-                        -Dsonar.projectKey=alzheimer-care-user-service \
-                        -Dsonar.projectName="User Service" \
-                        -Dsonar.sources=. \
-                        -Dsonar.java.binaries=target/classes
-                    """
+                // SonarQube needs to be in the folder to find the compiled classes
+                dir('Backend/User/User') {
+                    withSonarQubeEnv('SonarQube') {
+                        sh """
+                            ${scannerHome}/bin/sonar-scanner \
+                            -Dsonar.projectKey=alzheimer-care-user-service \
+                            -Dsonar.projectName="User Service" \
+                            -Dsonar.sources=. \
+                            -Dsonar.java.binaries=target/classes
+                        """
+                    }
                 }
             }
         }
