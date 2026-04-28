@@ -92,6 +92,18 @@ pipeline {
                         }
                     }
                 }
+                stage('Chatbot Service') {
+                    steps {
+                        dir('Backend/Chatbot/Chatbot') { 
+                            echo 'Building Chatbot Service JAR...'
+                            sh 'mvn clean package -DskipTests'
+                            
+                            echo 'Building Chatbot Service Docker image...'
+                            sh 'docker build -t chatbot-service:latest .'
+                        }
+                    }
+                }
+
 
 
 
