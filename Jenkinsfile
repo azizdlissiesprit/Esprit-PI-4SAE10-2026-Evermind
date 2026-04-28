@@ -4,7 +4,7 @@ pipeline {
     tools {
         maven 'Maven-3.9'
         jdk 'Java-17'
-        nodejs 'Node-18'
+        nodejs 'Node-18' // Make sure this matches the tool name you configured in Jenkins!
     }
 
     stages {
@@ -59,13 +59,11 @@ pipeline {
                 }
                 stage('User Service') {
                     steps {
-                        // 1. Move into the specific microservice folder
                         dir('Backend/User/User') { 
                             echo 'Building User Service JAR...'
                             sh 'mvn clean package -DskipTests'
                             
                             echo 'Building User Service Docker image...'
-                            // 2. Change the name to 'user-service'
                             sh 'docker build -t user-service:latest .'
                         }
                     }
@@ -125,14 +123,6 @@ pipeline {
                         }
                     }
                 }
-
-
-
-
-
-                
-                // You can add more backend microservices here such as AgendaMedical, Patient, User, etc.
-                // e.g. dir('Backend/User/User') { ... } 
             }
         }
 
@@ -147,6 +137,28 @@ pipeline {
                     
                     echo 'Building Angular Docker image...'
                     sh 'docker build -t alzheimer-care-web:latest .'
+                }
+            }
+        }
+
+        // --- NEW SONARQUBE STAGE ADDED HERE ---
+        stage('SonarQube Code Analysis') {
+            environment {
+                // This tells Jenkins to use the exact tool name we created
+                scannerHome = tool 'SonarScanner'
+            }
+            steps {
+                // This tells Jenkins to securely use the Token and Server URL we saved
+                withSonarQubeEnv('SonarQube') {
+                    // We run this in the root directory to scan BOTH Spring Boot and Angular!
+                    sh """
+                        ${scannerHome}/bin/sonar-scanner \
+                        -Dsonar.projectKey=alzheimer-care \
+                        -Dsonar.projectName="Alzheimer Care Project" \
+                        -Dsonar.sources=. \
+                        -Dsonar.java.binaries=**/target/classes \
+                        -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts
+                    """
                 }
             }
         }
