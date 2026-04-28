@@ -1,0 +1,47 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'Maven-3.9'
+        jdk 'Java-17'
+    }
+
+    stages {
+        stage('Build & Package') {
+            steps {
+                dir('Backend/Eureka/EurekaServer') {
+                    echo 'Building Eureka Server JAR...'
+                    sh 'mvn clean package -DskipTests'
+                }
+            }
+        }
+        
+        stage('Dockerize') {
+            steps {
+                dir('Backend/Eureka/EurekaServer') {
+                    echo 'Building Eureka Server Docker image...'
+                    sh 'docker build -t eureka-server:latest .'
+                }
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            environment {
+                scannerHome = tool 'SonarScanner'
+            }
+            steps {
+                dir('Backend/Eureka/EurekaServer') {
+                    withSonarQubeEnv('SonarQube') {
+                        sh """
+                            ${scannerHome}/bin/sonar-scanner \
+                            -Dsonar.projectKey=alzheimer-care-eureka \
+                            -Dsonar.projectName="Eureka Server" \
+                            -Dsonar.sources=. \
+                            -Dsonar.java.binaries=target/classes
+                        """
+                    }
+                }
+            }
+        }
+    }
+}
