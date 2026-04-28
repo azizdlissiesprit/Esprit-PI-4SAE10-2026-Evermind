@@ -1,0 +1,50 @@
+pipeline {
+    agent any
+
+    tools {
+        // Use the exact Node name you saved in Manage Jenkins > Tools
+        nodejs 'Node-18' 
+    }
+
+    stages {
+        stage('Build Frontend') {
+            steps {
+                dir('Frontend/alzheimer-care-web') {
+                    echo 'Installing dependencies...'
+                    sh 'npm install --legacy-peer-deps'
+                    
+                    echo 'Building Angular app...'
+                    sh 'npm run build'
+                }
+            }
+        }
+        
+        stage('Dockerize') {
+            steps {
+                dir('Frontend/alzheimer-care-web') {
+                    echo 'Building Angular Docker image...'
+                    sh 'docker build -t alzheimer-care-web:latest .'
+                }
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            environment {
+                scannerHome = tool 'SonarScanner'
+            }
+            steps {
+                dir('Frontend/alzheimer-care-web') {
+                    withSonarQubeEnv('SonarQube') {
+                        sh """
+                            ${scannerHome}/bin/sonar-scanner \
+                            -Dsonar.projectKey=alzheimer-care-frontend \
+                            -Dsonar.projectName="Angular Frontend" \
+                            -Dsonar.sources=src \
+                            -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts
+                        """
+                    }
+                }
+            }
+        }
+    }
+}
