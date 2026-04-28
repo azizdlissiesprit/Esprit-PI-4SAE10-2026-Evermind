@@ -1,0 +1,43 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'Maven-3.9'
+        jdk 'Java-17'
+    }
+
+    stages {
+        stage('Build & Package') {
+            steps {
+                // Notice we don't need the dir() command anymore!
+                // Jenkins will start in this folder automatically based on how we set it up in Step 2.
+                echo 'Building User Service JAR...'
+                sh 'mvn clean package -DskipTests'
+            }
+        }
+        
+        stage('Dockerize') {
+            steps {
+                echo 'Building User Service Docker image...'
+                sh 'docker build -t user-service:latest .'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            environment {
+                scannerHome = tool 'SonarScanner'
+            }
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh """
+                        ${scannerHome}/bin/sonar-scanner \
+                        -Dsonar.projectKey=alzheimer-care-user-service \
+                        -Dsonar.projectName="User Service" \
+                        -Dsonar.sources=. \
+                        -Dsonar.java.binaries=target/classes
+                    """
+                }
+            }
+        }
+    }
+}
