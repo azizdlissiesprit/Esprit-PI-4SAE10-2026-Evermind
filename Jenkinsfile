@@ -81,6 +81,18 @@ pipeline {
                         }
                     }
                 }
+                stage('Intervention Service') {
+                    steps {
+                        dir('Backend/Intervention/Intervention') { 
+                            echo 'Building Intervention Service JAR...'
+                            sh 'mvn clean package -DskipTests'
+                            
+                            echo 'Building Intervention Service Docker image...'
+                            sh 'docker build -t intervention-service:latest .'
+                        }
+                    }
+                }
+
 
 
 
