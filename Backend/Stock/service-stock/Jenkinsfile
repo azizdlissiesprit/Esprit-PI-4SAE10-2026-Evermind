@@ -1,0 +1,47 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'Maven-3.9'
+        jdk 'Java-17'
+    }
+
+    stages {
+        stage('Build & Package') {
+            steps {
+                dir('Backend/Stock/service-stock') {
+                    echo 'Building Stock Service JAR...'
+                    sh 'mvn clean package -DskipTests'
+                }
+            }
+        }
+        
+        stage('Dockerize') {
+            steps {
+                dir('Backend/Stock/service-stock') {
+                    echo 'Building Stock Service Docker image...'
+                    sh 'docker build -t stock-service:latest .'
+                }
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            environment {
+                scannerHome = tool 'SonarScanner'
+            }
+            steps {
+                dir('Backend/Stock/service-stock') {
+                    withSonarQubeEnv('SonarQube') {
+                        sh """
+                            ${scannerHome}/bin/sonar-scanner \
+                            -Dsonar.projectKey=alzheimer-care-stock \
+                            -Dsonar.projectName="Stock Service" \
+                            -Dsonar.sources=. \
+                            -Dsonar.java.binaries=target/classes
+                        """
+                    }
+                }
+            }
+        }
+    }
+}
