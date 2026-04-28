@@ -70,6 +70,18 @@ pipeline {
                         }
                     }
                 }
+                stage('Alert Service') {
+                    steps {
+                        dir('Backend/Alert/Alert') { 
+                            echo 'Building Alert Service JAR...'
+                            sh 'mvn clean package -DskipTests'
+                            
+                            echo 'Building Alert Service Docker image...'
+                            sh 'docker build -t alert-service:latest .'
+                        }
+                    }
+                }
+
 
 
                 
