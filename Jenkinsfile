@@ -114,6 +114,17 @@ pipeline {
                         }
                     }
                 }
+                stage('Stock Service') {
+                    steps {
+                        dir('Backend/Stock/service-stock') { 
+                            echo 'Building Stock Service JAR...'
+                            sh 'mvn clean package -DskipTests'
+                            
+                            echo 'Building Stock Service Docker image...'
+                            sh 'docker build -t stock-service:latest .'
+                        }
+                    }
+                }
 
 
 
