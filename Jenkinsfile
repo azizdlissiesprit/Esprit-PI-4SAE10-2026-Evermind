@@ -57,6 +57,21 @@ pipeline {
                         }
                     }
                 }
+                stage('User Service') {
+                    steps {
+                        // 1. Move into the specific microservice folder
+                        dir('Backend/User/User') { 
+                            echo 'Building User Service JAR...'
+                            sh 'mvn clean package -DskipTests'
+                            
+                            echo 'Building User Service Docker image...'
+                            // 2. Change the name to 'user-service'
+                            sh 'docker build -t user-service:latest .'
+                        }
+                    }
+                }
+
+
                 
                 // You can add more backend microservices here such as AgendaMedical, Patient, User, etc.
                 // e.g. dir('Backend/User/User') { ... } 
