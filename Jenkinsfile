@@ -103,6 +103,17 @@ pipeline {
                         }
                     }
                 }
+                stage('Patient Service') {
+                    steps {
+                        dir('Backend/Patient/Patient') { 
+                            echo 'Building Patient Service JAR...'
+                            sh 'mvn clean package -DskipTests'
+                            
+                            echo 'Building Patient Service Docker image...'
+                            sh 'docker build -t patient-service:latest .'
+                        }
+                    }
+                }
 
 
 
