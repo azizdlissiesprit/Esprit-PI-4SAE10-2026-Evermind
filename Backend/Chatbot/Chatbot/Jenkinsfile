@@ -1,0 +1,47 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'Maven-3.9'
+        jdk 'Java-17'
+    }
+
+    stages {
+        stage('Build & Package') {
+            steps {
+                dir('Backend/Chatbot/Chatbot') {
+                    echo 'Building Chatbot Service JAR...'
+                    sh 'mvn clean package -DskipTests'
+                }
+            }
+        }
+        
+        stage('Dockerize') {
+            steps {
+                dir('Backend/Chatbot/Chatbot') {
+                    echo 'Building Chatbot Service Docker image...'
+                    sh 'docker build -t chatbot-service:latest .'
+                }
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            environment {
+                scannerHome = tool 'SonarScanner'
+            }
+            steps {
+                dir('Backend/Chatbot/Chatbot') {
+                    withSonarQubeEnv('SonarQube') {
+                        sh """
+                            ${scannerHome}/bin/sonar-scanner \
+                            -Dsonar.projectKey=alzheimer-care-chatbot \
+                            -Dsonar.projectName="Chatbot Service" \
+                            -Dsonar.sources=. \
+                            -Dsonar.java.binaries=target/classes
+                        """
+                    }
+                }
+            }
+        }
+    }
+}
