@@ -1,0 +1,47 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'Maven-3.9'
+        jdk 'Java-17'
+    }
+
+    stages {
+        stage('Build & Package') {
+            steps {
+                dir('Backend/Alert/Alert') {
+                    echo 'Building Alert Service JAR...'
+                    sh 'mvn clean package -DskipTests'
+                }
+            }
+        }
+        
+        stage('Dockerize') {
+            steps {
+                dir('Backend/Alert/Alert') {
+                    echo 'Building Alert Service Docker image...'
+                    sh 'docker build -t alert-service:latest .'
+                }
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            environment {
+                scannerHome = tool 'SonarScanner'
+            }
+            steps {
+                dir('Backend/Alert/Alert') {
+                    withSonarQubeEnv('SonarQube') {
+                        sh """
+                            ${scannerHome}/bin/sonar-scanner \
+                            -Dsonar.projectKey=alzheimer-care-alert \
+                            -Dsonar.projectName="Alert Service" \
+                            -Dsonar.sources=. \
+                            -Dsonar.java.binaries=target/classes
+                        """
+                    }
+                }
+            }
+        }
+    }
+}
