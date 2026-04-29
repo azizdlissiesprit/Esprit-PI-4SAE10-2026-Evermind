@@ -6,10 +6,9 @@ import {
   FormGroup,
   Validators,
   AbstractControl,
-  ValidationErrors
+  ValidationErrors,
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha-2';
 import { AuthService } from '../../../../core/services/auth.service';
 import { RegisterRequest } from '../../../../core/models/auth.models';
 import { FaceCaptureComponent } from '../../components/face-capture/face-capture';
@@ -19,16 +18,9 @@ type UserType = RegisterRequest['userType'];
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterModule,
-    RecaptchaModule,
-    RecaptchaFormsModule,
-    FaceCaptureComponent
-  ],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, FaceCaptureComponent],
   templateUrl: './register.html',
-  styleUrls: ['./register.scss']
+  styleUrls: ['./register.scss'],
 })
 export class RegisterComponent {
   registerForm!: FormGroup;
@@ -42,13 +34,13 @@ export class RegisterComponent {
     { value: 'AIDANT', label: 'Aidant (Caregiver)' },
     { value: 'MEDECIN', label: 'Medecin (Doctor)' },
     { value: 'RESPONSABLE', label: 'Responsable (Manager)' },
-    { value: 'ADMIN', label: 'Admin' }
+    { value: 'ADMIN', label: 'Admin' },
   ] as const;
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
   ) {
     this.registerForm = this.fb.group(
       {
@@ -62,15 +54,14 @@ export class RegisterComponent {
             Validators.required,
             Validators.minLength(6),
             Validators.maxLength(20),
-            this.passwordValidator.bind(this)
-          ]
+            this.passwordValidator.bind(this),
+          ],
         ],
         confirmPassword: ['', Validators.required],
-        recaptcha: ['', Validators.required]
       },
       {
-        validators: this.passwordMatchValidator.bind(this)
-      }
+        validators: this.passwordMatchValidator.bind(this),
+      },
     );
   }
 
@@ -92,7 +83,11 @@ export class RegisterComponent {
     return hasUpperCase && hasLowerCase && hasNumber ? null : { weakPassword: true };
   }
 
-  getPasswordStrength(): { level: 'weak' | 'fair' | 'good' | 'strong'; score: number; label: string } {
+  getPasswordStrength(): {
+    level: 'weak' | 'fair' | 'good' | 'strong';
+    score: number;
+    label: string;
+  } {
     const password = this.registerForm.get('password')?.value || '';
 
     if (!password) {
@@ -106,7 +101,7 @@ export class RegisterComponent {
       hasLowerCase: /[a-z]/.test(password),
       hasNumber: /[0-9]/.test(password),
       hasSpecialChar: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]/.test(password),
-      longLength: password.length >= 12
+      longLength: password.length >= 12,
     };
 
     if (checks.length) score += 15;
@@ -164,7 +159,6 @@ export class RegisterComponent {
         role: 'Please select a role',
         password: 'Password is required',
         confirmPassword: 'Please confirm your password',
-        recaptcha: 'Please complete the captcha'
       };
       return messages[fieldName] || `${fieldLabel} is required`;
     }
@@ -209,7 +203,6 @@ export class RegisterComponent {
       role: 'Role',
       password: 'Password',
       confirmPassword: 'Password confirmation',
-      recaptcha: 'Captcha'
     };
     return labels[fieldName] || fieldName;
   }
@@ -239,10 +232,17 @@ export class RegisterComponent {
       email: this.registerForm.value.email!,
       password: this.registerForm.value.password!,
       phoneNumber: '00000000',
-      userType: roleValue
+      userType: roleValue,
     };
 
-    console.log('[RegisterComponent] onSubmit - request:', { ...request, password: '***' }, 'faceImage:', this.faceImage?.name, 'size:', this.faceImage?.size);
+    console.log(
+      '[RegisterComponent] onSubmit - request:',
+      { ...request, password: '***' },
+      'faceImage:',
+      this.faceImage?.name,
+      'size:',
+      this.faceImage?.size,
+    );
 
     this.authService.registerWithFace(request, this.faceImage).subscribe({
       next: (res) => {
@@ -256,8 +256,11 @@ export class RegisterComponent {
         console.error('[RegisterComponent] onSubmit - ERROR body:', err?.error);
         console.error('[RegisterComponent] onSubmit - ERROR message:', err?.message);
         console.error('[RegisterComponent] onSubmit - ERROR full:', err);
-        this.errorMessage = err?.error?.message || err?.error?.detail || 'Registration failed. Check console for details.';
-      }
+        this.errorMessage =
+          err?.error?.message ||
+          err?.error?.detail ||
+          'Registration failed. Check console for details.';
+      },
     });
   }
 }
