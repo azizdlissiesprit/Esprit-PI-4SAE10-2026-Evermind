@@ -43,5 +43,22 @@ pipeline {
                 }
             }
         }
+        stage('Deploy') {
+            steps {
+                script {
+                    // 1. Try to stop the existing container (the '|| true' prevents the pipeline from failing if it's the first time running)
+                    sh 'docker stop eureka-server || true'
+                    
+                    // 2. Remove the old container
+                    sh 'docker rm eureka-server || true'
+                    
+                    // 3. Start the brand new container on our shared network!
+                    sh 'docker run -d --name eureka-server --network alzheimer-net -p 8761:8761 eureka-server:latest'
+                }
+            }
+        }
+
+
+
     }
 }
