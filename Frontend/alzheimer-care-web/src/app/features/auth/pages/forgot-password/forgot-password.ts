@@ -2,16 +2,15 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha-2';
 
 import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, RecaptchaModule, RecaptchaFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './forgot-password.html',
-  styleUrls: ['./forgot-password.scss']
+  styleUrls: ['./forgot-password.scss'],
 })
 export class ForgotPasswordComponent {
   forgotPasswordForm: FormGroup;
@@ -22,11 +21,10 @@ export class ForgotPasswordComponent {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
   ) {
     this.forgotPasswordForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      recaptcha: ['', Validators.required]
     });
   }
 
@@ -39,7 +37,7 @@ export class ForgotPasswordComponent {
 
     const request = {
       email: this.forgotPasswordForm.value.email,
-      captchaToken: this.forgotPasswordForm.value.recaptcha
+      captchaToken: this.forgotPasswordForm.value.recaptcha,
     };
 
     this.authService.forgotPassword(request).subscribe({
@@ -60,7 +58,7 @@ export class ForgotPasswordComponent {
           (typeof error?.error === 'string' && error.error) ||
           error?.error?.message ||
           'Failed to send reset email. Please check your email address.';
-      }
+      },
     });
   }
 }
