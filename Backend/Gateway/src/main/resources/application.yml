@@ -16,6 +16,7 @@ spring:
                 allowedOrigins:
                   - "http://localhost:4200"
                   - "http://localhost:4201"
+                  - "http://20.91.198.213:4200"
                 allowedMethods:
                   - GET
                   - POST
