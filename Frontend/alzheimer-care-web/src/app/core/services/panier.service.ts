@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, retry, tap, timeout } from 'rxjs';
 import { Panier } from '../models/panier.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PanierService {
-  private apiUrl = 'http://localhost:8090/stock/api/panier';
+  private apiUrl = `${environment.apiUrl}/stock/api/panier`;
   private readonly requestTimeoutMs = 10000;
   private sessionId: string;
   private panierSubject = new BehaviorSubject<Panier | null>(null);

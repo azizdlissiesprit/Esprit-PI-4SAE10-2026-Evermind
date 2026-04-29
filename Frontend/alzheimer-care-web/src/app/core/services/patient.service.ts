@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 // Define the interface here or in a separate models file
 export interface Patient {
@@ -51,7 +52,7 @@ export class PatientService {
 
   // URL via Gateway (Port 8090) -> Patient Service
   // Based on your gateway config: /api/patients -> Patient Service
-  private apiUrl = 'http://localhost:8090/patient'; 
+  private apiUrl = `${environment.apiUrl}/patient`; 
   constructor(private http: HttpClient) {}
 
   // 1. Get All Patients

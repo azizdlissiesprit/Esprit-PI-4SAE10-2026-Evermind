@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AutonomyAssessment } from '../models/assessment.models';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AutonomyService {
   // Direct call to Microservice based on your properties
-  private apiUrl = 'http://localhost:8090/api/autonomy-assessments';
+  private apiUrl = `${environment.apiUrl}/api/autonomy-assessments`;
   
   // OR if using Gateway:
   // private apiUrl = 'http://localhost:8080/autonomy/api/autonomy-assessments';
