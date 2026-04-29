@@ -43,5 +43,19 @@ pipeline {
                 }
             }
         }
+        stage('Deploy') {
+            steps {
+                script {
+                    // 1. Stop the old gateway
+                    sh 'docker stop api-gateway || true'
+                    
+                    // 2. Remove the old gateway
+                    sh 'docker rm api-gateway || true'
+                    
+                    // 3. Run the new gateway with the Eureka Environment Variable
+                    sh 'docker run -d --name api-gateway --network alzheimer-net -p 8090:8090 -e EUREKA_SERVER_URL=http://eureka-server:8761/eureka api-gateway:latest'
+                }
+            }
+        }
     }
 }
