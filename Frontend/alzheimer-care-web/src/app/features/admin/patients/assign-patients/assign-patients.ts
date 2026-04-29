@@ -4,6 +4,7 @@ import { PatientService, Patient } from '../../../../core/services/patient.servi
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-assign-patients',
@@ -60,8 +61,8 @@ export class AssignPatientsComponent implements OnInit {
       }
     });
 
-    console.log('[DEBUG] Calling HTTP GET for Caregivers (http://localhost:8082/user/type/AIDANT)...');
-    this.http.get<any[]>('http://localhost:8082/user/type/AIDANT').subscribe({
+    console.log(`[DEBUG] Calling HTTP GET for Caregivers (${environment.apiUrl}/user/type/AIDANT)...`);
+    this.http.get<any[]>(`${environment.apiUrl}/user/type/AIDANT`).subscribe({
       next: (data: any[]) => {
         console.log('[DEBUG] Received Caregivers data:', data);
         this.caregivers = data;

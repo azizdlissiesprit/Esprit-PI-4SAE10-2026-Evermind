@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CognitiveAssessment } from '../models/assessment.models';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CognitiveService {
   // Assuming Port 8098 (Check your console when you run the Spring Boot app)
-  private apiUrl = 'http://localhost:8090/api/cognitive-assessments';
+  private apiUrl = `${environment.apiUrl}/api/cognitive-assessments`;
 
   constructor(private http: HttpClient) {}
 

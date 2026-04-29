@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Alert } from '../models/alert.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AdminAlertService {
   // Point to Gateway
-  private baseUrl = 'http://localhost:8081/alert'; 
+  private baseUrl = `${environment.apiUrl}/alert`; 
 
   constructor(private http: HttpClient) {}
 

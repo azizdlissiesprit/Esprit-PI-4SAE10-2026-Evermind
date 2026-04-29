@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Alert } from '../models/alert.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import { Alert } from '../models/alert.model';
 export class AlertService {
 
   // Your Spring Boot Port is 8081
-  private baseUrl = 'http://localhost:8090/alert'; 
+  private baseUrl = `${environment.apiUrl}/alert`; 
 
   constructor(private http: HttpClient) { }
 

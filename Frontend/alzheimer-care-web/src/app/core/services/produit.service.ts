@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, retry, timeout } from 'rxjs';
 import { Produit } from '../models/produit.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProduitService {
-  private apiUrl = 'http://localhost:8090/stock/api/produits';
+  private apiUrl = `${environment.apiUrl}/stock/api/produits`;
   private readonly requestTimeoutMs = 10000;
 
   constructor(private http: HttpClient) {}

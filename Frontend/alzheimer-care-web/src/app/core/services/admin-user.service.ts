@@ -1,12 +1,13 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 // You can remove isPlatformBrowser import if not used elsewhere
 
 @Injectable({ providedIn: 'root' })
 export class AdminUserService {
-  private apiUrl = 'http://localhost:8082/user/admin/search'; 
-  private baseUrl = 'http://localhost:8082/user'; 
+  private apiUrl = `${environment.apiUrl}/user/admin/search`; 
+  private baseUrl = `${environment.apiUrl}/user`; 
 
   constructor(private http: HttpClient) {} // Removed PlatformID injection as it's not needed here anymore
 
