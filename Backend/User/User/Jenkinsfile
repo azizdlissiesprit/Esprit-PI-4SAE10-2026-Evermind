@@ -46,5 +46,28 @@ pipeline {
                 }
             }
         }
+        stage('Deploy') {
+            steps {
+                script {
+                    // 1. Stop the old user service
+                    sh 'docker stop user-service || true'
+                    
+                    // 2. Remove the old user service
+                    sh 'docker rm user-service || true'
+                    
+                    // 3. Run the new user service and inject the environment variables
+                    sh """
+                        docker run -d --name user-service \
+                        --network alzheimer-net \
+                        -p 8082:8082 \
+                        -e SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/User \
+                        -e EUREKA_SERVER_URL=http://eureka-server:8761/eureka \
+                        -e RABBITMQ_HOST=rabbitmq \
+                        -e FACE_SERVICE_URL=http://face-service:8000 \
+                        user-service:latest
+                    """
+                }
+            }
+        }
     }
 }
