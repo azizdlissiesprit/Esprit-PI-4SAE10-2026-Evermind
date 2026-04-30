@@ -1,0 +1,40 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE = "azizesp/alert-service"
+        // This allows you to choose a specific version to deploy, defaulting to latest
+        DEPLOY_TAG = "${params.IMAGE_VERSION ?: 'latest'}" 
+    }
+
+    // This creates a UI prompt in Jenkins asking which version you want to deploy
+    parameters {
+        string(name: 'IMAGE_VERSION', defaultValue: 'latest', description: 'Enter the Docker image tag to deploy (e.g., v12, v15, or latest)')
+    }
+
+    stages {
+        stage('Pull & Deploy') {
+            steps {
+                script {
+                    // 1. Pull the requested image from Docker Hub
+                    sh "docker pull ${DOCKER_IMAGE}:${DEPLOY_TAG}"
+                    
+                    // 2. Stop and remove the old container
+                    sh 'docker stop alert-service || true'
+                    sh 'docker rm alert-service || true'
+                    
+                    // 3. Run the new container using the exact version requested
+                    sh """
+                        docker run -d --name alert-service \
+                        --network alzheimer-net \
+                        -p 8081:8081 \
+                        -e SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres \
+                        -e EUREKA_SERVER_URL=http://eureka-server:8761/eureka \
+                        -e RABBITMQ_HOST=rabbitmq \
+                        ${DOCKER_IMAGE}:${DEPLOY_TAG}
+                    """
+                }
+            }
+        }
+    }
+}
