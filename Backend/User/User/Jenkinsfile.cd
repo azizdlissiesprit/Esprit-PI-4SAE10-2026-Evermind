@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+    environment {
+        DOCKER_IMAGE = "azizesp/user-service"
+        DEPLOY_TAG = "${params.IMAGE_VERSION ?: 'latest'}" 
+    }
+    parameters {
+        string(name: 'IMAGE_VERSION', defaultValue: 'latest', description: 'Tag to deploy')
+    }
+    stages {
+        stage('Pull & Deploy') {
+            steps {
+                script {
+                    sh "docker pull ${DOCKER_IMAGE}:${DEPLOY_TAG}"
+                    sh 'docker stop user-service || true'
+                    sh 'docker rm user-service || true'
+                    // Note: Ensure the port (8082) matches your User Service config!
+                    sh """
+                        docker run -d --name user-service \
+                        --network alzheimer-net \
+                        -p 8082:8082 \
+                        -e SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres \
+                        -e EUREKA_SERVER_URL=http://eureka-server:8761/eureka \
+                        ${DOCKER_IMAGE}:${DEPLOY_TAG}
+                    """
+                }
+            }
+        }
+    }
+}
