@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+    environment {
+        DOCKER_IMAGE = "azizesp/intervention-service"
+        DEPLOY_TAG = "${params.IMAGE_VERSION ?: 'latest'}" 
+    }
+    parameters {
+        string(name: 'IMAGE_VERSION', defaultValue: 'latest', description: 'Enter tag to deploy')
+    }
+    stages {
+        stage('Pull & Deploy') {
+            steps {
+                script {
+                    sh "docker pull ${DOCKER_IMAGE}:${DEPLOY_TAG}"
+                    sh 'docker stop intervention-service || true'
+                    sh 'docker rm intervention-service || true'
+                    sh """
+                        docker run -d --name intervention-service \
+                        --network alzheimer-net \
+                        -p 8083:8083 \
+                        -e SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres \
+                        -e EUREKA_SERVER_URL=http://eureka-server:8761/eureka \
+                        ${DOCKER_IMAGE}:${DEPLOY_TAG}
+                    """
+                }
+            }
+        }
+    }
+}
