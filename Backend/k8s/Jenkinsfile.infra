@@ -11,7 +11,7 @@ pipeline {
         stage('Deploy Database Config') {
             steps {
                 echo 'Applying Database Initialization Script...'
-                // Apply the ConfigMap first so the DB pod can find it
+                // Apply the ConfigMap first so the DB pod can find it.
                 sh 'kubectl apply -f backend/k8s/db-configmap.yaml'
             }
         }
