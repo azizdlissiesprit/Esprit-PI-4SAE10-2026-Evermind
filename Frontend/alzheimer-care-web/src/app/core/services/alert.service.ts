@@ -5,23 +5,22 @@ import { Alert } from '../models/alert.model';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AlertService {
-
   // Your Spring Boot Port is 8081
-  private baseUrl = `${environment.apiUrl}/alert`; 
+  private baseUrl = `${environment.apiUrl}/alert`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   // 1. Get All Alerts
   getAllAlerts(): Observable<Alert[]> {
     return this.http.get<Alert[]>(`${this.baseUrl}/retrieve-all-alerts`);
   }
   // Add this method
-predictStability(patientId: number): Observable<any> {
+  predictStability(patientId: number): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/predict/patient/${patientId}`);
-}
+  }
 
   // 2. Take Charge (Change status to EN_COURS)
   takeCharge(id: number): Observable<Alert> {

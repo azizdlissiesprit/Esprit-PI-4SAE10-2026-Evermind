@@ -7,7 +7,7 @@ import { environment } from '../../../environments/environment';
 @Injectable({ providedIn: 'root' })
 export class AdminAlertService {
   // Point to Gateway
-  private baseUrl = `${environment.apiUrl}/alert`; 
+  private baseUrl = `${environment.apiUrl}/alert`;
 
   constructor(private http: HttpClient) {}
 

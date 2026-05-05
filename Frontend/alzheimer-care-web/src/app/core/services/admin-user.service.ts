@@ -6,13 +6,19 @@ import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AdminUserService {
-  private apiUrl = `${environment.apiUrl}/user/admin/search`; 
-  private baseUrl = `${environment.apiUrl}/user`; 
+  private apiUrl = `${environment.apiUrl}/user/admin/search`;
+  private baseUrl = `${environment.apiUrl}/user`;
 
   constructor(private http: HttpClient) {} // Removed PlatformID injection as it's not needed here anymore
 
-  getUsers(page: number, size: number, keyword: string, role: string, sortBy: string, direction: string): Observable<any> {
-    
+  getUsers(
+    page: number,
+    size: number,
+    keyword: string,
+    role: string,
+    sortBy: string,
+    direction: string,
+  ): Observable<any> {
     // --- REMOVED THE BROKEN LINE HERE ---
 
     let params = new HttpParams()
@@ -30,7 +36,7 @@ export class AdminUserService {
   deleteUser(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/remove-user/${id}`);
   }
-    // ... existing code ...
+  // ... existing code ...
 
   // GET SINGLE USER (For Edit Form)
   getUserById(id: number): Observable<any> {

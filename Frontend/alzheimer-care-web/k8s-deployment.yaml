@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: evermind-frontend
+spec:
+  replicas: 2 # This tells K8s to run 2 copies (maybe one on your PC, one on Rima's!)
+  selector:
+    matchLabels:
+      app: evermind-frontend
+  template:
+    metadata:
+      labels:
+        app: evermind-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: azizesp/evermind-frontend:latest
+        imagePullPolicy: Always # Forces K8s to always download the newest Jenkins build
+        ports:
+        - containerPort: 4000 # The EXPOSE port from your Dockerfile
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: evermind-frontend-service
+spec:
+  type: NodePort
+  selector:
+    app: evermind-frontend
+  ports:
+    - protocol: TCP
+      port: 4200        # The port your compose file used
+      targetPort: 4000  # Maps down to the Node.js server
+      nodePort: 32420   # The new external port you will use in your browser

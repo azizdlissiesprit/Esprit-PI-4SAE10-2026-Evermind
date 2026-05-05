@@ -46,13 +46,12 @@ export interface MedicalReport {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PatientService {
-
   // URL via Gateway (Port 8090) -> Patient Service
   // Based on your gateway config: /api/patients -> Patient Service
-  private apiUrl = `${environment.apiUrl}/patient`; 
+  private apiUrl = `${environment.apiUrl}/patient`;
   constructor(private http: HttpClient) {}
 
   // 1. Get All Patients

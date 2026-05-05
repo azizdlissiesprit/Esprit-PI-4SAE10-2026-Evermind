@@ -5,12 +5,12 @@ import { AutonomyAssessment } from '../models/assessment.models';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AutonomyService {
   // Direct call to Microservice based on your properties
   private apiUrl = `${environment.apiUrl}/api/autonomy-assessments`;
-  
+
   // OR if using Gateway:
   // private apiUrl = 'http://localhost:8080/autonomy/api/autonomy-assessments';
 
