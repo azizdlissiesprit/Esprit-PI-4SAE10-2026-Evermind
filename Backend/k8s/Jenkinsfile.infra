@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Deploy Database Config') {
+            steps {
+                echo 'Applying Database Initialization Script...'
+                // Apply the ConfigMap first so the DB pod can find it
+                sh 'kubectl apply -f backend/k8s/db-configmap.yaml'
+            }
+        }
+
+        stage('Deploy Database Instance') {
+            steps {
+                echo 'Launching PostgreSQL Instance...'
+                sh 'kubectl apply -f backend/k8s/db-deployment.yaml'
+            }
+        }
+
+        stage('Verify Rollout') {
+            steps {
+                echo 'Waiting for Database to be ready...'
+                sh 'kubectl rollout status deployment/evermind-db'
+            }
+        }
+    }
+}

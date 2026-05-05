@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: init-db-script
+data:
+  # Paste the EXACT content of your init-db.sh script below the pipe (|)
+  init-db.sh: |
+    #!/bin/bash
+    set -e
+    psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
+        CREATE DATABASE "Alert";
+        CREATE DATABASE "User";
+        CREATE DATABASE "Patient";
+        CREATE DATABASE "Product";
+        CREATE DATABASE "Profile";
+        CREATE DATABASE "Intervention";
+        CREATE DATABASE "Conversation";
+        CREATE DATABASE "SensorSimulator";
+        CREATE DATABASE "Autonomy";
+        CREATE DATABASE "Chatbot";
+        CREATE DATABASE "LoginLog";
+        CREATE DATABASE "Reclamation";
+        CREATE DATABASE "alzheimer_stock";
+        CREATE DATABASE "cognitive_assessment";
+        CREATE DATABASE "agendamedical";
+    EOSQL

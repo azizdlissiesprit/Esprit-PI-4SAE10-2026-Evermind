@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Service
+metadata:
+  # This matches the "db" hostname your microservices are looking for
+  name: db
+spec:
+  selector:
+    app: evermind-db
+  ports:
+    - protocol: TCP
+      port: 5432        # Internal cluster port
+      targetPort: 5432  # Port inside the container
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: evermind-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: evermind-db
+  template:
+    metadata:
+      labels:
+        app: evermind-db
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:15-alpine
+        # Mirrored from your docker-compose command
+        command: ["postgres", "-c", "max_connections=200"]
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_USER
+          value: "postgres"
+        - name: POSTGRES_PASSWORD
+          value: "123"
+        - name: POSTGRES_DB
+          value: "postgres"
+        volumeMounts:
+        # Mount the init script from the ConfigMap you just created
+        - name: init-script-volume
+          mountPath: /docker-entrypoint-initdb.d/init-db.sh
+          subPath: init-db.sh
+      volumes:
+      - name: init-script-volume
+        configMap:
+          name: init-db-script
