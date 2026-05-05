@@ -19,14 +19,6 @@ pipeline {
             }
         }
         
-        stage('Dockerize') {
-            steps {
-                dir('Frontend/alzheimer-care-web') {
-                    echo 'Building Angular Docker image...'
-                    sh 'docker build -t alzheimer-care-web:latest .'
-                }
-            }
-        }
 
         stage('SonarQube Analysis') {
             environment {
@@ -47,20 +39,33 @@ pipeline {
             }
         }
         
-        stage('Deploy') {
+        stage('Dockerize & Push') {
             steps {
-                script {
-                    // 1. Stop and remove the old frontend container
-                    sh 'docker stop evermind-frontend || true'
-                    sh 'docker rm evermind-frontend || true'
+                dir('Frontend/alzheimer-care-web') {
+                    // Load the Docker Hub credentials
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
+                        
+                        echo 'Logging into Docker Hub...'
+                        sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                        
+                        echo 'Building image for Docker Hub...'
+                        sh 'docker build -t azizesp/evermind-frontend:latest .'
+                        
+                        echo 'Pushing to Docker Hub...'
+                        sh 'docker push azizesp/evermind-frontend:latest'
+                    }
+                }
+            }
+        }
+        
+        stage('Deploy to Kubernetes') {
+            steps {
+                dir('Frontend/alzheimer-care-web') {
+                    echo 'Applying Kubernetes configuration...'
+                    sh 'kubectl apply -f k8s-deployment.yaml'
                     
-                    // 2. Run the new frontend using the image you built above
-                    sh """
-                        docker run -d --name evermind-frontend \
-                        --network alzheimer-net \
-                        -p 4200:4000 \
-                        alzheimer-care-web:latest
-                    """
+                    echo 'Restarting pods to pull fresh image...'
+                    sh 'kubectl rollout restart deployment evermind-frontend'
                 }
             }
         }

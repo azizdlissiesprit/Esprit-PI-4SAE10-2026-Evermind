@@ -5,7 +5,7 @@ import { CognitiveAssessment } from '../models/assessment.models';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CognitiveService {
   // Assuming Port 8098 (Check your console when you run the Spring Boot app)

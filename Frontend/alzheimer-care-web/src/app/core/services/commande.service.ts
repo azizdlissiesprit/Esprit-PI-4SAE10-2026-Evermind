@@ -5,10 +5,9 @@ import { Commande, CreerCommande } from '../models/commande.model';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CommandeService {
-
   private apiUrl = `${environment.apiUrl}/stock/api/commandes`;
 
   constructor(private http: HttpClient) {}

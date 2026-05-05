@@ -11,7 +11,7 @@ import { environment } from '../../../../../environments/environment';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './assign-patients.html',
-  styleUrls: ['./assign-patients.scss']
+  styleUrls: ['./assign-patients.scss'],
 })
 export class AssignPatientsComponent implements OnInit {
   private patientService = inject(PatientService);
@@ -31,12 +31,14 @@ export class AssignPatientsComponent implements OnInit {
   loadData() {
     console.log('[DEBUG] Starting loadData()');
     this.isLoading = true;
-    
+
     let patientsLoaded = false;
     let caregiversLoaded = false;
 
     const checkComplete = () => {
-      console.log(`[DEBUG] checkComplete -> patientsLoaded: ${patientsLoaded}, caregiversLoaded: ${caregiversLoaded}`);
+      console.log(
+        `[DEBUG] checkComplete -> patientsLoaded: ${patientsLoaded}, caregiversLoaded: ${caregiversLoaded}`,
+      );
       if (patientsLoaded && caregiversLoaded) {
         console.log('[DEBUG] Both loads finished, turning off isLoading');
         this.isLoading = false;
@@ -58,10 +60,12 @@ export class AssignPatientsComponent implements OnInit {
         console.log('[DEBUG] Patient fetch completed.');
         patientsLoaded = true;
         checkComplete();
-      }
+      },
     });
 
-    console.log(`[DEBUG] Calling HTTP GET for Caregivers (${environment.apiUrl}/user/type/AIDANT)...`);
+    console.log(
+      `[DEBUG] Calling HTTP GET for Caregivers (${environment.apiUrl}/user/type/AIDANT)...`,
+    );
     this.http.get<any[]>(`${environment.apiUrl}/user/type/AIDANT`).subscribe({
       next: (data: any[]) => {
         console.log('[DEBUG] Received Caregivers data:', data);
@@ -75,24 +79,24 @@ export class AssignPatientsComponent implements OnInit {
         console.log('[DEBUG] Caregiver fetch completed.');
         caregiversLoaded = true;
         checkComplete();
-      }
+      },
     });
   }
 
   onAssign(patientId: number, aidantId: string) {
-    const patient = this.patients.find(p => p.id === patientId);
+    const patient = this.patients.find((p) => p.id === patientId);
     if (!patient) return;
 
     const updatedPatient = { ...patient, responsable: Number(aidantId) };
     this.patientService.update(patientId, updatedPatient).subscribe({
       next: () => {
         this.successMessage = `Patient assigned successfully!`;
-        setTimeout(() => this.successMessage = '', 3000);
+        setTimeout(() => (this.successMessage = ''), 3000);
       },
       error: () => {
         this.errorMessage = 'Failed to assign patient.';
-        setTimeout(() => this.errorMessage = '', 3000);
-      }
+        setTimeout(() => (this.errorMessage = ''), 3000);
+      },
     });
   }
 }

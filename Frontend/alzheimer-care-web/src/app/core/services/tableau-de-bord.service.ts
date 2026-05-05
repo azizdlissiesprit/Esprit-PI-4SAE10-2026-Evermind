@@ -5,10 +5,9 @@ import { TableauDeBord } from '../models/tableau-de-bord.model';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TableauDeBordService {
-
   private apiUrl = `${environment.apiUrl}/stock/api/tableau-de-bord`;
 
   constructor(private http: HttpClient) {}
