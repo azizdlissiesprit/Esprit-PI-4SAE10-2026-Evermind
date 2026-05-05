@@ -16,14 +16,7 @@ pipeline {
             }
         }
         
-        stage('Dockerize') {
-            steps {
-                dir('Backend/Eureka/EurekaServer') {
-                    echo 'Building Eureka Server Docker image...'
-                    sh 'docker build -t eureka-server:latest .'
-                }
-            }
-        }
+        
 
         stage('SonarQube Analysis') {
             environment {
@@ -43,17 +36,33 @@ pipeline {
                 }
             }
         }
-        stage('Deploy') {
+        stage('Dockerize & Push') {
             steps {
-                script {
-                    // 1. Try to stop the existing container (the '|| true' prevents the pipeline from failing if it's the first time running)
-                    sh 'docker stop eureka-server || true'
+                dir('Backend/Eureka/EurekaServer') {
+                    // Load your Docker Hub credentials
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
+                        
+                        echo 'Logging into Docker Hub...'
+                        sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                        
+                        echo 'Building image for Docker Hub...'
+                        sh 'docker build -t azizesp/evermind-eureka:latest .'
+                        
+                        echo 'Pushing to Docker Hub...'
+                        sh 'docker push azizesp/evermind-eureka:latest'
+                    }
+                }
+            }
+        }
+        
+        stage('Deploy to Kubernetes') {
+            steps {
+                dir('Backend/Eureka/EurekaServer') {
+                    echo 'Applying Kubernetes configuration...'
+                    sh 'kubectl apply -f k8s-deployment.yaml'
                     
-                    // 2. Remove the old container
-                    sh 'docker rm eureka-server || true'
-                    
-                    // 3. Start the brand new container on our shared network!
-                    sh 'docker run -d --name eureka-server --network alzheimer-net -p 8761:8761 eureka-server:latest'
+                    echo 'Restarting pods to pull fresh image...'
+                    sh 'kubectl rollout restart deployment evermind-eureka'
                 }
             }
         }
