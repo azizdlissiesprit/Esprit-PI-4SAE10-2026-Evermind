@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: evermind-gateway
+spec:
+  replicas: 1 
+  selector:
+    matchLabels:
+      app: evermind-gateway
+  template:
+    metadata:
+      labels:
+        app: evermind-gateway
+    spec:
+      containers:
+      - name: gateway
+        image: azizesp/evermind-gateway:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8090
+        env:
+        # This is where we inject the Kubernetes DNS name for Eureka
+        - name: EUREKA_SERVER_URL
+          value: "http://evermind-eureka-service:8761/eureka/"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: evermind-gateway-service
+spec:
+  type: NodePort
+  selector:
+    app: evermind-gateway
+  ports:
+    - protocol: TCP
+      port: 8090        # Internal port within the cluster
+      targetPort: 8090  # The port your Spring Boot app runs on
+      nodePort: 32090   # External port to access the API Gateway from your browser
