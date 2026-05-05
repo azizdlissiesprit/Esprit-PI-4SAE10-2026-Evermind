@@ -12,14 +12,14 @@ pipeline {
             steps {
                 echo 'Applying Database Initialization Script...'
                 // Apply the ConfigMap first so the DB pod can find it..
-                sh 'kubectl apply -f backend/k8s/db-configmap.yaml'
+                sh 'kubectl apply -f Backend/k8s/db-configmap.yaml'
             }
         }
 
         stage('Deploy Database Instance') {
             steps {
                 echo 'Launching PostgreSQL Instance...'
-                sh 'kubectl apply -f backend/k8s/db-deployment.yaml'
+                sh 'kubectl apply -f Backend/k8s/db-deployment.yaml'
             }
         }
 
