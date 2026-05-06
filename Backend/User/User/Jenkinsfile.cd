@@ -29,7 +29,7 @@ pipeline {
     
     post {
         success {
-            echo "User Service successfully deployed to the Evermind cluster!"
+            echo "User Service successfully deployed to the Evermind cluster!!"
         }
         failure {
             echo "Deployment failed. Run 'kubectl get pods' or 'kubectl describe' to troubleshoot."
