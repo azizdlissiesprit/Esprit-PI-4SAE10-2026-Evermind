@@ -7,10 +7,9 @@ pipeline {
     }
 
     environment {
-        // Change 'yourdockerhubusername' to your actual username!
         DOCKER_IMAGE = "azizesp/alert-service" 
-        // We use Jenkins' built-in build number to version your images (e.g., v1, v2)
         IMAGE_TAG = "v${env.BUILD_NUMBER}" 
+        DOCKER_HUB_CREDS = 'docker-hub-creds'
     }
 
     stages {
@@ -30,19 +29,19 @@ pipeline {
         }
         
         stage('SonarQube Analysis') {
-            environment {
-                scannerHome = tool 'SonarScanner'
-            }
             steps {
                 dir('Backend/Alert/Alert') {
-                    withSonarQubeEnv('SonarQube') {
-                        sh """
-                            ${scannerHome}/bin/sonar-scanner \
-                            -Dsonar.projectKey=alzheimer-care-alert-service \
-                            -Dsonar.projectName="Alert Service" \
-                            -Dsonar.sources=. \
-                            -Dsonar.java.binaries=target/classes
-                        """
+                    script {
+                        def scannerHome = tool 'SonarScanner'
+                        withSonarQubeEnv('SonarQube') {
+                            sh """
+                                ${scannerHome}/bin/sonar-scanner \
+                                -Dsonar.projectKey=alzheimer-care-alert-service \
+                                -Dsonar.projectName="Alert Service" \
+                                -Dsonar.sources=src/main/java \
+                                -Dsonar.java.binaries=target/classes
+                            """
+                        }
                     }
                 }
             }
@@ -51,16 +50,14 @@ pipeline {
         stage('Build & Push Docker Image') {
             steps {
                 dir('Backend/Alert/Alert') {
-                    // 1. Build the image with the specific version tag and a 'latest' tag
-                    sh "docker build -t ${DOCKER_IMAGE}:${IMAGE_TAG} -t ${DOCKER_IMAGE}:latest ."
-                    
-                    // 2. Log into Docker Hub using the credentials we just created
-                    withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
-                        sh "echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin"
+                    script {
+                        sh "docker build -t ${DOCKER_IMAGE}:${IMAGE_TAG} -t ${DOCKER_IMAGE}:latest ."
                         
-                        // 3. Push both tags to Docker Hub
-                        sh "docker push ${DOCKER_IMAGE}:${IMAGE_TAG}"
-                        sh "docker push ${DOCKER_IMAGE}:latest"
+                        withCredentials([usernamePassword(credentialsId: "${DOCKER_HUB_CREDS}", passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
+                            sh "echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin"
+                            sh "docker push ${DOCKER_IMAGE}:${IMAGE_TAG}"
+                            sh "docker push ${DOCKER_IMAGE}:latest"
+                        }
                     }
                 }
             }
