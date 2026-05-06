@@ -1,30 +1,38 @@
 pipeline {
     agent any
-    environment {
-        DOCKER_IMAGE = "azizesp/user-service"
-        DEPLOY_TAG = "${params.IMAGE_VERSION ?: 'latest'}" 
-    }
+
     parameters {
         string(name: 'IMAGE_VERSION', defaultValue: 'latest', description: 'Tag to deploy')
     }
+
+    environment {
+        DOCKER_IMAGE = "azizesp/user-service"
+        DEPLOY_TAG = "${params.IMAGE_VERSION}"
+    }
+
     stages {
-        stage('Pull & Deploy') {
+        stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    sh "docker pull ${DOCKER_IMAGE}:${DEPLOY_TAG}"
-                    sh 'docker stop user-service || true'
-                    sh 'docker rm user-service || true'
-                    // Note: Ensure the port (8082) matches your User Service config!
-                    sh """
-                        docker run -d --name user-service \
-                        --network alzheimer-net \
-                        -p 8082:8082 \
-                        -e SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres \
-                        -e EUREKA_SERVER_URL=http://eureka-server:8761/eureka \
-                        ${DOCKER_IMAGE}:${DEPLOY_TAG}
-                    """
+                    // Updated path to reflect the folder structure you mentioned
+                    sh "kubectl apply -f Backend/k8s/user-service-deployment.yaml"
+
+                    // Force the deployment to use the specific version
+                    sh "kubectl set image deployment/user-service user-service=${DOCKER_IMAGE}:${DEPLOY_TAG}"
+
+                    // Monitor the rollout on your aziz and rima nodes
+                    sh "kubectl rollout status deployment/user-service"
                 }
             }
+        }
+    }
+    
+    post {
+        success {
+            echo "User Service successfully deployed to the Evermind cluster!"
+        }
+        failure {
+            echo "Deployment failed. Run 'kubectl get pods' or 'kubectl describe' to troubleshoot."
         }
     }
 }
