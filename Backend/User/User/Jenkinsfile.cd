@@ -14,7 +14,7 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    // Updated path to reflect the folder structure you mentioned
+                    // Updated path to reflect the folder structure you mentioned.
                     sh "kubectl apply -f Backend/k8s/user-service-deployment.yaml"
 
                     // Force the deployment to use the specific version
