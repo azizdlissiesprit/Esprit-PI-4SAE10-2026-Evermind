@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: intervention-service
+  labels:
+    app: intervention-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: intervention-service
+  template:
+    metadata:
+      labels:
+        app: intervention-service
+    spec:
+      containers:
+      - name: intervention-service
+        image: azizesp/intervention-service:latest
+        ports:
+        - containerPort: 8086
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:postgresql://db:5432/Intervention"
+        - name: EUREKA_SERVER_URL
+          value: "http://evermind-eureka:8761/eureka"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: intervention-service
+spec:
+  selector:
+    app: intervention-service
+  ports:
+    - protocol: TCP
+      port: 8086
+      targetPort: 8086
+  type: ClusterIP

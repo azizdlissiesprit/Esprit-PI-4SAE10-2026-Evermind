@@ -1,27 +1,24 @@
 pipeline {
     agent any
-    environment {
-        DOCKER_IMAGE = "azizesp/intervention-service"
-        DEPLOY_TAG = "${params.IMAGE_VERSION ?: 'latest'}" 
-    }
     parameters {
         string(name: 'IMAGE_VERSION', defaultValue: 'latest', description: 'Enter tag to deploy')
     }
+    environment {
+        DOCKER_IMAGE = "azizesp/intervention-service"
+        DEPLOY_TAG = "${params.IMAGE_VERSION}"
+    }
     stages {
-        stage('Pull & Deploy') {
+        stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    sh "docker pull ${DOCKER_IMAGE}:${DEPLOY_TAG}"
-                    sh 'docker stop intervention-service || true'
-                    sh 'docker rm intervention-service || true'
-                    sh """
-                        docker run -d --name intervention-service \
-                        --network alzheimer-net \
-                        -p 8083:8083 \
-                        -e SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres \
-                        -e EUREKA_SERVER_URL=http://eureka-server:8761/eureka \
-                        ${DOCKER_IMAGE}:${DEPLOY_TAG}
-                    """
+                    // Using the folder structure you confirmed earlier
+                    sh "kubectl apply -f Backend/k8s/intervention-service-deployment.yaml"
+
+                    // Force the deployment to use the new image version
+                    sh "kubectl set image deployment/intervention-service intervention-service=${DOCKER_IMAGE}:${DEPLOY_TAG}"
+
+                    // Ensure the pods start correctly on aziz or rima
+                    sh "kubectl rollout status deployment/intervention-service"
                 }
             }
         }
