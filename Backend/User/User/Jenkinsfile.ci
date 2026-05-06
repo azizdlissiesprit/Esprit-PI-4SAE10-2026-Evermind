@@ -1,13 +1,18 @@
 pipeline {
     agent any
+    
     tools {
         maven 'Maven-3.9'
         jdk 'Java-17'
     }
+
     environment {
         DOCKER_IMAGE = "azizesp/user-service" 
         IMAGE_TAG = "v${env.BUILD_NUMBER}" 
+        // Ensure this ID matches your Jenkins Credentials vault
+        DOCKER_HUB_CREDS = 'docker-hub-creds'
     }
+
     stages {
         stage('Build & Test') {
             steps {
@@ -18,6 +23,7 @@ pipeline {
             post {
                 always {
                     dir('Backend/User/User') {
+                        // Captures test results for Jenkins UI
                         junit 'target/surefire-reports/*.xml'
                     }
                 }
@@ -25,19 +31,19 @@ pipeline {
         }
         
         stage('SonarQube Analysis') {
-            environment {
-                scannerHome = tool 'SonarScanner'
-            }
             steps {
                 dir('Backend/User/User') {
-                    withSonarQubeEnv('SonarQube') {
-                        sh """
-                            ${scannerHome}/bin/sonar-scanner \
-                            -Dsonar.projectKey=alzheimer-care-user-service \
-                            -Dsonar.projectName="User Service" \
-                            -Dsonar.sources=. \
-                            -Dsonar.java.binaries=target/classes
-                        """
+                    script {
+                        def scannerHome = tool 'SonarScanner'
+                        withSonarQubeEnv('SonarQube') {
+                            sh """
+                                ${scannerHome}/bin/sonar-scanner \
+                                -Dsonar.projectKey=alzheimer-care-user-service \
+                                -Dsonar.projectName="User Service" \
+                                -Dsonar.sources=src/main/java \
+                                -Dsonar.java.binaries=target/classes
+                            """
+                        }
                     }
                 }
             }
@@ -46,11 +52,15 @@ pipeline {
         stage('Build & Push Image') {
             steps {
                 dir('Backend/User/User') {
-                    sh "docker build -t ${DOCKER_IMAGE}:${IMAGE_TAG} -t ${DOCKER_IMAGE}:latest ."
-                    withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
-                        sh "echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin"
-                        sh "docker push ${DOCKER_IMAGE}:${IMAGE_TAG}"
-                        sh "docker push ${DOCKER_IMAGE}:latest"
+                    script {
+                        // Building both versioned and latest tags
+                        sh "docker build -t ${DOCKER_IMAGE}:${IMAGE_TAG} -t ${DOCKER_IMAGE}:latest ."
+                        
+                        withCredentials([usernamePassword(credentialsId: "${DOCKER_HUB_CREDS}", passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
+                            sh "echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin"
+                            sh "docker push ${DOCKER_IMAGE}:${IMAGE_TAG}"
+                            sh "docker push ${DOCKER_IMAGE}:latest"
+                        }
                     }
                 }
             }
