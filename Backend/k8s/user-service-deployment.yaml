@@ -19,7 +19,7 @@ spec:
         - containerPort: 8082
         env:
         - name: SPRING_DATASOURCE_URL
-          value: "jdbc:postgresql://db-service:5432/User"
+          value: "jdbc:postgresql://db:5432/User"
         - name: EUREKA_SERVER_URL
           value: "http://eureka-service:8761/eureka"
         - name: RABBITMQ_HOST
