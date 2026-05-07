@@ -16,7 +16,7 @@ pipeline {
         stage('Build & Test') {
             steps {
                 dir('Backend/SensorSimulator') {
-                    sh 'mvn clean package skipTests=false'
+                    sh 'mvn clean package'
                 }
             }
             post {
