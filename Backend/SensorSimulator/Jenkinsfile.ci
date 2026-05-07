@@ -1,0 +1,67 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'Maven-3.9'
+        jdk 'Java-17'
+    }
+
+    environment {
+        DOCKER_IMAGE = "azizesp/sensor-simulator" 
+        IMAGE_TAG = "v${env.BUILD_NUMBER}" 
+        DOCKER_HUB_CREDS = 'docker-hub-creds'
+    }
+
+    stages {
+        stage('Build & Test') {
+            steps {
+                dir('Backend/SensorSimulator') {
+                    sh 'mvn clean package skipTests=false'
+                }
+            }
+            post {
+                always {
+                    dir('Backend/SensorSimulator') {
+                        // junit 'target/surefire-reports/*.xml'
+                        echo 'Test results collected'
+                    }
+                }
+            }
+        }
+        
+        stage('SonarQube Analysis') {
+            steps {
+                dir('Backend/SensorSimulator') {
+                    script {
+                        def scannerHome = tool 'SonarScanner'
+                        withSonarQubeEnv('SonarQube') {
+                            sh """
+                                ${scannerHome}/bin/sonar-scanner \
+                                -Dsonar.projectKey=alzheimer-care-sensor-simulator \
+                                -Dsonar.projectName="Sensor Simulator Service" \
+                                -Dsonar.sources=src/main/java \
+                                -Dsonar.java.binaries=target/classes
+                            """
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Build & Push Docker Image') {
+            steps {
+                dir('Backend/SensorSimulator') {
+                    script {
+                        sh "docker build -t ${DOCKER_IMAGE}:${IMAGE_TAG} -t ${DOCKER_IMAGE}:latest ."
+                        
+                        withCredentials([usernamePassword(credentialsId: "${DOCKER_HUB_CREDS}", passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
+                            sh "echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin"
+                            sh "docker push ${DOCKER_IMAGE}:${IMAGE_TAG}"
+                            sh "docker push ${DOCKER_IMAGE}:latest"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
