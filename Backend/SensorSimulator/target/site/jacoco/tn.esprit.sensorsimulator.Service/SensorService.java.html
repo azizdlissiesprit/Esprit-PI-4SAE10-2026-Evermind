@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SensorService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">SensorSimulator</a> &gt; <a href="index.source.html" class="el_package">tn.esprit.sensorsimulator.Service</a> &gt; <span class="el_source">SensorService.java</span></div><h1>SensorService.java</h1><pre class="source lang-java linenums">package tn.esprit.sensorsimulator.Service;
+
+import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import tn.esprit.sensorsimulator.Entity.Sensor;
+import tn.esprit.sensorsimulator.Entity.SensorStatus;
+import tn.esprit.sensorsimulator.Repository.SensorRepository;
+
+import java.util.List;
+
+@Service
+@AllArgsConstructor
+<span class="fc" id="L15">@Slf4j</span>
+public class SensorService {
+
+    private final SensorRepository sensorRepository;
+
+    public List&lt;Sensor&gt; getAllSensors() {
+<span class="fc" id="L21">        log.debug(&quot;🔍 Fetching all sensors from database&quot;);</span>
+<span class="fc" id="L22">        List&lt;Sensor&gt; sensors = sensorRepository.findAll();</span>
+<span class="fc" id="L23">        log.info(&quot;📊 Retrieved {} sensors&quot;, sensors.size());</span>
+<span class="fc" id="L24">        return sensors;</span>
+    }
+
+    public Sensor getSensorById(Long id) {
+<span class="fc" id="L28">        log.debug(&quot;🔍 Looking up sensor with id={}&quot;, id);</span>
+<span class="fc" id="L29">        return sensorRepository.findById(id)</span>
+<span class="fc" id="L30">                .orElseThrow(() -&gt; {</span>
+<span class="fc" id="L31">                    log.error(&quot;🚨 Sensor not found with id={}&quot;, id);</span>
+<span class="fc" id="L32">                    return new EntityNotFoundException(&quot;Sensor not found with id: &quot; + id);</span>
+                });
+    }
+
+    public List&lt;Sensor&gt; getSensorsByPatient(Long patientId) {
+<span class="fc" id="L37">        log.debug(&quot;🔍 Fetching sensors for patientId={}&quot;, patientId);</span>
+<span class="fc" id="L38">        List&lt;Sensor&gt; sensors = sensorRepository.findByPatientId(patientId);</span>
+<span class="fc" id="L39">        log.info(&quot;📊 Found {} sensors for patientId={}&quot;, sensors.size(), patientId);</span>
+<span class="fc" id="L40">        return sensors;</span>
+    }
+
+    public List&lt;Sensor&gt; getActiveSensorsByPatient(Long patientId) {
+<span class="fc" id="L44">        log.debug(&quot;🔍 Fetching ACTIVE sensors for patientId={}&quot;, patientId);</span>
+<span class="fc" id="L45">        List&lt;Sensor&gt; sensors = sensorRepository.findByPatientIdAndStatus(patientId, SensorStatus.ACTIVE);</span>
+<span class="fc" id="L46">        log.info(&quot;📊 Found {} active sensors for patientId={}&quot;, sensors.size(), patientId);</span>
+<span class="fc" id="L47">        return sensors;</span>
+    }
+
+    public Sensor addSensor(Sensor sensor) {
+<span class="fc" id="L51">        log.info(&quot;🚀 Registering new sensor: code={}, type={}, patientId={}&quot;,</span>
+<span class="fc" id="L52">                sensor.getSensorCode(), sensor.getSensorType(), sensor.getPatientId());</span>
+<span class="fc" id="L53">        Sensor saved = sensorRepository.save(sensor);</span>
+<span class="fc" id="L54">        log.info(&quot;✅ Sensor registered successfully with id={}&quot;, saved.getId());</span>
+<span class="fc" id="L55">        return saved;</span>
+    }
+
+    public Sensor updateSensor(Long id, Sensor updatedSensor) {
+<span class="fc" id="L59">        log.info(&quot;🔄 Updating sensor id={}&quot;, id);</span>
+<span class="fc" id="L60">        Sensor existing = getSensorById(id);</span>
+<span class="fc" id="L61">        existing.setSensorCode(updatedSensor.getSensorCode());</span>
+<span class="fc" id="L62">        existing.setPatientId(updatedSensor.getPatientId());</span>
+<span class="fc" id="L63">        existing.setSensorType(updatedSensor.getSensorType());</span>
+<span class="fc" id="L64">        existing.setStatus(updatedSensor.getStatus());</span>
+<span class="fc" id="L65">        Sensor saved = sensorRepository.save(existing);</span>
+<span class="fc" id="L66">        log.info(&quot;✅ Sensor id={} updated successfully&quot;, saved.getId());</span>
+<span class="fc" id="L67">        return saved;</span>
+    }
+
+    public void deleteSensor(Long id) {
+<span class="fc" id="L71">        log.warn(&quot;⚠️ Deleting sensor id={}&quot;, id);</span>
+<span class="fc" id="L72">        sensorRepository.deleteById(id);</span>
+<span class="fc" id="L73">        log.info(&quot;✅ Sensor id={} deleted&quot;, id);</span>
+<span class="fc" id="L74">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SensorReading.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">SensorSimulator</a> &gt; <a href="index.source.html" class="el_package">tn.esprit.sensorsimulator.Entity</a> &gt; <span class="el_source">SensorReading.java</span></div><h1>SensorReading.java</h1><pre class="source lang-java linenums">package tn.esprit.sensorsimulator.Entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = &quot;sensor_readings&quot;, indexes = {
+    @Index(name = &quot;idx_reading_patient&quot;, columnList = &quot;patientId&quot;),
+    @Index(name = &quot;idx_reading_sensor&quot;, columnList = &quot;sensorId&quot;),
+    @Index(name = &quot;idx_reading_timestamp&quot;, columnList = &quot;timestamp&quot;)
+})
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class SensorReading {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private Long sensorId;
+
+    /** Denormalized for fast queries without joining sensor table */
+    @Column(nullable = false)
+    private Long patientId;
+
+    @Column(nullable = false)
+    private LocalDateTime timestamp;
+
+    // ====== Heart Rate Monitor Fields ======
+    /** Beats per minute. Normal elderly range: 60-85 BPM */
+    private Double heartRate;
+
+    // ====== Accelerometer Fields ======
+    /** G-force on X axis. Normal walking ~0.2-0.5G */
+    private Double accelerationX;
+    /** G-force on Y axis. Normal walking ~0.1-0.3G */
+    private Double accelerationY;
+    /** G-force on Z axis. Normal standing ~1.0G (gravity) */
+    private Double accelerationZ;
+
+    // ====== GPS Tracker Fields ======
+    /** Latitude coordinate */
+    private Double latitude;
+    /** Longitude coordinate */
+    private Double longitude;
+
+    // ====== Motion Detector Fields ======
+    /** Whether motion was detected in the room */
+    private Boolean motionDetected;
+
+    // ====== Medication Box Fields ======
+    /** Whether the medication box was opened */
+    private Boolean medicationBoxOpened;
+
+    // ====== Anomaly Flag ======
+    /** Set to true if the anomaly detection engine flags this reading */
+    @Column(nullable = false)
+    private Boolean isAnomalous;
+
+    @PrePersist
+    protected void onCreate() {
+<span class="nc bnc" id="L67" title="All 2 branches missed.">        if (this.timestamp == null) {</span>
+<span class="nc" id="L68">            this.timestamp = LocalDateTime.now();</span>
+        }
+<span class="nc bnc" id="L70" title="All 2 branches missed.">        if (this.isAnomalous == null) {</span>
+<span class="nc" id="L71">            this.isAnomalous = false;</span>
+        }
+<span class="nc" id="L73">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
