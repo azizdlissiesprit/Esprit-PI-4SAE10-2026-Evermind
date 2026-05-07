@@ -1,0 +1,23 @@
+pipeline {
+    agent any
+    tools { maven 'Maven-3.9' }
+    stages {
+        stage('Build & Test') {
+            steps {
+                dir('Backend/Formation') {
+                    sh 'mvn clean install'
+                }
+            }
+        }
+        stage('SonarQube Analysis') {
+            environment { scannerHome = tool 'SonarScanner' }
+            steps {
+                dir('Backend/Formation') {
+                    withSonarQubeEnv('SonarQube') {
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=formation-service"
+                    }
+                }
+            }
+        }
+    }
+}
