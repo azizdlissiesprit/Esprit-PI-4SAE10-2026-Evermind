@@ -1,0 +1,23 @@
+pipeline {
+    agent any
+    stages {
+        stage('Docker Push') {
+            steps {
+                dir('Backend/Formation') {
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
+                        sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                        sh 'docker build -t azizesp/evermind-formation:latest .'
+                        sh 'docker push azizesp/evermind-formation:latest'
+                    }
+                }
+            }
+        }
+        stage('Deploy to K8s') {
+            steps {
+                dir('k8s') {
+                    sh 'kubectl apply -f formation-service-deployment.yaml'
+                }
+            }
+        }
+    }
+}
