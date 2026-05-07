@@ -69,7 +69,7 @@ pipeline {
             steps {
                 dir('Backend/Eureka/EurekaServer') {
                     echo 'Applying Kubernetes configuration...'
-                    sh 'kubectl apply -f k8s-deployment.yaml --kubeconfig=/home/azureuser/.kube/config'
+                    sh 'kubectl apply -f k8s-deployment.yaml --kubeconfig=$HOME/.kube/config'
                     
                     echo 'Restarting pods to pull fresh image...'
                     sh 'kubectl rollout restart deployment evermind-eureka'
