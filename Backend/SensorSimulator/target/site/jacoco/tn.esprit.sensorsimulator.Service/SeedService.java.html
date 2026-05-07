@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SeedService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">SensorSimulator</a> &gt; <a href="index.source.html" class="el_package">tn.esprit.sensorsimulator.Service</a> &gt; <span class="el_source">SeedService.java</span></div><h1>SeedService.java</h1><pre class="source lang-java linenums">package tn.esprit.sensorsimulator.Service;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
+
+import tn.esprit.sensorsimulator.Entity.*;
+import tn.esprit.sensorsimulator.Repository.*;
+
+import java.time.LocalDateTime;
+import java.util.*;
+
+@Service
+<span class="fc" id="L15">@Slf4j</span>
+@RequiredArgsConstructor
+public class SeedService {
+
+    private final SensorRepository sensorRepository;
+    private final SensorReadingRepository sensorReadingRepository;
+    private final AbnormalEventRepository abnormalEventRepository;
+    private final SeedLogRepository seedLogRepository;
+
+    private static final String ENTITY_SENSOR = &quot;Sensor&quot;;
+    private static final String ENTITY_READING = &quot;SensorReading&quot;;
+    private static final String ENTITY_EVENT = &quot;AbnormalEvent&quot;;
+
+    private final Random random = new Random(42);
+
+    // ─── Public API ─────────────────────────────────────────────
+
+    public Map&lt;String, Object&gt; executeSeed() {
+<span class="nc bnc" id="L33" title="All 2 branches missed.">        if (seedLogRepository.countByEntityType(ENTITY_SENSOR) &gt; 0) {</span>
+<span class="nc" id="L34">            log.info(&quot;🌱 Sensor data already seeded — returning existing count&quot;);</span>
+<span class="nc" id="L35">            return Map.of(</span>
+                &quot;status&quot;, &quot;ALREADY_SEEDED&quot;,
+                &quot;message&quot;, &quot;Sensor data has already been seeded. Clear first to re-seed.&quot;,
+<span class="nc" id="L38">                &quot;sensorCount&quot;, seedLogRepository.countByEntityType(ENTITY_SENSOR),</span>
+<span class="nc" id="L39">                &quot;readingCount&quot;, seedLogRepository.countByEntityType(ENTITY_READING),</span>
+<span class="nc" id="L40">                &quot;eventCount&quot;, seedLogRepository.countByEntityType(ENTITY_EVENT)</span>
+            );
+        }
+
+<span class="nc" id="L44">        log.info(&quot;🌱 ══════════════════════════════════════════&quot;);</span>
+<span class="nc" id="L45">        log.info(&quot;🌱  MEDICAL-GRADE SENSOR SEEDING STARTED&quot;);</span>
+<span class="nc" id="L46">        log.info(&quot;🌱 ══════════════════════════════════════════&quot;);</span>
+
+<span class="nc" id="L48">        int sensorCount = 0;</span>
+<span class="nc" id="L49">        int readingCount = 0;</span>
+<span class="nc" id="L50">        int eventCount = 0;</span>
+<span class="nc" id="L51">        int skipped = 0;</span>
+<span class="nc" id="L52">        List&lt;String&gt; warnings = new ArrayList&lt;&gt;();</span>
+
+<span class="nc bnc" id="L54" title="All 2 branches missed.">        for (long patientId = 1; patientId &lt;= 20; patientId++) {</span>
+            try {
+<span class="nc" id="L56">                List&lt;Sensor&gt; sensors = seedSensorsForPatient(patientId);</span>
+<span class="nc" id="L57">                sensorCount += sensors.size();</span>
+
+<span class="nc" id="L59">                int readings = seedReadingsForPatient(patientId, sensors);</span>
+<span class="nc" id="L60">                readingCount += readings;</span>
+
+<span class="nc" id="L62">                int events = seedAbnormalEventsForPatient(patientId, sensors);</span>
+<span class="nc" id="L63">                eventCount += events;</span>
+
+<span class="nc" id="L65">                log.info(&quot;🌱 Patient {}: {} sensors, {} readings, {} events&quot;, patientId, sensors.size(), readings, events);</span>
+<span class="nc" id="L66">            } catch (DataIntegrityViolationException e) {</span>
+<span class="nc" id="L67">                skipped++;</span>
+<span class="nc" id="L68">                String msg = &quot;Patient &quot; + patientId + &quot; skipped — constraint violation: &quot; + extractRootCause(e);</span>
+<span class="nc" id="L69">                log.warn(&quot;⚠️ {}&quot;, msg);</span>
+<span class="nc" id="L70">                warnings.add(msg);</span>
+<span class="nc" id="L71">            } catch (Exception e) {</span>
+<span class="nc" id="L72">                skipped++;</span>
+<span class="nc" id="L73">                String msg = &quot;Patient &quot; + patientId + &quot; skipped — error: &quot; + e.getMessage();</span>
+<span class="nc" id="L74">                log.error(&quot;⚠️ {}&quot;, msg, e);</span>
+<span class="nc" id="L75">                warnings.add(msg);</span>
+<span class="nc" id="L76">            }</span>
+        }
+
+<span class="nc" id="L79">        log.info(&quot;🌱 ══════════════════════════════════════════&quot;);</span>
+<span class="nc" id="L80">        log.info(&quot;🌱  SEEDING COMPLETE: {} sensors, {} readings, {} events (skipped: {} patients)&quot;, sensorCount, readingCount, eventCount, skipped);</span>
+<span class="nc" id="L81">        log.info(&quot;🌱 ══════════════════════════════════════════&quot;);</span>
+
+<span class="nc" id="L83">        Map&lt;String, Object&gt; result = new LinkedHashMap&lt;&gt;();</span>
+<span class="nc" id="L84">        result.put(&quot;status&quot;, &quot;SUCCESS&quot;);</span>
+<span class="nc" id="L85">        result.put(&quot;sensorCount&quot;, sensorCount);</span>
+<span class="nc" id="L86">        result.put(&quot;readingCount&quot;, readingCount);</span>
+<span class="nc" id="L87">        result.put(&quot;eventCount&quot;, eventCount);</span>
+<span class="nc" id="L88">        result.put(&quot;skipped&quot;, skipped);</span>
+<span class="nc" id="L89">        result.put(&quot;message&quot;, String.format(&quot;Seeded %d sensors, %d readings, %d events.%s&quot;,</span>
+<span class="nc" id="L90">            sensorCount, readingCount, eventCount,</span>
+<span class="nc bnc" id="L91" title="All 2 branches missed.">            skipped &gt; 0 ? &quot; (&quot; + skipped + &quot; patients skipped)&quot; : &quot;&quot;));</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">        if (!warnings.isEmpty()) result.put(&quot;warnings&quot;, warnings);</span>
+<span class="nc" id="L93">        return result;</span>
+    }
+
+    public Map&lt;String, Object&gt; clearSeed() {
+<span class="nc" id="L97">        int[] eventResult = deleteByTypeSafe(ENTITY_EVENT, id -&gt; {</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">            if (abnormalEventRepository.existsById(id)) { abnormalEventRepository.deleteById(id); return true; }</span>
+<span class="nc" id="L99">            return false;</span>
+        });
+<span class="nc" id="L101">        int[] readingResult = deleteByTypeSafe(ENTITY_READING, id -&gt; {</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">            if (sensorReadingRepository.existsById(id)) { sensorReadingRepository.deleteById(id); return true; }</span>
+<span class="nc" id="L103">            return false;</span>
+        });
+<span class="nc" id="L105">        int[] sensorResult = deleteByTypeSafe(ENTITY_SENSOR, id -&gt; {</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">            if (sensorRepository.existsById(id)) { sensorRepository.deleteById(id); return true; }</span>
+<span class="nc" id="L107">            return false;</span>
+        });
+
+<span class="nc" id="L110">        seedLogRepository.deleteByEntityType(ENTITY_EVENT);</span>
+<span class="nc" id="L111">        seedLogRepository.deleteByEntityType(ENTITY_READING);</span>
+<span class="nc" id="L112">        seedLogRepository.deleteByEntityType(ENTITY_SENSOR);</span>
+
+<span class="nc" id="L114">        int totalErrors = eventResult[1] + readingResult[1] + sensorResult[1];</span>
+<span class="nc" id="L115">        log.info(&quot;🧹 Cleared {} sensors, {} readings, {} events (errors: {})&quot;,</span>
+<span class="nc" id="L116">            sensorResult[0], readingResult[0], eventResult[0], totalErrors);</span>
+
+<span class="nc" id="L118">        Map&lt;String, Object&gt; result = new LinkedHashMap&lt;&gt;();</span>
+<span class="nc" id="L119">        result.put(&quot;status&quot;, &quot;CLEARED&quot;);</span>
+<span class="nc" id="L120">        result.put(&quot;sensorsDeleted&quot;, sensorResult[0]);</span>
+<span class="nc" id="L121">        result.put(&quot;readingsDeleted&quot;, readingResult[0]);</span>
+<span class="nc" id="L122">        result.put(&quot;eventsDeleted&quot;, eventResult[0]);</span>
+<span class="nc bnc" id="L123" title="All 2 branches missed.">        if (totalErrors &gt; 0) {</span>
+<span class="nc" id="L124">            result.put(&quot;errors&quot;, totalErrors);</span>
+<span class="nc" id="L125">            result.put(&quot;message&quot;, &quot;Cleared with &quot; + totalErrors + &quot; errors. Some records may have been already deleted.&quot;);</span>
+        }
+<span class="nc" id="L127">        return result;</span>
+    }
+
+    public Map&lt;String, Object&gt; getStatus() {
+<span class="nc" id="L131">        Map&lt;String, Object&gt; status = new HashMap&lt;&gt;();</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">        status.put(&quot;seeded&quot;, seedLogRepository.countByEntityType(ENTITY_SENSOR) &gt; 0);</span>
+<span class="nc" id="L133">        status.put(&quot;seededSensorCount&quot;, seedLogRepository.countByEntityType(ENTITY_SENSOR));</span>
+<span class="nc" id="L134">        status.put(&quot;seededReadingCount&quot;, seedLogRepository.countByEntityType(ENTITY_READING));</span>
+<span class="nc" id="L135">        status.put(&quot;seededEventCount&quot;, seedLogRepository.countByEntityType(ENTITY_EVENT));</span>
+<span class="nc" id="L136">        status.put(&quot;totalSensorCount&quot;, sensorRepository.count());</span>
+<span class="nc" id="L137">        status.put(&quot;totalReadingCount&quot;, sensorReadingRepository.count());</span>
+<span class="nc" id="L138">        status.put(&quot;totalEventCount&quot;, abnormalEventRepository.count());</span>
+
+<span class="nc" id="L140">        Optional&lt;SeedLog&gt; lastSeed = seedLogRepository.findByEntityType(ENTITY_SENSOR)</span>
+<span class="nc" id="L141">                .stream().max(Comparator.comparing(SeedLog::getSeededAt));</span>
+<span class="nc" id="L142">        status.put(&quot;lastSeededAt&quot;, lastSeed.map(SeedLog::getSeededAt).orElse(null));</span>
+<span class="nc" id="L143">        return status;</span>
+    }
+
+    // ─── Private: Sensors ────────────────────────────────────────
+
+    private List&lt;Sensor&gt; seedSensorsForPatient(long patientId) {
+<span class="nc" id="L149">        List&lt;Sensor&gt; sensors = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L150">        double baseLat = 36.8065 + (((patientId - 1) / 5) * 0.005);</span>
+<span class="nc" id="L151">        double baseLon = 10.1815 + (((patientId - 1) % 5) * 0.005);</span>
+<span class="nc" id="L152">        int radius = 80 + (int) ((patientId - 1) % 3) * 20;</span>
+<span class="nc" id="L153">        String suffix = String.format(&quot;%03d&quot;, patientId);</span>
+
+<span class="nc" id="L155">        SensorType[] types = {SensorType.HEART_RATE_MONITOR, SensorType.ACCELEROMETER,</span>
+                SensorType.GPS_TRACKER, SensorType.MEDICATION_BOX, SensorType.MOTION_DETECTOR};
+<span class="nc" id="L157">        String[] prefixes = {&quot;HR&quot;, &quot;ACC&quot;, &quot;GPS&quot;, &quot;MED&quot;, &quot;MOT&quot;};</span>
+
+<span class="nc bnc" id="L159" title="All 2 branches missed.">        for (int i = 0; i &lt; types.length; i++) {</span>
+<span class="nc" id="L160">            String code = prefixes[i] + &quot;-&quot; + suffix;</span>
+<span class="nc bnc" id="L161" title="All 2 branches missed.">            if (sensorRepository.existsBySensorCode(code)) continue;</span>
+
+<span class="nc" id="L163">            Sensor sensor = sensorRepository.save(Sensor.builder()</span>
+<span class="nc" id="L164">                .sensorCode(code)</span>
+<span class="nc" id="L165">                .sensorType(types[i])</span>
+<span class="nc" id="L166">                .patientId(patientId)</span>
+<span class="nc" id="L167">                .status(SensorStatus.ACTIVE)</span>
+<span class="nc" id="L168">                .baseLatitude(baseLat)</span>
+<span class="nc" id="L169">                .baseLongitude(baseLon)</span>
+<span class="nc" id="L170">                .geofenceRadius(radius)</span>
+<span class="nc" id="L171">                .installedAt(LocalDateTime.now().minusMonths(7))</span>
+<span class="nc" id="L172">                .build());</span>
+
+<span class="nc" id="L174">            sensors.add(sensor);</span>
+<span class="nc" id="L175">            seedLogRepository.save(SeedLog.builder().entityType(ENTITY_SENSOR).entityId(sensor.getId()).build());</span>
+        }
+<span class="nc" id="L177">        return sensors;</span>
+    }
+
+    // ─── Private: Sensor Readings (6 months, 4x daily) ──────────
+
+    private int seedReadingsForPatient(long patientId, List&lt;Sensor&gt; sensors) {
+<span class="nc" id="L183">        int count = 0;</span>
+<span class="nc" id="L184">        LocalDateTime start = LocalDateTime.now().minusMonths(6);</span>
+<span class="nc" id="L185">        LocalDateTime end = LocalDateTime.now();</span>
+
+        // Find sensor IDs by type
+<span class="nc" id="L188">        Map&lt;SensorType, Long&gt; sensorIdMap = new HashMap&lt;&gt;();</span>
+<span class="nc bnc" id="L189" title="All 2 branches missed.">        for (Sensor s : sensors) {</span>
+<span class="nc" id="L190">            sensorIdMap.put(s.getSensorType(), s.getId());</span>
+<span class="nc" id="L191">        }</span>
+
+        // Generate 4 readings per day for 180 days
+<span class="nc" id="L194">        List&lt;SensorReading&gt; batch = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L195" title="All 2 branches missed.">        for (LocalDateTime day = start; day.isBefore(end); day = day.plusDays(1)) {</span>
+<span class="nc" id="L196">            int[] hours = {7, 12, 18, 23}; // Morning, noon, evening, night</span>
+
+<span class="nc bnc" id="L198" title="All 2 branches missed.">            for (int hour : hours) {</span>
+<span class="nc" id="L199">                LocalDateTime ts = day.withHour(hour).withMinute(random.nextInt(60));</span>
+
+                // Heart Rate reading
+<span class="nc" id="L202">                Long hrSensorId = sensorIdMap.get(SensorType.HEART_RATE_MONITOR);</span>
+<span class="nc bnc" id="L203" title="All 2 branches missed.">                if (hrSensorId != null) {</span>
+<span class="nc bnc" id="L204" title="All 4 branches missed.">                    double baseHR = hour &gt;= 22 || hour &lt;= 6 ? 60.0 : 75.0; // Circadian rhythm</span>
+<span class="nc" id="L205">                    double hr = baseHR + (random.nextGaussian() * 8);</span>
+<span class="nc bnc" id="L206" title="All 4 branches missed.">                    boolean anomalous = hr &lt; 50 || hr &gt; 110;</span>
+
+<span class="nc" id="L208">                    batch.add(SensorReading.builder()</span>
+<span class="nc" id="L209">                        .sensorId(hrSensorId).patientId(patientId).timestamp(ts)</span>
+<span class="nc" id="L210">                        .heartRate(Math.round(hr * 10.0) / 10.0)</span>
+<span class="nc" id="L211">                        .isAnomalous(anomalous).build());</span>
+                }
+
+                // GPS reading
+<span class="nc" id="L215">                Long gpsSensorId = sensorIdMap.get(SensorType.GPS_TRACKER);</span>
+<span class="nc bnc" id="L216" title="All 2 branches missed.">                if (gpsSensorId != null) {</span>
+<span class="nc" id="L217">                    Sensor gpsSensor = sensors.stream()</span>
+<span class="nc bnc" id="L218" title="All 2 branches missed.">                        .filter(s -&gt; s.getSensorType() == SensorType.GPS_TRACKER).findFirst().orElse(null);</span>
+<span class="nc bnc" id="L219" title="All 2 branches missed.">                    if (gpsSensor != null) {</span>
+<span class="nc" id="L220">                        double lat = gpsSensor.getBaseLatitude() + (random.nextGaussian() * 0.0003);</span>
+<span class="nc" id="L221">                        double lon = gpsSensor.getBaseLongitude() + (random.nextGaussian() * 0.0003);</span>
+<span class="nc" id="L222">                        double distance = Math.sqrt(Math.pow(lat - gpsSensor.getBaseLatitude(), 2) +</span>
+<span class="nc" id="L223">                            Math.pow(lon - gpsSensor.getBaseLongitude(), 2)) * 111000;</span>
+<span class="nc bnc" id="L224" title="All 2 branches missed.">                        boolean anomalous = distance &gt; gpsSensor.getGeofenceRadius();</span>
+
+<span class="nc" id="L226">                        batch.add(SensorReading.builder()</span>
+<span class="nc" id="L227">                            .sensorId(gpsSensorId).patientId(patientId).timestamp(ts)</span>
+<span class="nc" id="L228">                            .latitude(lat).longitude(lon)</span>
+<span class="nc" id="L229">                            .isAnomalous(anomalous).build());</span>
+                    }
+                }
+
+                // Accelerometer reading
+<span class="nc" id="L234">                Long accSensorId = sensorIdMap.get(SensorType.ACCELEROMETER);</span>
+<span class="nc bnc" id="L235" title="All 2 branches missed.">                if (accSensorId != null) {</span>
+<span class="nc" id="L236">                    double ax = random.nextGaussian() * 0.3;</span>
+<span class="nc" id="L237">                    double ay = random.nextGaussian() * 0.2;</span>
+<span class="nc" id="L238">                    double az = 1.0 + random.nextGaussian() * 0.1; // Gravity baseline</span>
+<span class="nc" id="L239">                    double totalG = Math.sqrt(ax * ax + ay * ay + az * az);</span>
+<span class="nc bnc" id="L240" title="All 2 branches missed.">                    boolean anomalous = totalG &gt; 3.0; // Fall threshold</span>
+
+<span class="nc" id="L242">                    batch.add(SensorReading.builder()</span>
+<span class="nc" id="L243">                        .sensorId(accSensorId).patientId(patientId).timestamp(ts)</span>
+<span class="nc" id="L244">                        .accelerationX(Math.round(ax * 100.0) / 100.0)</span>
+<span class="nc" id="L245">                        .accelerationY(Math.round(ay * 100.0) / 100.0)</span>
+<span class="nc" id="L246">                        .accelerationZ(Math.round(az * 100.0) / 100.0)</span>
+<span class="nc" id="L247">                        .isAnomalous(anomalous).build());</span>
+                }
+
+                // Motion Detector
+<span class="nc" id="L251">                Long motSensorId = sensorIdMap.get(SensorType.MOTION_DETECTOR);</span>
+<span class="nc bnc" id="L252" title="All 2 branches missed.">                if (motSensorId != null) {</span>
+<span class="nc bnc" id="L253" title="All 8 branches missed.">                    boolean motionDetected = hour &gt;= 7 &amp;&amp; hour &lt;= 21 ? random.nextDouble() &gt; 0.15 : random.nextDouble() &gt; 0.7;</span>
+
+<span class="nc" id="L255">                    batch.add(SensorReading.builder()</span>
+<span class="nc" id="L256">                        .sensorId(motSensorId).patientId(patientId).timestamp(ts)</span>
+<span class="nc" id="L257">                        .motionDetected(motionDetected)</span>
+<span class="nc" id="L258">                        .isAnomalous(false).build());</span>
+                }
+
+                // Medication Box (only morning/evening)
+<span class="nc" id="L262">                Long medSensorId = sensorIdMap.get(SensorType.MEDICATION_BOX);</span>
+<span class="nc bnc" id="L263" title="All 6 branches missed.">                if (medSensorId != null &amp;&amp; (hour == 7 || hour == 18)) {</span>
+<span class="nc bnc" id="L264" title="All 2 branches missed.">                    boolean opened = random.nextDouble() &gt; 0.1; // 90% compliance</span>
+
+<span class="nc" id="L266">                    batch.add(SensorReading.builder()</span>
+<span class="nc" id="L267">                        .sensorId(medSensorId).patientId(patientId).timestamp(ts)</span>
+<span class="nc bnc" id="L268" title="All 2 branches missed.">                        .medicationBoxOpened(opened)</span>
+<span class="nc" id="L269">                        .isAnomalous(!opened).build());</span>
+                }
+            }
+
+            // Batch save every 30 days to manage memory
+<span class="nc bnc" id="L274" title="All 2 branches missed.">            if (batch.size() &gt; 2000) {</span>
+<span class="nc" id="L275">                List&lt;SensorReading&gt; saved = sensorReadingRepository.saveAll(batch);</span>
+<span class="nc bnc" id="L276" title="All 2 branches missed.">                for (SensorReading sr : saved) {</span>
+<span class="nc" id="L277">                    seedLogRepository.save(SeedLog.builder().entityType(ENTITY_READING).entityId(sr.getId()).build());</span>
+<span class="nc" id="L278">                }</span>
+<span class="nc" id="L279">                count += saved.size();</span>
+<span class="nc" id="L280">                batch.clear();</span>
+            }
+        }
+
+        // Save remaining
+<span class="nc bnc" id="L285" title="All 2 branches missed.">        if (!batch.isEmpty()) {</span>
+<span class="nc" id="L286">            List&lt;SensorReading&gt; saved = sensorReadingRepository.saveAll(batch);</span>
+<span class="nc bnc" id="L287" title="All 2 branches missed.">            for (SensorReading sr : saved) {</span>
+<span class="nc" id="L288">                seedLogRepository.save(SeedLog.builder().entityType(ENTITY_READING).entityId(sr.getId()).build());</span>
+<span class="nc" id="L289">            }</span>
+<span class="nc" id="L290">            count += saved.size();</span>
+        }
+
+<span class="nc" id="L293">        return count;</span>
+    }
+
+    // ─── Private: Abnormal Events ────────────────────────────────
+
+    private int seedAbnormalEventsForPatient(long patientId, List&lt;Sensor&gt; sensors) {
+<span class="nc" id="L299">        int count = 0;</span>
+<span class="nc" id="L300">        int numEvents = 2 + random.nextInt(4); // 2-5 events per patient</span>
+
+<span class="nc" id="L302">        AbnormalEventType[] eventTypes = AbnormalEventType.values();</span>
+<span class="nc" id="L303">        String[] descriptions = {</span>
+            &quot;Fall detected: Impact force 4.2G on accelerometer. Patient found on floor of room. Conscious and responsive.&quot;,
+            &quot;Cardiac anomaly: Heart rate spiked to 125 BPM for 8 minutes. No prior exertion. Patient reported chest tightness.&quot;,
+            &quot;Geofence breach: Patient exited safe zone perimeter at 15:42. Located 180m from facility entrance.&quot;,
+            &quot;Missed medication: Smart medication box was not opened during scheduled 08:00 window. 2-hour grace period expired.&quot;,
+            &quot;Prolonged inactivity: No motion detected in patient room for 4.5 hours during daytime. Staff check dispatched.&quot;,
+            &quot;SOS triggered: Patient pressed emergency button on wearable device at 03:15. Reported anxiety and confusion.&quot;
+        };
+
+<span class="nc" id="L312">        Map&lt;SensorType, Long&gt; sensorIdMap = new HashMap&lt;&gt;();</span>
+<span class="nc bnc" id="L313" title="All 2 branches missed.">        for (Sensor s : sensors) {</span>
+<span class="nc" id="L314">            sensorIdMap.put(s.getSensorType(), s.getId());</span>
+<span class="nc" id="L315">        }</span>
+
+<span class="nc bnc" id="L317" title="All 2 branches missed.">        for (int i = 0; i &lt; numEvents; i++) {</span>
+<span class="nc" id="L318">            int daysAgo = random.nextInt(180);</span>
+<span class="nc" id="L319">            LocalDateTime detectedAt = LocalDateTime.now().minusDays(daysAgo).withHour(random.nextInt(24));</span>
+
+<span class="nc" id="L321">            AbnormalEventType eventType = eventTypes[random.nextInt(eventTypes.length)];</span>
+<span class="nc bnc" id="L322" title="All 6 branches missed.">            SensorType associatedSensorType = switch (eventType) {</span>
+<span class="nc" id="L323">                case FALL -&gt; SensorType.ACCELEROMETER;</span>
+<span class="nc" id="L324">                case CARDIAC_ANOMALY -&gt; SensorType.HEART_RATE_MONITOR;</span>
+<span class="nc" id="L325">                case GEOFENCE_BREACH -&gt; SensorType.GPS_TRACKER;</span>
+<span class="nc" id="L326">                case MISSED_MEDICATION -&gt; SensorType.MEDICATION_BOX;</span>
+<span class="nc" id="L327">                case PROLONGED_INACTIVITY -&gt; SensorType.MOTION_DETECTOR;</span>
+<span class="nc" id="L328">                case SOS_TRIGGERED -&gt; SensorType.HEART_RATE_MONITOR;</span>
+            };
+
+<span class="nc" id="L331">            Long sensorId = sensorIdMap.getOrDefault(associatedSensorType, sensors.get(0).getId());</span>
+
+<span class="nc" id="L333">            AbnormalEvent event = abnormalEventRepository.save(AbnormalEvent.builder()</span>
+<span class="nc" id="L334">                .patientId(patientId)</span>
+<span class="nc" id="L335">                .sensorId(sensorId)</span>
+<span class="nc" id="L336">                .eventType(eventType)</span>
+<span class="nc" id="L337">                .detectedAt(detectedAt)</span>
+<span class="nc" id="L338">                .description(descriptions[eventType.ordinal() % descriptions.length])</span>
+<span class="nc" id="L339">                .alertSent(true)</span>
+<span class="nc" id="L340">                .build());</span>
+
+<span class="nc" id="L342">            seedLogRepository.save(SeedLog.builder().entityType(ENTITY_EVENT).entityId(event.getId()).build());</span>
+<span class="nc" id="L343">            count++;</span>
+        }
+<span class="nc" id="L345">        return count;</span>
+    }
+
+    // ─── Utility ─────────────────────────────────────────────────
+
+    /** Returns int[]{deleted, errors} */
+    private int[] deleteByTypeSafe(String entityType, java.util.function.Function&lt;Long, Boolean&gt; deleter) {
+<span class="nc" id="L352">        List&lt;SeedLog&gt; logs = seedLogRepository.findByEntityType(entityType);</span>
+<span class="nc" id="L353">        int deleted = 0;</span>
+<span class="nc" id="L354">        int errors = 0;</span>
+<span class="nc bnc" id="L355" title="All 2 branches missed.">        for (SeedLog sl : logs) {</span>
+            try {
+<span class="nc bnc" id="L357" title="All 2 branches missed.">                if (deleter.apply(sl.getEntityId())) deleted++;</span>
+<span class="nc" id="L358">            } catch (Exception e) {</span>
+<span class="nc" id="L359">                errors++;</span>
+<span class="nc" id="L360">                log.warn(&quot;⚠️ Failed to delete {} ID {}: {}&quot;, entityType, sl.getEntityId(), e.getMessage());</span>
+<span class="nc" id="L361">            }</span>
+<span class="nc" id="L362">        }</span>
+<span class="nc" id="L363">        return new int[]{deleted, errors};</span>
+    }
+
+    private String extractRootCause(Exception e) {
+<span class="nc" id="L367">        Throwable root = e;</span>
+<span class="nc bnc" id="L368" title="All 4 branches missed.">        while (root.getCause() != null &amp;&amp; root.getCause() != root) root = root.getCause();</span>
+<span class="nc" id="L369">        String msg = root.getMessage();</span>
+<span class="nc bnc" id="L370" title="All 4 branches missed.">        if (msg != null &amp;&amp; msg.length() &gt; 200) msg = msg.substring(0, 200) + &quot;...&quot;;</span>
+<span class="nc" id="L371">        return root.getClass().getSimpleName() + &quot;: &quot; + msg;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

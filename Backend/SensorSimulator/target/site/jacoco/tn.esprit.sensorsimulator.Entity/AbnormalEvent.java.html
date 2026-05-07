@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbnormalEvent.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">SensorSimulator</a> &gt; <a href="index.source.html" class="el_package">tn.esprit.sensorsimulator.Entity</a> &gt; <span class="el_source">AbnormalEvent.java</span></div><h1>AbnormalEvent.java</h1><pre class="source lang-java linenums">package tn.esprit.sensorsimulator.Entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = &quot;abnormal_events&quot;, indexes = {
+    @Index(name = &quot;idx_event_patient&quot;, columnList = &quot;patientId&quot;),
+    @Index(name = &quot;idx_event_detected&quot;, columnList = &quot;detectedAt&quot;)
+})
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class AbnormalEvent {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    /** Which patient experienced the event */
+    @Column(nullable = false)
+    private Long patientId;
+
+    /** Which sensor detected it */
+    @Column(nullable = false)
+    private Long sensorId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AbnormalEventType eventType;
+
+    @Column(nullable = false)
+    private LocalDateTime detectedAt;
+
+    /** The SensorReading ID that triggered this event */
+    private Long rawReadingId;
+
+    /** Human-readable description of what happened */
+    @Column(columnDefinition = &quot;TEXT&quot;)
+    private String description;
+
+    /** Whether the Alert service has been notified */
+    @Column(nullable = false)
+    private Boolean alertSent;
+
+    /** The alert ID returned from the Alert service after successful notification */
+    private Long alertId;
+
+    @PrePersist
+    protected void onCreate() {
+<span class="nc bnc" id="L54" title="All 2 branches missed.">        if (this.detectedAt == null) {</span>
+<span class="nc" id="L55">            this.detectedAt = LocalDateTime.now();</span>
+        }
+<span class="nc bnc" id="L57" title="All 2 branches missed.">        if (this.alertSent == null) {</span>
+<span class="nc" id="L58">            this.alertSent = false;</span>
+        }
+<span class="nc" id="L60">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

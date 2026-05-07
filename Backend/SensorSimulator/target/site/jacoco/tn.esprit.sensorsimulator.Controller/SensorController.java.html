@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SensorController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">SensorSimulator</a> &gt; <a href="index.source.html" class="el_package">tn.esprit.sensorsimulator.Controller</a> &gt; <span class="el_source">SensorController.java</span></div><h1>SensorController.java</h1><pre class="source lang-java linenums">package tn.esprit.sensorsimulator.Controller;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
+import tn.esprit.sensorsimulator.Entity.Sensor;
+import tn.esprit.sensorsimulator.Service.SensorService;
+
+import java.util.List;
+
+@RestController
+@RequestMapping(&quot;/sensor&quot;)
+@AllArgsConstructor
+<span class="fc" id="L14">@Slf4j</span>
+public class SensorController {
+
+    private final SensorService sensorService;
+
+    @GetMapping(&quot;/all&quot;)
+    public List&lt;Sensor&gt; getAllSensors() {
+<span class="nc" id="L21">        log.info(&quot;📡 GET /sensor/all&quot;);</span>
+<span class="nc" id="L22">        return sensorService.getAllSensors();</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    public Sensor getSensorById(@PathVariable(&quot;id&quot;) Long id) {
+<span class="nc" id="L27">        log.info(&quot;📡 GET /sensor/{}&quot;, id);</span>
+<span class="nc" id="L28">        return sensorService.getSensorById(id);</span>
+    }
+
+    @GetMapping(&quot;/patient/{patientId}&quot;)
+    public List&lt;Sensor&gt; getSensorsByPatient(@PathVariable(&quot;patientId&quot;) Long patientId) {
+<span class="nc" id="L33">        log.info(&quot;📡 GET /sensor/patient/{}&quot;, patientId);</span>
+<span class="nc" id="L34">        return sensorService.getSensorsByPatient(patientId);</span>
+    }
+
+    @PostMapping(&quot;/add&quot;)
+    public Sensor addSensor(@RequestBody Sensor sensor) {
+<span class="nc" id="L39">        log.info(&quot;📡 POST /sensor/add - code={}, type={}&quot;, sensor.getSensorCode(), sensor.getSensorType());</span>
+<span class="nc" id="L40">        return sensorService.addSensor(sensor);</span>
+    }
+
+    @PutMapping(&quot;/update/{id}&quot;)
+    public Sensor updateSensor(@PathVariable(&quot;id&quot;) Long id, @RequestBody Sensor sensor) {
+<span class="nc" id="L45">        log.info(&quot;📡 PUT /sensor/update/{}&quot;, id);</span>
+<span class="nc" id="L46">        return sensorService.updateSensor(id, sensor);</span>
+    }
+
+    @DeleteMapping(&quot;/delete/{id}&quot;)
+    public void deleteSensor(@PathVariable(&quot;id&quot;) Long id) {
+<span class="nc" id="L51">        log.info(&quot;📡 DELETE /sensor/delete/{}&quot;, id);</span>
+<span class="nc" id="L52">        sensorService.deleteSensor(id);</span>
+<span class="nc" id="L53">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

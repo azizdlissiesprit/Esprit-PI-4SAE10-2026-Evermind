@@ -1,0 +1,741 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SimulationEngine.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">SensorSimulator</a> &gt; <a href="index.source.html" class="el_package">tn.esprit.sensorsimulator.Service</a> &gt; <span class="el_source">SimulationEngine.java</span></div><h1>SimulationEngine.java</h1><pre class="source lang-java linenums">package tn.esprit.sensorsimulator.Service;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+import tn.esprit.sensorsimulator.Entity.*;
+import tn.esprit.sensorsimulator.Repository.AbnormalEventRepository;
+import tn.esprit.sensorsimulator.Repository.SensorReadingRepository;
+import tn.esprit.sensorsimulator.Repository.SensorRepository;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
+
+/**
+ * The heart of the SensorSimulator. Runs on a scheduled interval and generates
+ * realistic sensor data for all active sensors. Detects anomalies and
+ * communicates with the Alert service.
+ */
+@Service
+<span class="fc" id="L27">@Slf4j</span>
+public class SimulationEngine {
+
+    private final SensorRepository sensorRepository;
+    private final SensorReadingRepository readingRepository;
+    private final AbnormalEventRepository eventRepository;
+    private final AlertIntegrationService alertService;
+
+    // ====== Simulation State ======
+<span class="fc" id="L36">    private final AtomicBoolean running = new AtomicBoolean(false);</span>
+<span class="fc" id="L37">    private final AtomicLong cycleCount = new AtomicLong(0);</span>
+
+    // ====== Configurable Parameters ======
+    // Base probability for accidents. Adjusted from 0.02 to 0.002 to reduce overall frequency.
+    // Reduced from 0.02 (2.0%) down to 0.0005 (0.05%) to handle 100+ sensors gracefully
+    @Value(&quot;${simulation.accident-probability:0.0005}&quot;)
+    private double accidentProbability;
+
+    @Value(&quot;${simulation.geofence.center-lat:36.8065}&quot;)
+    private double geofenceCenterLat;
+
+    @Value(&quot;${simulation.geofence.center-lon:10.1815}&quot;)
+    private double geofenceCenterLon;
+
+    @Value(&quot;${simulation.geofence.radius-meters:100}&quot;)
+    private double geofenceRadiusMeters;
+
+    @Value(&quot;${simulation.auto-start:true}&quot;)
+    private boolean autoStart;
+
+    // ====== Internal State for Coherent Simulation ======
+<span class="fc" id="L58">    private final Random random = new Random();</span>
+<span class="fc" id="L59">    private final Map&lt;Long, Double&gt; lastHeartRates = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L60">    private final Map&lt;Long, double[]&gt; lastPositions = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L61">    private final Map&lt;Long, Integer&gt; inactivityCounters = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L62">    private final Map&lt;Long, Boolean&gt; lastMotionStates = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L63">    private final Set&lt;String&gt; medicationsTakenToday = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L64">    private LocalDateTime lastMedicationReset = LocalDateTime.now();</span>
+
+    // Context Buffer: patientId -&gt; List of recent readings (max 10)
+<span class="fc" id="L67">    private final Map&lt;Long, EvictingQueue&lt;SensorReading&gt;&gt; contextBuffer = new ConcurrentHashMap&lt;&gt;();</span>
+
+    // ====== Alert Cooldown (prevents spamming same alert type) ======
+    // Key: &quot;patientId:eventType&quot; -&gt; Value: last time an alert was sent
+<span class="fc" id="L71">    private static final Duration ALERT_COOLDOWN = Duration.ofMinutes(10);</span>
+<span class="fc" id="L72">    private final Map&lt;String, LocalDateTime&gt; alertCooldownMap = new ConcurrentHashMap&lt;&gt;();</span>
+
+    @Autowired
+    public SimulationEngine(SensorRepository sensorRepository,
+                            SensorReadingRepository readingRepository,
+                            AbnormalEventRepository eventRepository,
+<span class="fc" id="L78">                            AlertIntegrationService alertService) {</span>
+<span class="fc" id="L79">        this.sensorRepository = sensorRepository;</span>
+<span class="fc" id="L80">        this.readingRepository = readingRepository;</span>
+<span class="fc" id="L81">        this.eventRepository = eventRepository;</span>
+<span class="fc" id="L82">        this.alertService = alertService;</span>
+<span class="fc" id="L83">    }</span>
+
+    // ====== Lifecycle ======
+
+    @jakarta.annotation.PostConstruct
+    public void init() {
+<span class="pc bpc" id="L89" title="1 of 2 branches missed.">        if (autoStart) {</span>
+<span class="fc" id="L90">            log.info(&quot;🚀 SimulationEngine auto-starting (simulation.auto-start=true)&quot;);</span>
+<span class="fc" id="L91">            running.set(true);</span>
+        } else {
+<span class="nc" id="L93">            log.info(&quot;⏸️ SimulationEngine initialized but NOT auto-started. Call /simulation/start to begin.&quot;);</span>
+        }
+<span class="fc" id="L95">    }</span>
+
+    public void start() {
+<span class="nc" id="L98">        running.set(true);</span>
+<span class="nc" id="L99">        log.info(&quot;🚀 SimulationEngine STARTED. Cycle count: {}&quot;, cycleCount.get());</span>
+<span class="nc" id="L100">    }</span>
+
+    public void stop() {
+<span class="nc" id="L103">        running.set(false);</span>
+<span class="nc" id="L104">        log.info(&quot;⏸️ SimulationEngine STOPPED at cycle {}&quot;, cycleCount.get());</span>
+<span class="nc" id="L105">    }</span>
+
+    public boolean isRunning() {
+<span class="nc" id="L108">        return running.get();</span>
+    }
+
+    public long getCycleCount() {
+<span class="nc" id="L112">        return cycleCount.get();</span>
+    }
+
+    public double getAccidentProbability() {
+<span class="nc" id="L116">        return accidentProbability;</span>
+    }
+
+    public void setAccidentProbability(double probability) {
+<span class="nc" id="L120">        log.info(&quot;🔧 Accident probability changed: {} -&gt; {}&quot;, this.accidentProbability, probability);</span>
+<span class="nc" id="L121">        this.accidentProbability = probability;</span>
+<span class="nc" id="L122">    }</span>
+
+    // ====== Main Simulation Loop ======
+
+    @Scheduled(fixedDelayString = &quot;${simulation.interval-ms:10000}&quot;)
+    public void simulationCycle() {
+<span class="pc bpc" id="L128" title="1 of 2 branches missed.">        if (!running.get()) {</span>
+<span class="nc" id="L129">            return;</span>
+        }
+
+<span class="fc" id="L132">        long cycle = cycleCount.incrementAndGet();</span>
+<span class="fc" id="L133">        log.info(&quot;━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━&quot;);</span>
+<span class="fc" id="L134">        log.info(&quot;🔄 SIMULATION CYCLE #{} started at {}&quot;, cycle, LocalDateTime.now());</span>
+
+        // Reset medication tracking at midnight
+<span class="fc" id="L137">        resetMedicationTrackingIfNewDay();</span>
+
+<span class="fc" id="L139">        List&lt;Sensor&gt; activeSensors = sensorRepository.findByStatus(SensorStatus.ACTIVE);</span>
+<span class="fc" id="L140">        log.info(&quot;📊 Processing {} active sensors&quot;, activeSensors.size());</span>
+
+<span class="pc bpc" id="L142" title="1 of 2 branches missed.">        if (activeSensors.isEmpty()) {</span>
+<span class="fc" id="L143">            log.warn(&quot;⚠️ No active sensors found. Skipping cycle.&quot;);</span>
+<span class="fc" id="L144">            return;</span>
+        }
+
+<span class="nc bnc" id="L147" title="All 2 branches missed.">        for (Sensor sensor : activeSensors) {</span>
+            try {
+<span class="nc" id="L149">                processSensor(sensor, cycle);</span>
+<span class="nc" id="L150">            } catch (Exception e) {</span>
+<span class="nc" id="L151">                log.error(&quot;🚨 Error processing sensor id={}, code={}: {}&quot;,</span>
+<span class="nc" id="L152">                        sensor.getId(), sensor.getSensorCode(), e.getMessage(), e);</span>
+<span class="nc" id="L153">            }</span>
+<span class="nc" id="L154">        }</span>
+
+<span class="nc" id="L156">        log.info(&quot;✅ SIMULATION CYCLE #{} completed. Total readings in DB: {}&quot;,</span>
+<span class="nc" id="L157">                cycle, readingRepository.count());</span>
+<span class="nc" id="L158">        log.info(&quot;━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━&quot;);</span>
+<span class="nc" id="L159">    }</span>
+
+    // ====== Per-Sensor Processing ======
+
+    private void processSensor(Sensor sensor, long cycle) {
+<span class="nc" id="L164">        log.debug(&quot;🔍 Processing sensor: id={}, type={}, patientId={}&quot;,</span>
+<span class="nc" id="L165">                sensor.getId(), sensor.getSensorType(), sensor.getPatientId());</span>
+
+<span class="nc bnc" id="L167" title="All 5 branches missed.">        SensorReading reading = switch (sensor.getSensorType()) {</span>
+<span class="nc" id="L168">            case HEART_RATE_MONITOR -&gt; generateHeartRateReading(sensor, cycle);</span>
+<span class="nc" id="L169">            case ACCELEROMETER -&gt; generateAccelerometerReading(sensor, cycle);</span>
+<span class="nc" id="L170">            case GPS_TRACKER -&gt; generateGpsReading(sensor, cycle);</span>
+<span class="nc" id="L171">            case MEDICATION_BOX -&gt; generateMedicationReading(sensor, cycle);</span>
+<span class="nc" id="L172">            case MOTION_DETECTOR -&gt; generateMotionReading(sensor, cycle);</span>
+        };
+
+<span class="nc bnc" id="L175" title="All 2 branches missed.">            if (reading != null) {</span>
+<span class="nc" id="L176">                SensorReading saved = readingRepository.save(reading);</span>
+<span class="nc" id="L177">                log.debug(&quot;💾 Saved reading id={} for sensor id={}&quot;, saved.getId(), sensor.getId());</span>
+
+                // Add to context buffer
+<span class="nc" id="L180">                addToContextBuffer(sensor.getPatientId(), saved);</span>
+
+<span class="nc bnc" id="L182" title="All 2 branches missed.">                if (saved.getIsAnomalous()) {</span>
+<span class="nc" id="L183">                log.warn(&quot;⚠️ ANOMALOUS reading detected! sensor={}, type={}, patientId={}&quot;,</span>
+<span class="nc" id="L184">                        sensor.getSensorCode(), sensor.getSensorType(), sensor.getPatientId());</span>
+            }
+        }
+<span class="nc" id="L187">    }</span>
+
+    // ====== Heart Rate Simulation ======
+
+    private SensorReading generateHeartRateReading(Sensor sensor, long cycle) {
+        // Get previous heart rate or initialize baseline (elderly resting: 65-78 BPM)
+<span class="nc" id="L193">        double previousBpm = lastHeartRates.getOrDefault(sensor.getId(), 70.0 + random.nextGaussian() * 3);</span>
+
+        // Normal variation: ±2 BPM from last reading (smooth, realistic transitions)
+<span class="nc" id="L196">        double newBpm = previousBpm + (random.nextGaussian() * 2.0);</span>
+
+        // Variation of -6 to +3 based on patientId to make patients feel unique
+<span class="nc" id="L199">        double patientSpecificBaseline = 72.0 + (sensor.getPatientId() % 10) - 6;</span>
+<span class="nc" id="L200">        newBpm = newBpm + (patientSpecificBaseline - newBpm) * 0.05; // gentle pull toward baseline</span>
+<span class="nc" id="L201">        newBpm = Math.max(50, Math.min(newBpm, 110));</span>
+
+        // Check for random accident: cardiac anomaly
+<span class="nc" id="L204">        boolean isAnomalous = false;</span>
+<span class="nc bnc" id="L205" title="All 2 branches missed.">        if (shouldTriggerAccident(AbnormalEventType.CARDIAC_ANOMALY)) {</span>
+            // Simulate cardiac event: sudden spike or drop
+<span class="nc bnc" id="L207" title="All 2 branches missed.">            if (random.nextBoolean()) {</span>
+<span class="nc" id="L208">                newBpm = 135 + random.nextInt(30); // Tachycardia: 135-165 BPM</span>
+<span class="nc" id="L209">                log.error(&quot;🚨 CARDIAC ANOMALY TRIGGERED! Heart rate spiked to {} BPM for patientId={}&quot;,</span>
+<span class="nc" id="L210">                        String.format(&quot;%.1f&quot;, newBpm), sensor.getPatientId());</span>
+            } else {
+<span class="nc" id="L212">                newBpm = 35 + random.nextInt(10); // Bradycardia: 35-45 BPM</span>
+<span class="nc" id="L213">                log.error(&quot;🚨 CARDIAC ANOMALY TRIGGERED! Heart rate dropped to {} BPM for patientId={}&quot;,</span>
+<span class="nc" id="L214">                        String.format(&quot;%.1f&quot;, newBpm), sensor.getPatientId());</span>
+            }
+<span class="nc" id="L216">            isAnomalous = true;</span>
+        }
+
+        // Detect anomaly even without forced trigger
+<span class="nc bnc" id="L220" title="All 6 branches missed.">        if (!isAnomalous &amp;&amp; (newBpm &lt; 50 || newBpm &gt; 130)) {</span>
+<span class="nc" id="L221">            isAnomalous = true;</span>
+<span class="nc" id="L222">            log.warn(&quot;⚠️ Heart rate outside safe range: {} BPM for patientId={}&quot;,</span>
+<span class="nc" id="L223">                    String.format(&quot;%.1f&quot;, newBpm), sensor.getPatientId());</span>
+        }
+
+<span class="nc" id="L226">        lastHeartRates.put(sensor.getId(), newBpm);</span>
+
+<span class="nc" id="L228">        log.info(&quot;📊 [HEART_RATE] patientId={} | bpm={} | anomalous={}&quot;,</span>
+<span class="nc" id="L229">                sensor.getPatientId(), String.format(&quot;%.1f&quot;, newBpm), isAnomalous);</span>
+
+<span class="nc" id="L231">        SensorReading reading = SensorReading.builder()</span>
+<span class="nc" id="L232">                .sensorId(sensor.getId())</span>
+<span class="nc" id="L233">                .patientId(sensor.getPatientId())</span>
+<span class="nc" id="L234">                .timestamp(LocalDateTime.now())</span>
+<span class="nc" id="L235">                .heartRate(Math.round(newBpm * 10.0) / 10.0)</span>
+<span class="nc" id="L236">                .isAnomalous(isAnomalous)</span>
+<span class="nc" id="L237">                .build();</span>
+
+<span class="nc bnc" id="L239" title="All 2 branches missed.">        if (isAnomalous) {</span>
+<span class="nc" id="L240">            createAndSendAbnormalEvent(sensor, reading, AbnormalEventType.CARDIAC_ANOMALY,</span>
+<span class="nc" id="L241">                    String.format(&quot;Heart rate anomaly detected: %.1f BPM (safe range: 50-130 BPM)&quot;, newBpm));</span>
+        }
+
+<span class="nc" id="L244">        return reading;</span>
+    }
+
+    // ====== Accelerometer Simulation ======
+
+    private SensorReading generateAccelerometerReading(Sensor sensor, long cycle) {
+        // Normal elderly walking/sitting: small accelerations
+<span class="nc" id="L251">        double ax = random.nextGaussian() * 0.3;  // X: lateral sway</span>
+<span class="nc" id="L252">        double ay = random.nextGaussian() * 0.2;  // Y: forward/backward</span>
+<span class="nc" id="L253">        double az = 1.0 + random.nextGaussian() * 0.1;  // Z: gravity (~1G standing)</span>
+
+<span class="nc" id="L255">        boolean isAnomalous = false;</span>
+
+        // Check for random fall
+<span class="nc bnc" id="L258" title="All 2 branches missed.">        if (shouldTriggerAccident(AbnormalEventType.FALL)) {</span>
+            // Fall signature: sudden spike in total acceleration, then near-zero
+<span class="nc" id="L260">            ax = 2.5 + random.nextDouble() * 3.0;  // Violent lateral: 2.5-5.5G</span>
+<span class="nc" id="L261">            ay = 1.5 + random.nextDouble() * 2.0;  // Forward impact: 1.5-3.5G</span>
+<span class="nc" id="L262">            az = 3.0 + random.nextDouble() * 2.0;  // Vertical impact: 3.0-5.0G</span>
+<span class="nc" id="L263">            isAnomalous = true;</span>
+<span class="nc" id="L264">            log.error(&quot;🚨 FALL DETECTED! Acceleration spike: ax={}, ay={}, az={} for patientId={}&quot;,</span>
+<span class="nc" id="L265">                    String.format(&quot;%.2f&quot;, ax), String.format(&quot;%.2f&quot;, ay),</span>
+<span class="nc" id="L266">                    String.format(&quot;%.2f&quot;, az), sensor.getPatientId());</span>
+        }
+
+        // Detect anomaly: total G-force &gt; 3.0 indicates possible fall
+<span class="nc" id="L270">        double totalG = Math.sqrt(ax * ax + ay * ay + az * az);</span>
+<span class="nc bnc" id="L271" title="All 4 branches missed.">        if (!isAnomalous &amp;&amp; totalG &gt; 3.0) {</span>
+<span class="nc" id="L272">            isAnomalous = true;</span>
+<span class="nc" id="L273">            log.warn(&quot;⚠️ High G-force detected: {}G for patientId={}&quot;,</span>
+<span class="nc" id="L274">                    String.format(&quot;%.2f&quot;, totalG), sensor.getPatientId());</span>
+        }
+
+<span class="nc" id="L277">        log.info(&quot;📊 [ACCELEROMETER] patientId={} | ax={} ay={} az={} | totalG={} | anomalous={}&quot;,</span>
+<span class="nc" id="L278">                sensor.getPatientId(),</span>
+<span class="nc" id="L279">                String.format(&quot;%.2f&quot;, ax), String.format(&quot;%.2f&quot;, ay), String.format(&quot;%.2f&quot;, az),</span>
+<span class="nc" id="L280">                String.format(&quot;%.2f&quot;, totalG), isAnomalous);</span>
+
+<span class="nc" id="L282">        SensorReading reading = SensorReading.builder()</span>
+<span class="nc" id="L283">                .sensorId(sensor.getId())</span>
+<span class="nc" id="L284">                .patientId(sensor.getPatientId())</span>
+<span class="nc" id="L285">                .timestamp(LocalDateTime.now())</span>
+<span class="nc" id="L286">                .accelerationX(Math.round(ax * 100.0) / 100.0)</span>
+<span class="nc" id="L287">                .accelerationY(Math.round(ay * 100.0) / 100.0)</span>
+<span class="nc" id="L288">                .accelerationZ(Math.round(az * 100.0) / 100.0)</span>
+<span class="nc" id="L289">                .isAnomalous(isAnomalous)</span>
+<span class="nc" id="L290">                .build();</span>
+
+<span class="nc bnc" id="L292" title="All 2 branches missed.">        if (isAnomalous) {</span>
+<span class="nc" id="L293">            createAndSendAbnormalEvent(sensor, reading, AbnormalEventType.FALL,</span>
+<span class="nc" id="L294">                    String.format(&quot;Fall detected! Total G-force: %.2fG (threshold: 3.0G). &quot; +</span>
+<span class="nc" id="L295">                            &quot;Acceleration: X=%.2f, Y=%.2f, Z=%.2f&quot;, totalG, ax, ay, az));</span>
+        }
+
+<span class="nc" id="L298">        return reading;</span>
+    }
+
+    // ====== GPS Simulation ======
+
+    private SensorReading generateGpsReading(Sensor sensor, long cycle) {
+        // Get previous position or initialize at sensor's baseline
+<span class="nc bnc" id="L305" title="All 2 branches missed.">        double baselineLat = sensor.getBaseLatitude() != null ? sensor.getBaseLatitude() : geofenceCenterLat;</span>
+<span class="nc bnc" id="L306" title="All 2 branches missed.">        double baselineLon = sensor.getBaseLongitude() != null ? sensor.getBaseLongitude() : geofenceCenterLon;</span>
+
+<span class="nc" id="L308">        double[] lastPos = lastPositions.getOrDefault(sensor.getId(),</span>
+                new double[]{baselineLat, baselineLon});
+
+        // Simulate slow elderly walking: ~0.00001 degree change per cycle (~1 meter)
+<span class="nc" id="L312">        double newLat = lastPos[0] + (random.nextGaussian() * 0.00005);</span>
+<span class="nc" id="L313">        double newLon = lastPos[1] + (random.nextGaussian() * 0.00005);</span>
+
+        // Strong pull back toward center (elderly typically stay close to home)
+        // Use 15% pull-back so natural drift can't sustain a geofence breach
+<span class="nc" id="L317">        newLat = newLat + (baselineLat - newLat) * 0.15;</span>
+<span class="nc" id="L318">        newLon = newLon + (baselineLon - newLon) * 0.15;</span>
+
+        // Individual geofence radius from sensor or default to 100m
+<span class="nc bnc" id="L321" title="All 2 branches missed.">        double radius = sensor.getGeofenceRadius() != null ? sensor.getGeofenceRadius() : 100.0;</span>
+<span class="nc" id="L322">        boolean isAnomalous = false;</span>
+
+        // Check for geofence breach trigger
+<span class="nc bnc" id="L325" title="All 2 branches missed.">        if (shouldTriggerAccident(AbnormalEventType.GEOFENCE_BREACH)) {</span>
+            // Teleport outside geofence: 200-400m away
+<span class="nc" id="L327">            double angle = random.nextDouble() * 2 * Math.PI;</span>
+<span class="nc" id="L328">            double distance = 0.002 + random.nextDouble() * 0.002; // ~200-400m in degrees</span>
+<span class="nc" id="L329">            newLat = baselineLat + Math.cos(angle) * distance;</span>
+<span class="nc" id="L330">            newLon = baselineLon + Math.sin(angle) * distance;</span>
+<span class="nc" id="L331">            isAnomalous = true;</span>
+<span class="nc" id="L332">            log.error(&quot;🚨 GEOFENCE BREACH! Patient {} moved to ({}, {}), outside safe zone!&quot;,</span>
+<span class="nc" id="L333">                    sensor.getPatientId(), String.format(&quot;%.6f&quot;, newLat), String.format(&quot;%.6f&quot;, newLon));</span>
+        }
+
+        // Calculate distance from center
+<span class="nc" id="L337">        double distanceFromCenter = calculateDistanceMeters(</span>
+                baselineLat, baselineLon, newLat, newLon);
+
+<span class="nc bnc" id="L340" title="All 4 branches missed.">        if (!isAnomalous &amp;&amp; distanceFromCenter &gt; radius) {</span>
+<span class="nc" id="L341">            isAnomalous = true;</span>
+<span class="nc" id="L342">            log.warn(&quot;⚠️ Patient {} is {}m from center (limit: {}m)&quot;,</span>
+<span class="nc" id="L343">                    sensor.getPatientId(), String.format(&quot;%.0f&quot;, distanceFromCenter), radius);</span>
+        }
+
+<span class="nc" id="L346">        lastPositions.put(sensor.getId(), new double[]{newLat, newLon});</span>
+
+<span class="nc" id="L348">        log.info(&quot;📊 [GPS] patientId={} | lat={} lon={} | distance={}m | anomalous={}&quot;,</span>
+<span class="nc" id="L349">                sensor.getPatientId(),</span>
+<span class="nc" id="L350">                String.format(&quot;%.6f&quot;, newLat), String.format(&quot;%.6f&quot;, newLon),</span>
+<span class="nc" id="L351">                String.format(&quot;%.1f&quot;, distanceFromCenter), isAnomalous);</span>
+
+<span class="nc" id="L353">        SensorReading reading = SensorReading.builder()</span>
+<span class="nc" id="L354">                .sensorId(sensor.getId())</span>
+<span class="nc" id="L355">                .patientId(sensor.getPatientId())</span>
+<span class="nc" id="L356">                .timestamp(LocalDateTime.now())</span>
+<span class="nc" id="L357">                .latitude(newLat)</span>
+<span class="nc" id="L358">                .longitude(newLon)</span>
+<span class="nc" id="L359">                .isAnomalous(isAnomalous)</span>
+<span class="nc" id="L360">                .build();</span>
+
+<span class="nc bnc" id="L362" title="All 2 branches missed.">        if (isAnomalous) {</span>
+<span class="nc" id="L363">            createAndSendAbnormalEvent(sensor, reading, AbnormalEventType.GEOFENCE_BREACH,</span>
+<span class="nc" id="L364">                    String.format(&quot;Patient left safe zone! Distance from center: %.0fm (limit: %.0fm). &quot; +</span>
+<span class="nc" id="L365">                            &quot;Location: (%.6f, %.6f)&quot;, distanceFromCenter, geofenceRadiusMeters, newLat, newLon));</span>
+        }
+
+<span class="nc" id="L368">        return reading;</span>
+    }
+
+    // ====== Medication Box Simulation ======
+
+    private SensorReading generateMedicationReading(Sensor sensor, long cycle) {
+<span class="nc" id="L374">        LocalTime now = LocalTime.now();</span>
+<span class="nc" id="L375">        int currentHour = now.getHour();</span>
+
+        // Medication schedule: 8:00, 12:00, 20:00
+<span class="nc" id="L378">        int[] scheduleHours = {8, 12, 20};</span>
+<span class="nc" id="L379">        String todayKey = LocalDateTime.now().toLocalDate().toString() + &quot;-&quot; + sensor.getPatientId();</span>
+
+<span class="nc" id="L381">        Boolean boxOpened = null;</span>
+<span class="nc" id="L382">        boolean isAnomalous = false;</span>
+
+<span class="nc bnc" id="L384" title="All 2 branches missed.">        for (int scheduleHour : scheduleHours) {</span>
+<span class="nc" id="L385">            String medKey = todayKey + &quot;-&quot; + scheduleHour;</span>
+
+            // Check if we're in the window for this medication (within 1 hour)
+<span class="nc bnc" id="L388" title="All 4 branches missed.">            if (currentHour == scheduleHour &amp;&amp; !medicationsTakenToday.contains(medKey)) {</span>
+                // High miss rate for Alzheimer's patients without supervision
+<span class="nc bnc" id="L390" title="All 2 branches missed.">                if (shouldTriggerAccident(AbnormalEventType.MISSED_MEDICATION)) {</span>
+<span class="nc" id="L391">                    boxOpened = false;</span>
+<span class="nc" id="L392">                    isAnomalous = true;</span>
+<span class="nc" id="L393">                    log.error(&quot;🚨 MEDICATION MISSED! PatientId={} did not take {}:00 medication&quot;,</span>
+<span class="nc" id="L394">                            sensor.getPatientId(), scheduleHour);</span>
+                } else {
+<span class="nc" id="L396">                    boxOpened = true;</span>
+<span class="nc" id="L397">                    medicationsTakenToday.add(medKey);</span>
+<span class="nc" id="L398">                    log.info(&quot;💊 Patient {} took medication at {}:00&quot;, sensor.getPatientId(), scheduleHour);</span>
+                }
+            }
+        }
+
+        // Outside medication hours: box stays closed, no anomaly
+<span class="nc bnc" id="L404" title="All 2 branches missed.">        if (boxOpened == null) {</span>
+<span class="nc" id="L405">            boxOpened = false;</span>
+        }
+
+<span class="nc" id="L408">        log.info(&quot;📊 [MEDICATION_BOX] patientId={} | opened={} | hour={} | anomalous={}&quot;,</span>
+<span class="nc" id="L409">                sensor.getPatientId(), boxOpened, currentHour, isAnomalous);</span>
+
+<span class="nc" id="L411">        SensorReading reading = SensorReading.builder()</span>
+<span class="nc" id="L412">                .sensorId(sensor.getId())</span>
+<span class="nc" id="L413">                .patientId(sensor.getPatientId())</span>
+<span class="nc" id="L414">                .timestamp(LocalDateTime.now())</span>
+<span class="nc" id="L415">                .medicationBoxOpened(boxOpened)</span>
+<span class="nc" id="L416">                .isAnomalous(isAnomalous)</span>
+<span class="nc" id="L417">                .build();</span>
+
+<span class="nc bnc" id="L419" title="All 2 branches missed.">        if (isAnomalous) {</span>
+<span class="nc" id="L420">            createAndSendAbnormalEvent(sensor, reading, AbnormalEventType.MISSED_MEDICATION,</span>
+<span class="nc" id="L421">                    String.format(&quot;Patient %d missed scheduled medication at %d:00&quot;,</span>
+<span class="nc" id="L422">                            sensor.getPatientId(), currentHour));</span>
+        }
+
+<span class="nc" id="L425">        return reading;</span>
+    }
+
+    // ====== Motion Detector Simulation ======
+
+    private SensorReading generateMotionReading(Sensor sensor, long cycle) {
+<span class="nc" id="L431">        LocalTime now = LocalTime.now();</span>
+<span class="nc" id="L432">        int hour = now.getHour();</span>
+
+        // Simulate daily routine: active during day, sleeping at night
+        double activityProbability;
+<span class="nc bnc" id="L436" title="All 4 branches missed.">        if (hour &gt;= 7 &amp;&amp; hour &lt;= 9) activityProbability = 0.85;       // Morning routine</span>
+<span class="nc bnc" id="L437" title="All 4 branches missed.">        else if (hour &gt;= 10 &amp;&amp; hour &lt;= 12) activityProbability = 0.70; // Late morning</span>
+<span class="nc bnc" id="L438" title="All 4 branches missed.">        else if (hour &gt;= 12 &amp;&amp; hour &lt;= 14) activityProbability = 0.60; // Lunch, resting</span>
+<span class="nc bnc" id="L439" title="All 4 branches missed.">        else if (hour &gt;= 14 &amp;&amp; hour &lt;= 17) activityProbability = 0.50; // Afternoon nap common</span>
+<span class="nc bnc" id="L440" title="All 4 branches missed.">        else if (hour &gt;= 17 &amp;&amp; hour &lt;= 20) activityProbability = 0.65; // Evening activity</span>
+<span class="nc bnc" id="L441" title="All 4 branches missed.">        else if (hour &gt;= 20 &amp;&amp; hour &lt;= 22) activityProbability = 0.40; // Winding down</span>
+<span class="nc" id="L442">        else activityProbability = 0.10;                                // Night: sleeping</span>
+
+        // Shift probability by ±10% per patient for uniqueness
+<span class="nc" id="L445">        double patientActivityShift = ((sensor.getPatientId() % 5) - 2) * 0.05;</span>
+<span class="nc" id="L446">        activityProbability = Math.max(0.05, Math.min(0.95, activityProbability + patientActivityShift));</span>
+
+<span class="nc bnc" id="L448" title="All 2 branches missed.">        boolean motionDetected = random.nextDouble() &lt; activityProbability;</span>
+
+        // Track inactivity streaks
+<span class="nc" id="L451">        int inactivityCount = inactivityCounters.getOrDefault(sensor.getId(), 0);</span>
+<span class="nc" id="L452">        boolean isAnomalous = false;</span>
+
+<span class="nc bnc" id="L454" title="All 2 branches missed.">        if (!motionDetected) {</span>
+<span class="nc" id="L455">            inactivityCount++;</span>
+<span class="nc" id="L456">            inactivityCounters.put(sensor.getId(), inactivityCount);</span>
+
+            // During daytime (7-22): 18+ consecutive no-motion readings (= ~3 minutes) is concerning
+<span class="nc bnc" id="L459" title="All 6 branches missed.">            if (hour &gt;= 7 &amp;&amp; hour &lt;= 22 &amp;&amp; inactivityCount &gt;= 18) {</span>
+<span class="nc" id="L460">                isAnomalous = true;</span>
+<span class="nc" id="L461">                log.error(&quot;🚨 PROLONGED INACTIVITY! PatientId={} - no motion for {} consecutive readings (~{} minutes)&quot;,</span>
+<span class="nc" id="L462">                        sensor.getPatientId(), inactivityCount, inactivityCount * 10 / 60);</span>
+            }
+        } else {
+<span class="nc bnc" id="L465" title="All 2 branches missed.">            if (inactivityCount &gt; 0) {</span>
+<span class="nc" id="L466">                log.debug(&quot;🔍 Inactivity counter reset for patientId={} (was {} readings)&quot;,</span>
+<span class="nc" id="L467">                        sensor.getPatientId(), inactivityCount);</span>
+            }
+<span class="nc" id="L469">            inactivityCount = 0;</span>
+<span class="nc" id="L470">            inactivityCounters.put(sensor.getId(), 0);</span>
+        }
+
+        // Force inactivity accident
+<span class="nc bnc" id="L474" title="All 4 branches missed.">        if (shouldTriggerAccident(AbnormalEventType.PROLONGED_INACTIVITY) &amp;&amp; !isAnomalous) {</span>
+<span class="nc" id="L475">            motionDetected = false;</span>
+<span class="nc" id="L476">            inactivityCounters.put(sensor.getId(), 20); // Fake a long streak</span>
+<span class="nc" id="L477">            isAnomalous = true;</span>
+<span class="nc" id="L478">            log.error(&quot;🚨 PROLONGED INACTIVITY TRIGGERED! PatientId={}&quot;, sensor.getPatientId());</span>
+        }
+
+<span class="nc" id="L481">        lastMotionStates.put(sensor.getId(), motionDetected);</span>
+
+<span class="nc" id="L483">        log.info(&quot;📊 [MOTION] patientId={} | detected={} | inactivityStreak={} | hour={} | anomalous={}&quot;,</span>
+<span class="nc" id="L484">                sensor.getPatientId(), motionDetected, inactivityCount, hour, isAnomalous);</span>
+
+<span class="nc" id="L486">        SensorReading reading = SensorReading.builder()</span>
+<span class="nc" id="L487">                .sensorId(sensor.getId())</span>
+<span class="nc" id="L488">                .patientId(sensor.getPatientId())</span>
+<span class="nc" id="L489">                .timestamp(LocalDateTime.now())</span>
+<span class="nc" id="L490">                .motionDetected(motionDetected)</span>
+<span class="nc" id="L491">                .isAnomalous(isAnomalous)</span>
+<span class="nc" id="L492">                .build();</span>
+
+<span class="nc bnc" id="L494" title="All 2 branches missed.">        if (isAnomalous) {</span>
+<span class="nc" id="L495">            createAndSendAbnormalEvent(sensor, reading, AbnormalEventType.PROLONGED_INACTIVITY,</span>
+<span class="nc" id="L496">                    String.format(&quot;No motion detected for %d consecutive readings (~%d minutes) during daytime for patient %d&quot;,</span>
+<span class="nc" id="L497">                            inactivityCount, inactivityCount * 10 / 60, sensor.getPatientId()));</span>
+        }
+
+<span class="nc" id="L500">        return reading;</span>
+    }
+
+    // ====== Trigger Accidents Manually ======
+
+    /**
+     * Manually trigger a random accident for a specific patient.
+     * Used for testing and showcase demos.
+     */
+    public AbnormalEvent triggerAccidentForPatient(Long patientId) {
+<span class="nc" id="L510">        log.info(&quot;🎯 MANUAL ACCIDENT TRIGGER requested for patientId={}&quot;, patientId);</span>
+
+<span class="nc" id="L512">        List&lt;Sensor&gt; sensors = sensorRepository.findByPatientIdAndStatus(patientId, SensorStatus.ACTIVE);</span>
+<span class="nc bnc" id="L513" title="All 2 branches missed.">        if (sensors.isEmpty()) {</span>
+<span class="nc" id="L514">            log.error(&quot;🚨 No active sensors found for patientId={}&quot;, patientId);</span>
+<span class="nc" id="L515">            throw new RuntimeException(&quot;No active sensors for patient &quot; + patientId);</span>
+        }
+
+        // Pick a random sensor type for the accident
+<span class="nc" id="L519">        Sensor randomSensor = sensors.get(random.nextInt(sensors.size()));</span>
+<span class="nc" id="L520">        AbnormalEventType eventType = mapSensorTypeToEventType(randomSensor.getSensorType());</span>
+
+<span class="nc" id="L522">        return createManualAccident(randomSensor, eventType);</span>
+    }
+
+    /**
+     * Manually trigger a specific type of accident for a patient.
+     */
+    public AbnormalEvent triggerSpecificAccident(Long patientId, AbnormalEventType eventType) {
+<span class="nc" id="L529">        log.info(&quot;🎯 MANUAL SPECIFIC ACCIDENT TRIGGER: type={} for patientId={}&quot;, eventType, patientId);</span>
+
+<span class="nc" id="L531">        List&lt;Sensor&gt; sensors = sensorRepository.findByPatientIdAndStatus(patientId, SensorStatus.ACTIVE);</span>
+<span class="nc bnc" id="L532" title="All 2 branches missed.">        if (sensors.isEmpty()) {</span>
+<span class="nc" id="L533">            log.error(&quot;🚨 No active sensors found for patientId={}&quot;, patientId);</span>
+<span class="nc" id="L534">            throw new RuntimeException(&quot;No active sensors for patient &quot; + patientId);</span>
+        }
+
+        // Find the appropriate sensor for this event type, or use first available
+<span class="nc" id="L538">        Sensor targetSensor = sensors.stream()</span>
+<span class="nc bnc" id="L539" title="All 2 branches missed.">                .filter(s -&gt; mapSensorTypeToEventType(s.getSensorType()) == eventType)</span>
+<span class="nc" id="L540">                .findFirst()</span>
+<span class="nc" id="L541">                .orElse(sensors.get(0));</span>
+
+<span class="nc" id="L543">        return createManualAccident(targetSensor, eventType);</span>
+    }
+
+    private AbnormalEvent createManualAccident(Sensor sensor, AbnormalEventType eventType) {
+<span class="nc" id="L547">        log.info(&quot;🔧 Creating manual accident: sensor={}, type={}, patientId={}&quot;,</span>
+<span class="nc" id="L548">                sensor.getSensorCode(), eventType, sensor.getPatientId());</span>
+
+        // Generate an anomalous reading
+<span class="nc" id="L551">        SensorReading reading = SensorReading.builder()</span>
+<span class="nc" id="L552">                .sensorId(sensor.getId())</span>
+<span class="nc" id="L553">                .patientId(sensor.getPatientId())</span>
+<span class="nc" id="L554">                .timestamp(LocalDateTime.now())</span>
+<span class="nc" id="L555">                .isAnomalous(true)</span>
+<span class="nc" id="L556">                .build();</span>
+
+        // Populate fields based on event type for realistic data
+<span class="nc bnc" id="L559" title="All 7 branches missed.">        switch (eventType) {</span>
+            case CARDIAC_ANOMALY -&gt; {
+<span class="nc bnc" id="L561" title="All 2 branches missed.">                double bpm = random.nextBoolean() ? 145 + random.nextInt(20) : 38 + random.nextInt(8);</span>
+<span class="nc" id="L562">                reading.setHeartRate(bpm);</span>
+<span class="nc" id="L563">            }</span>
+            case FALL -&gt; {
+<span class="nc" id="L565">                reading.setAccelerationX(3.0 + random.nextDouble() * 2);</span>
+<span class="nc" id="L566">                reading.setAccelerationY(2.0 + random.nextDouble() * 1.5);</span>
+<span class="nc" id="L567">                reading.setAccelerationZ(4.0 + random.nextDouble() * 2);</span>
+<span class="nc" id="L568">            }</span>
+            case GEOFENCE_BREACH -&gt; {
+<span class="nc bnc" id="L570" title="All 2 branches missed.">                double baselineLat = sensor.getBaseLatitude() != null ? sensor.getBaseLatitude() : geofenceCenterLat;</span>
+<span class="nc bnc" id="L571" title="All 2 branches missed.">                double baselineLon = sensor.getBaseLongitude() != null ? sensor.getBaseLongitude() : geofenceCenterLon;</span>
+<span class="nc" id="L572">                double angle = random.nextDouble() * 2 * Math.PI;</span>
+<span class="nc" id="L573">                reading.setLatitude(baselineLat + Math.cos(angle) * 0.003);</span>
+<span class="nc" id="L574">                reading.setLongitude(baselineLon + Math.sin(angle) * 0.003);</span>
+<span class="nc" id="L575">            }</span>
+<span class="nc" id="L576">            case MISSED_MEDICATION -&gt; reading.setMedicationBoxOpened(false);</span>
+<span class="nc" id="L577">            case PROLONGED_INACTIVITY -&gt; reading.setMotionDetected(false);</span>
+<span class="nc" id="L578">            case SOS_TRIGGERED -&gt; reading.setMotionDetected(true); // SOS button press</span>
+        }
+
+<span class="nc" id="L581">        SensorReading savedReading = readingRepository.save(reading);</span>
+<span class="nc" id="L582">        log.info(&quot;💾 Saved anomalous reading id={} for manual accident&quot;, savedReading.getId());</span>
+
+<span class="nc" id="L584">        String description = String.format(&quot;[MANUAL TRIGGER] %s event for patient %d via sensor %s&quot;,</span>
+<span class="nc" id="L585">                eventType, sensor.getPatientId(), sensor.getSensorCode());</span>
+
+<span class="nc" id="L587">        AbnormalEvent event = AbnormalEvent.builder()</span>
+<span class="nc" id="L588">                .patientId(sensor.getPatientId())</span>
+<span class="nc" id="L589">                .sensorId(sensor.getId())</span>
+<span class="nc" id="L590">                .eventType(eventType)</span>
+<span class="nc" id="L591">                .detectedAt(LocalDateTime.now())</span>
+<span class="nc" id="L592">                .rawReadingId(savedReading.getId())</span>
+<span class="nc" id="L593">                .description(description)</span>
+<span class="nc" id="L594">                .alertSent(false)</span>
+<span class="nc" id="L595">                .build();</span>
+
+<span class="nc" id="L597">        AbnormalEvent savedEvent = eventRepository.save(event);</span>
+<span class="nc" id="L598">        log.info(&quot;💾 Saved abnormal event id={}&quot;, savedEvent.getId());</span>
+
+        // Send alert to Alert service with context
+<span class="nc" id="L601">        alertService.sendAlertForEvent(savedEvent, getRecentContext(sensor.getPatientId()));</span>
+
+<span class="nc" id="L603">        return savedEvent;</span>
+    }
+
+    // ====== Helper Methods ======
+
+    /**
+     * Determines if an accident should occur based on realistic Alzheimer's patient data.
+     * Evaluated roughly every 10 seconds per sensor.
+     */
+    private boolean shouldTriggerAccident(AbnormalEventType eventType) {
+<span class="nc bnc" id="L613" title="All 6 branches missed.">        double specificProbability = switch (eventType) {</span>
+<span class="nc" id="L614">            case CARDIAC_ANOMALY -&gt; accidentProbability * 0.05;  // Very rare (comorbidities exist but acute events are not 10s frequent)</span>
+<span class="nc" id="L615">            case FALL -&gt; accidentProbability * 0.2;              // Rare on a 10s basis, but higher risk for elderly</span>
+<span class="nc" id="L616">            case GEOFENCE_BREACH -&gt; accidentProbability * 1.5;   // Wandering is very common in Alzheimer's patients</span>
+<span class="nc" id="L617">            case PROLONGED_INACTIVITY -&gt; accidentProbability * 2.0; // Apathy and daytime sleeping are highly prevalent</span>
+<span class="nc" id="L618">            case MISSED_MEDICATION -&gt; 0.15; // 15% probability per scheduled med check (evaluated hourly, not per 10s)</span>
+<span class="nc" id="L619">            default -&gt; accidentProbability;</span>
+        };
+<span class="nc bnc" id="L621" title="All 2 branches missed.">        return random.nextDouble() &lt; specificProbability;</span>
+    }
+
+    private void createAndSendAbnormalEvent(Sensor sensor, SensorReading reading,
+                                            AbnormalEventType eventType, String description) {
+        // ====== COOLDOWN CHECK: prevent spamming the same alert type ======
+<span class="nc" id="L627">        String cooldownKey = sensor.getPatientId() + &quot;:&quot; + eventType.name();</span>
+<span class="nc" id="L628">        LocalDateTime lastAlertTime = alertCooldownMap.get(cooldownKey);</span>
+<span class="nc" id="L629">        LocalDateTime now = LocalDateTime.now();</span>
+
+<span class="nc bnc" id="L631" title="All 4 branches missed.">        if (lastAlertTime != null &amp;&amp; Duration.between(lastAlertTime, now).compareTo(ALERT_COOLDOWN) &lt; 0) {</span>
+<span class="nc" id="L632">            long minutesRemaining = ALERT_COOLDOWN.minus(Duration.between(lastAlertTime, now)).toMinutes();</span>
+<span class="nc" id="L633">            log.info(&quot;⏳ COOLDOWN ACTIVE for [{}] patientId={} — suppressing alert. Cooldown expires in ~{} min&quot;,</span>
+<span class="nc" id="L634">                    eventType, sensor.getPatientId(), minutesRemaining);</span>
+<span class="nc" id="L635">            return; // SKIP: do NOT create event or send alert</span>
+        }
+
+<span class="nc" id="L638">        log.info(&quot;🔔 Creating abnormal event: type={}, sensor={}, patientId={}&quot;,</span>
+<span class="nc" id="L639">                eventType, sensor.getSensorCode(), sensor.getPatientId());</span>
+
+        // Save the reading first to get an ID
+<span class="nc" id="L642">        SensorReading saved = readingRepository.save(reading);</span>
+
+        // Get context from buffer
+<span class="nc" id="L645">        String context = getRecentContext(sensor.getPatientId());</span>
+
+<span class="nc" id="L647">        AbnormalEvent event = AbnormalEvent.builder()</span>
+<span class="nc" id="L648">                .patientId(sensor.getPatientId())</span>
+<span class="nc" id="L649">                .sensorId(sensor.getId())</span>
+<span class="nc" id="L650">                .eventType(eventType)</span>
+<span class="nc" id="L651">                .detectedAt(now)</span>
+<span class="nc" id="L652">                .rawReadingId(saved.getId())</span>
+<span class="nc" id="L653">                .description(description)</span>
+<span class="nc" id="L654">                .alertSent(false)</span>
+<span class="nc" id="L655">                .build();</span>
+
+<span class="nc" id="L657">        AbnormalEvent savedEvent = eventRepository.save(event);</span>
+<span class="nc" id="L658">        log.info(&quot;💾 Abnormal event saved with id={}&quot;, savedEvent.getId());</span>
+
+        // Record cooldown timestamp
+<span class="nc" id="L661">        alertCooldownMap.put(cooldownKey, now);</span>
+<span class="nc" id="L662">        log.info(&quot;🕐 Cooldown set for [{}] patientId={} — next alert of this type allowed after {}&quot;,</span>
+<span class="nc" id="L663">                eventType, sensor.getPatientId(), now.plus(ALERT_COOLDOWN));</span>
+
+        // Send alert to Alert service with context
+<span class="nc" id="L666">        alertService.sendAlertForEvent(savedEvent, context);</span>
+<span class="nc" id="L667">    }</span>
+
+    private void addToContextBuffer(Long patientId, SensorReading reading) {
+<span class="nc" id="L670">        contextBuffer.computeIfAbsent(patientId, k -&gt; new EvictingQueue&lt;&gt;(10)).add(reading);</span>
+<span class="nc" id="L671">    }</span>
+
+    private String getRecentContext(Long patientId) {
+<span class="nc" id="L674">        EvictingQueue&lt;SensorReading&gt; buffer = contextBuffer.get(patientId);</span>
+<span class="nc bnc" id="L675" title="All 4 branches missed.">        if (buffer == null || buffer.isEmpty()) return &quot;No recent history available.&quot;;</span>
+
+<span class="nc" id="L677">        StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L678">        List&lt;SensorReading&gt; readings = buffer.toList();</span>
+<span class="nc bnc" id="L679" title="All 2 branches missed.">        for (int i = Math.max(0, readings.size() - 5); i &lt; readings.size(); i++) {</span>
+<span class="nc" id="L680">            SensorReading r = readings.get(i);</span>
+<span class="nc" id="L681">            sb.append(String.format(&quot;[%s] &quot;, r.getTimestamp()));</span>
+<span class="nc bnc" id="L682" title="All 2 branches missed.">            if (r.getHeartRate() != null) sb.append(&quot;HR:&quot;).append(r.getHeartRate()).append(&quot; &quot;);</span>
+<span class="nc bnc" id="L683" title="All 2 branches missed.">            if (r.getAccelerationX() != null) sb.append(&quot;Accel:&quot;).append(r.getAccelerationX()).append(&quot;,&quot;).append(r.getAccelerationY()).append(&quot;,&quot;).append(r.getAccelerationZ()).append(&quot; &quot;);</span>
+<span class="nc bnc" id="L684" title="All 2 branches missed.">            if (r.getLatitude() != null) sb.append(&quot;GPS:&quot;).append(r.getLatitude()).append(&quot;,&quot;).append(r.getLongitude()).append(&quot; &quot;);</span>
+<span class="nc bnc" id="L685" title="All 2 branches missed.">            if (r.getMotionDetected() != null) sb.append(&quot;Motion:&quot;).append(r.getMotionDetected()).append(&quot; &quot;);</span>
+<span class="nc bnc" id="L686" title="All 2 branches missed.">            if (r.getMedicationBoxOpened() != null) sb.append(&quot;MedBox:&quot;).append(r.getMedicationBoxOpened()).append(&quot; &quot;);</span>
+<span class="nc" id="L687">            sb.append(&quot;| &quot;);</span>
+        }
+<span class="nc" id="L689">        return sb.toString();</span>
+    }
+
+    // Small helper class for evicting queue
+    private static class EvictingQueue&lt;T&gt; {
+        private final int maxSize;
+<span class="nc" id="L695">        private final LinkedList&lt;T&gt; list = new LinkedList&lt;&gt;();</span>
+
+<span class="nc" id="L697">        public EvictingQueue(int maxSize) { this.maxSize = maxSize; }</span>
+
+        public synchronized void add(T item) {
+<span class="nc bnc" id="L700" title="All 2 branches missed.">            if (list.size() &gt;= maxSize) list.removeFirst();</span>
+<span class="nc" id="L701">            list.addLast(item);</span>
+<span class="nc" id="L702">        }</span>
+
+<span class="nc" id="L704">        public synchronized List&lt;T&gt; toList() { return new ArrayList&lt;&gt;(list); }</span>
+<span class="nc" id="L705">        public synchronized boolean isEmpty() { return list.isEmpty(); }</span>
+    }
+
+    private AbnormalEventType mapSensorTypeToEventType(SensorType sensorType) {
+<span class="nc bnc" id="L709" title="All 5 branches missed.">        return switch (sensorType) {</span>
+<span class="nc" id="L710">            case HEART_RATE_MONITOR -&gt; AbnormalEventType.CARDIAC_ANOMALY;</span>
+<span class="nc" id="L711">            case ACCELEROMETER -&gt; AbnormalEventType.FALL;</span>
+<span class="nc" id="L712">            case GPS_TRACKER -&gt; AbnormalEventType.GEOFENCE_BREACH;</span>
+<span class="nc" id="L713">            case MEDICATION_BOX -&gt; AbnormalEventType.MISSED_MEDICATION;</span>
+<span class="nc" id="L714">            case MOTION_DETECTOR -&gt; AbnormalEventType.PROLONGED_INACTIVITY;</span>
+        };
+    }
+
+    /**
+     * Calculate distance between two GPS coordinates in meters (Haversine formula).
+     */
+    private double calculateDistanceMeters(double lat1, double lon1, double lat2, double lon2) {
+<span class="nc" id="L722">        final int R = 6371000; // Earth radius in meters</span>
+<span class="nc" id="L723">        double dLat = Math.toRadians(lat2 - lat1);</span>
+<span class="nc" id="L724">        double dLon = Math.toRadians(lon2 - lon1);</span>
+<span class="nc" id="L725">        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)</span>
+<span class="nc" id="L726">                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))</span>
+<span class="nc" id="L727">                * Math.sin(dLon / 2) * Math.sin(dLon / 2);</span>
+<span class="nc" id="L728">        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));</span>
+<span class="nc" id="L729">        return R * c;</span>
+    }
+
+    private void resetMedicationTrackingIfNewDay() {
+<span class="fc" id="L733">        LocalDateTime now = LocalDateTime.now();</span>
+<span class="pc bpc" id="L734" title="1 of 2 branches missed.">        if (now.toLocalDate().isAfter(lastMedicationReset.toLocalDate())) {</span>
+<span class="nc" id="L735">            log.info(&quot;📅 New day detected. Resetting medication tracking.&quot;);</span>
+<span class="nc" id="L736">            medicationsTakenToday.clear();</span>
+<span class="nc" id="L737">            lastMedicationReset = now;</span>
+        }
+<span class="fc" id="L739">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
