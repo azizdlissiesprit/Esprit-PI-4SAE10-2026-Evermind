@@ -54,6 +54,16 @@ pipeline {
                 }
             }
         }
+        stage('Diagnose') {
+    steps {
+        sh '''
+            whoami
+            echo HOME=$HOME
+            ls -la /home/azureuser/.kube/config || echo "File not found"
+            ls -la $HOME/.kube/config || echo "No config in home"
+        '''
+            }
+        }
         
         stage('Deploy to Kubernetes') {
             steps {
