@@ -1,6 +1,13 @@
 pipeline {
     agent any
     tools { maven 'Maven-3.9' }
+    
+    environment {
+        DOCKER_IMAGE = "azizesp/evermind-formation" 
+        IMAGE_TAG = "v${env.BUILD_NUMBER}" 
+        DOCKER_HUB_CREDS = 'docker-hub-creds'
+    }
+
     stages {
         stage('Build & Test') {
             steps {
@@ -15,6 +22,21 @@ pipeline {
                 dir('Backend/Formation') {
                     withSonarQubeEnv('SonarQube') {
                         sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=formation-service -Dsonar.java.binaries=target/classes"
+                    }
+                }
+            }
+        }
+        stage('Build & Push Docker Image') {
+            steps {
+                dir('Backend/Formation') {
+                    script {
+                        sh "docker build -t ${DOCKER_IMAGE}:${IMAGE_TAG} -t ${DOCKER_IMAGE}:latest ."
+                        
+                        withCredentials([usernamePassword(credentialsId: "${DOCKER_HUB_CREDS}", passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
+                            sh "echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin"
+                            sh "docker push ${DOCKER_IMAGE}:${IMAGE_TAG}"
+                            sh "docker push ${DOCKER_IMAGE}:latest"
+                        }
                     }
                 }
             }
