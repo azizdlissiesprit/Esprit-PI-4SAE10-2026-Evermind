@@ -1,21 +1,31 @@
 pipeline {
     agent any
+
+    parameters {
+        string(name: 'IMAGE_VERSION', defaultValue: 'latest', description: 'Docker tag to deploy')
+    }
+
+    environment {
+        DOCKER_IMAGE = "azizesp/evermind-formation"
+        DEPLOY_TAG = "${params.IMAGE_VERSION}"
+    }
+
     stages {
-        stage('Docker Push') {
-            steps {
-                dir('Backend/Formation') {
-                    withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
-                        sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
-                        sh 'docker build -t azizesp/evermind-formation:latest .'
-                        sh 'docker push azizesp/evermind-formation:latest'
-                    }
-                }
-            }
-        }
         stage('Deploy to K8s') {
             steps {
-                dir('k8s') {
-                    sh 'kubectl apply -f formation-service-deployment.yaml'
+                script {
+                    sh "docker pull ${DOCKER_IMAGE}:${DEPLOY_TAG}"
+                    
+                    dir('Backend/k8s') {
+                        // Applies the k8s manifest
+                        sh 'kubectl apply -f formation-service-deployment.yaml || true'
+                        
+                        // Updates the deployment with the pulled image tag
+                        sh "kubectl set image deployment/formation-service formation-service=${DOCKER_IMAGE}:${DEPLOY_TAG}"
+                        
+                        // Monitors the rollout
+                        sh "kubectl rollout status deployment/formation-service"
+                    }
                 }
             }
         }
