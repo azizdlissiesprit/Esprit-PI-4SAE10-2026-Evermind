@@ -1,18 +1,21 @@
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AlertAdd } from './alert-add';
+import { AlertAddComponent } from './alert-add';
 
-describe('AlertAdd', () => {
-  let component: AlertAdd;
-  let fixture: ComponentFixture<AlertAdd>;
+describe('AlertAddComponent', () => {
+  let component: AlertAddComponent;
+  let fixture: ComponentFixture<AlertAddComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AlertAdd]
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()], imports: [AlertAddComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AlertAdd);
+    fixture = TestBed.createComponent(AlertAddComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
@@ -21,3 +24,5 @@ describe('AlertAdd', () => {
     expect(component).toBeTruthy();
   });
 });
+
+

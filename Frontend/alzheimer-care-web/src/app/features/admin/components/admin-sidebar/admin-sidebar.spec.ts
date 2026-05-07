@@ -1,18 +1,21 @@
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AdminSidebar } from './admin-sidebar';
+import { AdminSidebarComponent } from './admin-sidebar';
 
-describe('AdminSidebar', () => {
-  let component: AdminSidebar;
-  let fixture: ComponentFixture<AdminSidebar>;
+describe('AdminSidebarComponent', () => {
+  let component: AdminSidebarComponent;
+  let fixture: ComponentFixture<AdminSidebarComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AdminSidebar]
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()], imports: [AdminSidebarComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AdminSidebar);
+    fixture = TestBed.createComponent(AdminSidebarComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
@@ -21,3 +24,5 @@ describe('AdminSidebar', () => {
     expect(component).toBeTruthy();
   });
 });
+
+
