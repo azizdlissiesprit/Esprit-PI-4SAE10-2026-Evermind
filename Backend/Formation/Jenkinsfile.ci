@@ -14,7 +14,7 @@ pipeline {
             steps {
                 dir('Backend/Formation') {
                     withSonarQubeEnv('SonarQube') {
-                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=formation-service"
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=formation-service -Dsonar.java.binaries=target/classes"
                     }
                 }
             }
