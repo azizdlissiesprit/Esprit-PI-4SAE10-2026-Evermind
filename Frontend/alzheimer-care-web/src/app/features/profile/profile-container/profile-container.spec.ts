@@ -1,18 +1,21 @@
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ProfileContainer } from './profile-container';
+import { ProfileContainerComponent } from './profile-container';
 
-describe('ProfileContainer', () => {
-  let component: ProfileContainer;
-  let fixture: ComponentFixture<ProfileContainer>;
+describe('ProfileContainerComponent', () => {
+  let component: ProfileContainerComponent;
+  let fixture: ComponentFixture<ProfileContainerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProfileContainer]
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()], imports: [ProfileContainerComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ProfileContainer);
+    fixture = TestBed.createComponent(ProfileContainerComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
@@ -21,3 +24,5 @@ describe('ProfileContainer', () => {
     expect(component).toBeTruthy();
   });
 });
+
+

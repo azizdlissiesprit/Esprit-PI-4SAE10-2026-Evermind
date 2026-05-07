@@ -1,18 +1,21 @@
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UserAdd } from './user-add';
+import { UserAddComponent } from './user-add';
 
-describe('UserAdd', () => {
-  let component: UserAdd;
-  let fixture: ComponentFixture<UserAdd>;
+describe('UserAddComponent', () => {
+  let component: UserAddComponent;
+  let fixture: ComponentFixture<UserAddComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UserAdd]
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()], imports: [UserAddComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(UserAdd);
+    fixture = TestBed.createComponent(UserAddComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
@@ -21,3 +24,5 @@ describe('UserAdd', () => {
     expect(component).toBeTruthy();
   });
 });
+
+

@@ -1,18 +1,21 @@
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CaregiverProfile } from './caregiver-profile';
+import { CaregiverProfileComponent } from './caregiver-profile';
 
-describe('CaregiverProfile', () => {
-  let component: CaregiverProfile;
-  let fixture: ComponentFixture<CaregiverProfile>;
+describe('CaregiverProfileComponent', () => {
+  let component: CaregiverProfileComponent;
+  let fixture: ComponentFixture<CaregiverProfileComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CaregiverProfile]
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()], imports: [CaregiverProfileComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(CaregiverProfile);
+    fixture = TestBed.createComponent(CaregiverProfileComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
@@ -21,3 +24,5 @@ describe('CaregiverProfile', () => {
     expect(component).toBeTruthy();
   });
 });
+
+

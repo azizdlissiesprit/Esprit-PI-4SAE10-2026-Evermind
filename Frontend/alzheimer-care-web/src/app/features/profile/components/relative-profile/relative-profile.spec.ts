@@ -1,18 +1,21 @@
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RelativeProfile } from './relative-profile';
+import { RelativeProfileComponent } from './relative-profile';
 
-describe('RelativeProfile', () => {
-  let component: RelativeProfile;
-  let fixture: ComponentFixture<RelativeProfile>;
+describe('RelativeProfileComponent', () => {
+  let component: RelativeProfileComponent;
+  let fixture: ComponentFixture<RelativeProfileComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RelativeProfile]
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()], imports: [RelativeProfileComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(RelativeProfile);
+    fixture = TestBed.createComponent(RelativeProfileComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
@@ -21,3 +24,5 @@ describe('RelativeProfile', () => {
     expect(component).toBeTruthy();
   });
 });
+
+

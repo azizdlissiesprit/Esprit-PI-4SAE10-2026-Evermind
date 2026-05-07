@@ -19,6 +19,15 @@ pipeline {
             }
         }
         
+        stage('Test Frontend') {
+            steps {
+                dir('Frontend/alzheimer-care-web') {
+                    echo 'Running unit tests...'
+                    sh 'npm run test -- --watch=false'
+                }
+            }
+        }
+        
 
         stage('SonarQube Analysis') {
             environment {
