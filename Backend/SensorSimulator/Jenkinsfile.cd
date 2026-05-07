@@ -1,0 +1,36 @@
+pipeline {
+    agent any
+
+    parameters {
+        string(name: 'IMAGE_VERSION', defaultValue: 'latest', description: 'Docker tag to deploy')
+    }
+
+    environment {
+        DOCKER_IMAGE = "azizesp/sensor-simulator"
+        DEPLOY_TAG = "${params.IMAGE_VERSION}"
+    }
+
+    stages {
+        stage('Deploy') {
+            steps {
+                script {
+                    sh "docker pull ${DOCKER_IMAGE}:${DEPLOY_TAG}"
+                    
+                    // 1. Stop and remove the old container
+                    sh 'docker stop sensor-simulator || true'
+                    sh 'docker rm sensor-simulator || true'
+                    
+                    // 2. Run the new one on the shared network
+                    sh """
+                        docker run -d --name sensor-simulator \
+                        --network alzheimer-net \
+                        -p 8089:8089 \
+                        -e SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/SensorSimulator \
+                        -e EUREKA_SERVER_URL=http://eureka-server:8761/eureka \
+                        ${DOCKER_IMAGE}:${DEPLOY_TAG}
+                    """
+                }
+            }
+        }
+    }
+}
